@@ -1,6 +1,6 @@
 # Littile Clinc Api
 
-To manage the backend of the littile clinic app.
+To manage the littile clinic app.
 
 ## Features.
 * Patients managment module including an appointments log and a diagnosis history.
@@ -12,3 +12,4 @@ To manage the backend of the littile clinic app.
 * Adding access rights mangement for staff memebers according to their status in the clinic.
 * Adding the book keeping module for revenue calculation.
 * Adding the functionality for Inventory module.
+* Adding custom modules as requested.
