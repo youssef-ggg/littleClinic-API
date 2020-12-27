@@ -1,0 +1,154 @@
+.apntmnt-table{
+    background: white;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+    
+}
+
+.apntmnt-header-row{
+    margin: auto;
+    justify-content: space-between;
+    padding:10px;
+    display: flex;
+    flex-direction: row;
+    color: #000030;
+    border-bottom: 2px solid #000030;
+}
+
+.apntmnt-header-col{
+    padding: 5px 30px 5px 5px;
+    font-weight: bold;
+    border: 0 2px solid #000030;
+    
+}
+
+.apntmnt-header-card{
+    
+    align-items: center;
+}
+
+.apntmnt-table-body {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+}
+
+.apntmnt-body-row{
+    min-width: 14%;
+
+}
+
+.apntmnt-body-col{
+    border: 2px solid grey;
+}
+
+.apntmnt-card{
+    
+    display: flex;
+    flex-direction: column;
+    border-radius: 5%;
+    padding: 3%;
+    margin: 2%;
+    color: #000030;
+    font-weight: 400;
+    background-color:lightsteelblue;
+    
+}
+
+.apntmnt-card-passed {
+    background-color:#ff9933
+}
+
+.apntmnt-card .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.apntmnt-card .name {
+    font-weight: bold;
+    padding: 5% 0;
+}
+
+.apntmnt-card  .btn-box{
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+}
+
+.apntmnt-card  .icon-btn:active{
+    transform: scale(1.5);
+}
+
+.apntmnt-input-box{
+    
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1%;
+    
+}
+
+.apntmnt-input {
+  border: 2px  solid  #000030;
+  border-radius: 10px 0 0 10px;
+  background-color: #fff;
+  padding: 3px 5px;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+  font-size: x-large;
+  font-weight: bold;
+  color: #000030;
+    
+}
+
+.apntmnt-btn{
+    border: none;
+    border-radius: 0 10px 10px 0 ;
+    color:white;
+    font-size: large;
+    padding: 0 10px 0 5px; 
+    background-color: #000030;
+    cursor: pointer;
+}
+
+.apntmnt-btn:active{
+    color: darkslategray;
+    background-color: darkorange;
+}
+
+.apntmnt-input::-webkit-clear-button {
+    display: none;
+}
+  
+.apntmnt-input::-webkit-inner-spin-button {
+    display: none;
+}
+  
+.apntmnt-input::-webkit-calendar-picker-indicator {
+    /* opacity: 0; */
+    cursor: pointer;
+}
+
+.empty-appointment-body{
+    /* margin-top: 1%; */
+    /* background-image: linear-gradient(darkslategray .1em, transparent .2em),
+    linear-gradient(90deg, darkslategray .1em, transparent .2em);  
+    background-size: 8.5em 8em; */
+    
+    display: flex;
+
+    
+}
+
+.empty-appointment-table{
+    margin:10% auto;
+    padding:15px;
+    font-weight: bolder;
+    font-size: x-large;
+    color: darkred;
+    border: 4px dashed darkred;
+    text-align: center;
+    display: inline-block;
+    /* transform: rotate(20deg); */
+    max-width: 200px;
+}

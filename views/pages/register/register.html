@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Little Clinic - login</title>
+    <link rel="stylesheet" href="../style.css">
+    <script>
+        document.querySelectorAll('.input-container[data-error] .input').forEach(inpEl=>{
+     inpEl.addEventListener('input',()=>inpEl.parentElement.removeAttribute('data-error'));
+    });
+    </script>
+</head>
+<body>
+   <div class="login-box">
+       <!-- <img src="../../images/icons/aLogin.png" class="avatar"> -->
+       <h1>Little Clinc</h1>
+       <form id="login">
+           <div class="input-container">
+                <label for="username">Username</label>
+                <input class="input" type="text" placeholder="Enter username" name="username" required>
+           </div>
+           <div class="input-container">
+                <label for="name">Name</label>
+                <input class="input" type="text" placeholder="Enter name" name="name" required>
+            </div>
+            <div class="input-container">
+                <label for="occupation">occupation</label>
+                <input class="input" type="text" placeholder="occupation" name="occupation" required>
+            </div>
+            <div class="input-container">
+                <label for="password">Password</label>
+                 <input class="input" type="password" placeholder="Enter password" name="password" required>
+            </div>
+            <div class="input-container">
+                <label for="confirmPassword">Confrim Password</label>
+                <input class="input" type="password" placeholder="Confirm password" name="confirmPassword" required>
+            </div>
+            <input id="sign-up" class="btn" type="submit" value="Sign Up">
+            <a href="../login/login.html">Have a account?</a>
+        </form>
+   </div>
+   <script src="register.js"></script>
+   
+</body>
+
+</html>
