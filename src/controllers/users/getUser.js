@@ -7,14 +7,14 @@ module.exports =  function makeGetUser({getUserById,jwtVerifyToken}){
         };
     try {
         const verification = jwtVerifyToken(httpRequest);
-            if (verification.statusCode == 403)
-            {
-                return {
-                    headers,
-                    ...verification
-                }
+        if (verification.statusCode == 403)
+        {
+            return {
+                headers,
+                ...verification
             }
-        const user =  await getUserById(httpRequest.query.id);
+        }
+        const user =  await getUserById({id:httpRequest.query.id});
         return {
             headers,
             statusCode:200,

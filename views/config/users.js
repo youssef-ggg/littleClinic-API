@@ -54,6 +54,28 @@ module.exports = Object.freeze({
         }
 
     ],
+    usersUpdateFormFormat:[
+        {
+            label:'Username',
+            id:'username',
+            type:'text',
+        },
+        {
+            label:'Name',
+            id:'name',
+            type:'text',
+        },
+        {
+            label:'Occupation',
+            id:'occupation',
+            type:'text'
+        },
+        {
+            label:'Access Rights',
+            id:'accessRights',
+            type:'textArray'
+        }
+    ],
     userUnitViewFormat:userData=>{
 
         const {username,name,occupation,createdOn,modifiedOn,accessRights} = userData;
@@ -75,5 +97,12 @@ module.exports = Object.freeze({
         }
 
         return formatedUser;
-    }
+    },
+    userUnitLeftNav:[
+        {
+            name:'Change password',
+            id:'changeUsrPass',
+            icon:'fas fa-user-lock'
+        }
+    ]
 });

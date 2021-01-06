@@ -53,10 +53,63 @@ module.exports = function makeErrorTnputHandler ({validator}){
                         .parentElement.setAttribute('data-error',error);
     }
 
+    //rearange steps in function 
+    function createUserErrorHandler(userData,axiosAuth)
+    {
+        let hasError = false;
+        const usernameRegexp = /^[a-zA-z_-][a-zA-z0-9_-]*$/;
+
+        // use try catch to get errors
+        axiosAuth.get(`/users/user/user?username=${userData.username}`)
+            .then(existsResponse=>{
+                const {data} = existsResponse;
+                if (data.username == userData.username)
+                {
+                    const inputElement = document.querySelector('#username');
+                    const errorMsg = document.querySelector('#username ~.form-error');
+                    
+                    inputElement.classList.add('form-input-error');
+                    errorMsg.innerHTML= `This user name is already taken.`;
+                    
+                    inputElement.addEventListener('input',()=>{
+                        inputElement.classList.remove('form-input-error');
+                        errorMsg.innerHTML = '';
+                    });
+                    hasError = true;
+
+                }
+            });
+        
+        if(!userData.username.match(usernameRegexp))
+        {
+            hasError = true;
+            const inputElement = document.querySelector('#username');
+            const errorMsg = document.querySelector('#username ~.form-error');
+            
+            inputElement.classList.add('form-input-error');
+            errorMsg.innerHTML= `Invalid charachters used.`;
+            
+            inputElement.addEventListener('input',()=>{
+                inputElement.classList.remove('form-input-error');
+                errorMsg.innerHTML = '';
+            });
+
+        }
+        if(userFormErrorHandler(userData))
+        {
+            hasError = true;
+        }
+        if(userFormPassErrorHandle(userData))
+        {
+            hasError = true;
+        }
+        return hasError;
+    }
+
     function userFormErrorHandler(userData){
 
         const {confirmPassword,accessRights,...userTextData} = userData;
-
+        let hasError = false;
         for (const [key,value] of Object.entries(userTextData)){
 
             const inputElement = document.querySelector(`#${key}`);
@@ -71,17 +124,43 @@ module.exports = function makeErrorTnputHandler ({validator}){
             {
                 inputElement.classList.add('form-input-error');
                 errorMsg.innerHTML= `Must have a ${key}.`;
-                haserror = true;
+                hasError = true;
             }
         }
+        if (!validator.isAlpha(validator.blacklist(userTextData.name, ' ')))
+        {
+                const inputElement = document.querySelector(`#name`);
+                const errorMsg = document.querySelector('#name ~.form-error');
 
-        const {password} = userTextData;
+                inputElement.classList.add('form-input-error');
+                errorMsg.innerHTML= 'Name must only contian letters.';
+                hasError = true;
+        }
+        else if(validator.blacklist(userTextData.name, ' ').length < 3)
+        {
+            
+                const inputElement = document.querySelector(`#name`);
+                const errorMsg = document.querySelector('#name ~.form-error');
+
+                inputElement.classList.add('form-input-error');
+                errorMsg.innerHTML= 'Name must be at least three charachters long.';
+                hasError = true;
+
+        }
+        return hasError;
+    }
+
+    function userFormPassErrorHandle(userData)
+    {
+        const {password,confirmPassword} = userData;
+        let hasError = false;
+
          if (password.length <8 && password.length>0){
             const inputElement = document.querySelector('#password');
             const errorMsg = document.querySelector('#password ~.form-error');
             inputElement.classList.add('form-input-error');
             errorMsg.innerHTML= 'Password must be at least 8 charachters long.';
-            haserror = true
+            hasError = true
         }
         if (password!==confirmPassword)
         {
@@ -89,14 +168,38 @@ module.exports = function makeErrorTnputHandler ({validator}){
             const errorMsg = document.querySelector('#confirmPassword ~.form-error');
             inputElement.classList.add('form-input-error');
             errorMsg.innerHTML= 'Password dosen\'t match.';
-            haserror = true;
             inputElement.addEventListener('input',()=>{
                 inputElement.classList.remove('form-input-error');
                 errorMsg.innerHTML = '';
             });
+            hasError = true;
         }
+        return hasError;
     }
     
+    // function updateUserErrorHandler(userData){
+
+    //     const {confirmPassword,accessRights,...userTextData} = userData;
+    //     let hasError = false;
+    //     for (const [key,value] of Object.entries(userTextData)){
+
+    //         const inputElement = document.querySelector(`#${key}`);
+    //         const errorMsg = document.querySelector(`#${key} ~.form-error`);
+            
+    //         inputElement.addEventListener('input',()=>{
+    //             inputElement.classList.remove('form-input-error');
+    //             errorMsg.innerHTML = '';
+    //         });
+
+    //         if(!value || value === "")
+    //         {
+    //             inputElement.classList.add('form-input-error');
+    //             errorMsg.innerHTML= `Must have a ${key}.`;
+    //             hasError = true;
+    //         }
+    //     }
+    // }
+
     function existingUsernameForm(){
         const inputElement = document.querySelector('#username');
             const errorMsg = document.querySelector('#username ~.form-error');
@@ -114,6 +217,8 @@ module.exports = function makeErrorTnputHandler ({validator}){
         passMisMatchHandle,
         existsError,
         userFormErrorHandler,
-        existingUsernameForm
+        existingUsernameForm,
+        userFormPassErrorHandle,
+        createUserErrorHandler
     });
 }

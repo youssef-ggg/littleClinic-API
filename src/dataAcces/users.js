@@ -42,15 +42,16 @@ module.exports = function makeUsersCollection({makeDb,ObjectID})
       }
     }
 
-    async function findById({id}){
+    async function findById({id:_id}){
 
       try {
         const db = await makeDb();
-        const result = await db.collection('users').find({_id:ObjectID(id)});
+        const result = await db.collection('users').find({_id:ObjectID(_id)});
         const found = await result.toArray();   
         if(found.length === 0)
           return null;
-        return {_id:id,...info}  = found[0];
+          const {_id:id,...info} = found[0];
+          return {id,...info};
       } 
       catch (error) {
         return error;
@@ -68,7 +69,8 @@ module.exports = function makeUsersCollection({makeDb,ObjectID})
         const db = await makeDb();
         const result = await db.collection('users').insertOne(userInfo);
         const insertedInfo = result.ops[0];
-        return insertedInfo;
+        const {_id,...insertedUser} = insertedInfo;
+        return {id:_id.toString(),...insertedUser};
         
       }catch(error){
         return error;
@@ -77,8 +79,16 @@ module.exports = function makeUsersCollection({makeDb,ObjectID})
       
     }
 
-    async function remove(){
+    async function remove(userInfo){
+      const {id} = userInfo;
+        try{
+            const db = await makeDb();
+            const result =  await db.collection('users').deleteOne({_id:ObjectID(id)});
 
+            return result;
+        }catch(error){
+            return error;
+        }
     }
 
     async function update(){

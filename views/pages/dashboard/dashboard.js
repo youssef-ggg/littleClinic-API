@@ -9,7 +9,7 @@ const renderUpdateForm = require('../../components/updateForm');
 const renderAppointmentsTable = require('../../components/appointmentTable');
 const {tabs,clearLeftNav} = require('../../components/leftNav');
 const errorHandler = require('./errorHandler');
-const {userFormErrorHandler,existingUsernameForm} = require('../../errorHandler/index');
+const {userFormErrorHandler,createUserErrorHandler} = require('../../errorHandler/index');
 
 const {patientTableFormat,patientFormFormat,patientTableNavTabs,
     patientViewFormat,patientViewSideNav} = require('../../config/patients');
@@ -18,7 +18,8 @@ const {diagnosisFormFormat,diagnosisUnitView,diagnosisFormSideNav,diagnosisTable
 const {appointmentFormFormat,appointmentTableFormat,apntmntTableLeftNav
         ,apntmntPatientTableLeftNav,appointmentUnitView,
         appointmentSingleSideNav} = require('../../config/appointment');
-const {usersTableFormat,userTableNavTabs,userUnitViewFormat,usersFormFormat} = require('../../config/users');
+const {usersTableFormat,userTableNavTabs,userUnitViewFormat,
+    usersFormFormat,userUnitLeftNav} = require('../../config/users');
 const {updateModalSuccess,deleteModal,updateModalMatchOld} = require('../../config/common');
 
 const modal = require('../../utilites/modal');
@@ -53,12 +54,13 @@ userBtn.addEventListener('click',function(event){
 });
 
 const usersTableView = async ()=>{
-    const response = await axiosAuth.get(`/users`);
+    const response = await axiosAuth.get(`/users/listAll`);
     const {data} = response;
     const userMetaData = {
         unitView:{
             unitRenderer:userSingleView,
-            axiosAuth
+            axiosAuth,
+            url:'users/users?id='
         },
     };
     const centerContent = document.querySelector('.content-center');
@@ -77,20 +79,34 @@ const usersTableView = async ()=>{
 }
 
 const userSingleView = (userData)=>{
-    // const {id} = userData;
+    
     const formatedUser = userUnitViewFormat(userData);
 
     renderUnitView('User',formatedUser);
+    tabs('Staff',userUnitLeftNav);
 
     const edit = document.querySelector('#edit');
     const remove = document.querySelector('#delete');
-    
+    const container = document.querySelector('.container');
+
     edit.addEventListener('click',function(event){
         updateUserView(userData);
     });
     
     remove.addEventListener('click',function(event){
-        console.log('delete');
+
+        modal(container,deleteModal({title:'Staff member'}));
+        const confirmDelete = document.querySelector('#confirm');
+
+        confirmDelete.addEventListener('click',async function(event){
+            const overlay = document.querySelector('.modal-overlay');
+            overlay.parentNode.removeChild(overlay);
+            const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
+            // make response handle diffrent errors 
+            toastNotify('Staff member removed successfully.','success-warn');
+            usersTableView();
+                
+        });
     });
 }
 
@@ -101,7 +117,7 @@ const createUser = ()=>{
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
 
-    saveBtn.addEventListener('click',function(event){
+    saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
 
         const accessList = [];
@@ -117,7 +133,27 @@ const createUser = ()=>{
             accessRights:accessList
         };
 
-        userFormErrorHandler(userData);
+        if(!createUserErrorHandler(userData,axiosAuth)){
+            if(userData.accessRights.length<=0)
+            {
+                userData.accessRights.push('visitor');
+            }
+            try {
+                const response = await axiosAuth.post(`/users/add`,userData);
+                if(response.status == 201)
+                {
+                    const {data} = response;
+                    const {user} = data;
+                    toastNotify('Staff member created successfully.','success');
+                    userSingleView(user);
+                }
+            
+            } catch (error) {
+                //TODO ERROR log
+                
+                
+            }
+        }
         
     });
 
@@ -128,6 +164,7 @@ const createUser = ()=>{
 }
 
 const updateUserView = userData=>{
+
     renderUpdateForm('Staff',usersFormFormat,userData);
     clearLeftNav('Update Staff');
 
@@ -146,12 +183,10 @@ const updateUserView = userData=>{
             username:document.querySelector('input[name="username"]').value,
             name:document.querySelector('input[name="name"]').value,
             occupation:document.querySelector('input[name="occupation"]').value,
-            password:document.querySelector('input[name="password"]').value,
-            confirmPassword:document.querySelector('input[name="confirmPassword"]').value,
             accessRights:accessList
         };
-        
-    //     const {formInputPatient} = errorHandler();
+       
+        //const {formInputPatient} = errorHandler();
 
     //     if (!formInputPatient(patientInputData)){    
     //         if(updateEqualityCheck(patientInputData,patientData))
@@ -174,10 +209,10 @@ const updateUserView = userData=>{
     //     }
     });
 
-    // cancelBtn.addEventListener('click',function(event){
-    //     event.preventDefault();
-    //     ipcRenderer.send('reqPatient',patientData);
-    // });
+    cancelBtn.addEventListener('click',function(event){
+        event.preventDefault();
+        userSingleView(userData);
+    });
     
 }
 

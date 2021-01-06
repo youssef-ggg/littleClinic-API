@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/',userRoutes);
+app.use('/users',userRoutes);
 app.use('/patients',patientRoutes);
 
 

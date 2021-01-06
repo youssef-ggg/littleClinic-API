@@ -19,7 +19,7 @@ submit.addEventListener('click',async function (event){
         password:document.querySelector('input[name="password"]').value,
     }
     try {
-        const response = await axios.post(`${API_URL}/login`,{...userLogin});
+        const response = await axios.post(`${API_URL}/users/login`,{...userLogin});
         
         const {user,token} = response.data;
         if(user && token)

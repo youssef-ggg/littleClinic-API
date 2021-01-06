@@ -5,13 +5,19 @@ module.exports = function makeUserRoutes({routes,makeCallBack,userController})
         loginUser,
         getUsersList,
         getUser,
-        registerUser
+        registerUser,
+        createUser,
+        deleteUser,
+        getUserByUsername
     } = userController;
 
 routes.post('/login',makeCallBack(loginUser));
-routes.get('/users',makeCallBack(getUsersList));
-routes.get('/users/:id',makeCallBack(getUser));
+routes.get('/listAll',makeCallBack(getUsersList));
+routes.get('/:id',makeCallBack(getUser));
+routes.get('/user/:username',makeCallBack(getUserByUsername));
 routes.post('/register',makeCallBack(registerUser));
+routes.post('/add',makeCallBack(createUser));
+routes.delete('/delete/:id',makeCallBack(deleteUser));
 
 return routes;
 

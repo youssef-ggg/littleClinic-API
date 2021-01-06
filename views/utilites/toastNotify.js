@@ -9,7 +9,7 @@ module.exports = function toastNote(message,state){
 
     setTimeout(()=>{
         document.body.removeChild(toast);
-    },3000);
+    },1500);
 
     
 }

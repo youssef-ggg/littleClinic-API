@@ -58,10 +58,10 @@ module.exports = function renderTable (modelList,modelMetaData){
                 col.appendChild(document.createTextNode(value));
     
             });
-            const {unitRenderer,axiosAuth} = unitView;
+            const {unitRenderer,axiosAuth,url} = unitView;
             
             tableRow.addEventListener('click',async function(){
-                const response = await axiosAuth.get(`users/query?id=${id}`);
+                const response = await axiosAuth.get(`${url}${id}`);
                 unitRenderer(response.data);
             });
     
