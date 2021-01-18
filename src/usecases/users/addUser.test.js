@@ -5,7 +5,7 @@ const makeUserDbCollection = require('../../dataAcces/users');
 const makeFakeUser = require('../../__test__/fixtures/user');
 const {makeDb} = require('../../__test__/fixtures/db');
 
-describe('user',()=>{
+describe('add user usercase',()=>{
     let usersCollection;
     beforeAll(()=>{
         usersCollection = makeUserDbCollection({makeDb,ObjectID});
