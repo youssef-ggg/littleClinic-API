@@ -1,6 +1,6 @@
 const  {usersCollection} = require('../../dataAcces');
 
-const {makeAddUser} = require('./addUser');
+const makeAddUser = require('./addUser');
 const {makeListUsers} = require('./listUsers');
 const makeGetUserByID = require('./getUserById'); 
 const makeUserByUsername = require('./userByUsername');
