@@ -3,9 +3,10 @@ const faker = require('faker');
 const makeAddUser = require('./addUser');
 const makeUserDbCollection = require('../../dataAcces/users');
 const makeFakeUser = require('../../__test__/fixtures/user');
-const {makeDb} = require('../../__test__/fixtures/db');
+const {makeDb,clearDb,closeDb} = require('../../__test__/fixtures/db');
+const addUser = require('./addUser');
 
-describe('add user usercase',()=>{
+describe('add user',()=>{
     let usersCollection;
     beforeAll(()=>{
         usersCollection = makeUserDbCollection({makeDb,ObjectID});
@@ -101,5 +102,20 @@ describe('add user usercase',()=>{
         const {password,...restNewUser} = newUser;
         expect(restInserted).toMatchObject(restNewUser);
         expect.stringContaining(id);
+    });
+
+    it('user already exists',async()=>{
+        const newUser = makeFakeUser();
+        const adduser = makeAddUser({usersCollection});
+        const inserted = await adduser(newUser);
+        const insertedTwice = await adduser(newUser);
+        expect(insertedTwice).toMatchObject({
+            statusCode:409,
+            errorMessage:'This user Already Exists',
+        });
+    });
+    afterAll(()=>{
+        clearDb('users');
+        closeDb();
     });
 });

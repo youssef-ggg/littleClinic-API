@@ -16,11 +16,11 @@ async function makeDb(){
 
 async function closeDb(){
     await connection.close();
-    await db.close();
+    // await db.close();
 }
 
-async function clearDb() {
-    await db.collection('users').deleteMany({})
+async function clearDb(collectionName) {
+    await db.collection(collectionName).deleteMany({})
     return true
   }
 

@@ -1,4 +1,4 @@
-const {MongoClient,ObjectID} = require('mongodb')
+const {MongoClient,ObjectID} = require('mongodb');
 
 const makeUsersCollection = require('./users');
 const makePatientsCollection = require('./patients');
