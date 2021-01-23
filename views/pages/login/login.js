@@ -32,7 +32,7 @@ submit.addEventListener('click',async function (event){
     } catch (error) {
         //TODO ADD error log
         console.log(error);
-        if(error.response.data,field && error.response.data.errorMessage )
+        if(error.response.data && error.response.data.errorMessage )
         {
             const {field,errorMessage} = error.response.data;
             loginErrorHandler({field,errorMessage});
