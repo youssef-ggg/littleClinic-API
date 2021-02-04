@@ -1,5 +1,5 @@
 
-module.exports = function makeErrorTnputHandler ({validator}){
+module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
 
     function inputErrorHandler(inputObj){
         
@@ -48,52 +48,23 @@ module.exports = function makeErrorTnputHandler ({validator}){
         return false;
     }
 
-    function existsError(error){
-        document.querySelector('.input-container input[name="username"]')
-                        .parentElement.setAttribute('data-error',error);
-    }
-
-    //rearange steps in function 
-    function createUserErrorHandler(userData,axiosAuth)
+    
+    function createUserErrorHandler(userData,userExists)
     {
         let hasError = false;
-        const usernameRegexp = /^[a-zA-z_-][a-zA-z0-9_-]*$/;
+        const usernameRegexp = /^[a-zA-z._-][a-zA-z0-9._-]*$/;
 
-        // use try catch to get errors
-        axiosAuth.get(`/users/user/user?username=${userData.username}`)
-            .then(existsResponse=>{
-                const {data} = existsResponse;
-                if (data.username == userData.username)
-                {
-                    const inputElement = document.querySelector('#username');
-                    const errorMsg = document.querySelector('#username ~.form-error');
-                    
-                    inputElement.classList.add('form-input-error');
-                    errorMsg.innerHTML= `This user name is already taken.`;
-                    
-                    inputElement.addEventListener('input',()=>{
-                        inputElement.classList.remove('form-input-error');
-                        errorMsg.innerHTML = '';
-                    });
-                    hasError = true;
-
-                }
-            });
+        if (userExists!=null)
+        {
+            renderFormError({inputTitle:'username',message:'This user name is already taken.'});
+            hasError = true;
+        }
+        
         
         if(!userData.username.match(usernameRegexp))
         {
             hasError = true;
-            const inputElement = document.querySelector('#username');
-            const errorMsg = document.querySelector('#username ~.form-error');
-            
-            inputElement.classList.add('form-input-error');
-            errorMsg.innerHTML= `Invalid charachters used.`;
-            
-            inputElement.addEventListener('input',()=>{
-                inputElement.classList.remove('form-input-error');
-                errorMsg.innerHTML = '';
-            });
-
+            renderFormError({inputTitle:'username',message:'Invalid charachters used.'});
         }
         if(userFormErrorHandler(userData))
         {
@@ -110,42 +81,24 @@ module.exports = function makeErrorTnputHandler ({validator}){
 
         const {confirmPassword,accessRights,...userTextData} = userData;
         let hasError = false;
+        
+        if (!validator.isAlpha(validator.blacklist(userTextData.name, ' '))){
+
+            renderFormError({inputTitle:'name',message:'Name must only contian letters.'});
+            hasError = true;
+        }
+        else if(validator.blacklist(userTextData.name, ' ').length < 3){
+
+            renderFormError({inputTitle:'name',message:'Name must be at least three charachters long.'});
+            hasError = true;
+        }
         for (const [key,value] of Object.entries(userTextData)){
 
-            const inputElement = document.querySelector(`#${key}`);
-            const errorMsg = document.querySelector(`#${key} ~.form-error`);
-            
-            inputElement.addEventListener('input',()=>{
-                inputElement.classList.remove('form-input-error');
-                errorMsg.innerHTML = '';
-            });
+            if(!value || value === ""){
 
-            if(!value || value === "")
-            {
-                inputElement.classList.add('form-input-error');
-                errorMsg.innerHTML= `Must have a ${key}.`;
+                renderFormError({inputTitle:key,message:`Must have a ${key}.`})
                 hasError = true;
             }
-        }
-        if (!validator.isAlpha(validator.blacklist(userTextData.name, ' ')))
-        {
-                const inputElement = document.querySelector(`#name`);
-                const errorMsg = document.querySelector('#name ~.form-error');
-
-                inputElement.classList.add('form-input-error');
-                errorMsg.innerHTML= 'Name must only contian letters.';
-                hasError = true;
-        }
-        else if(validator.blacklist(userTextData.name, ' ').length < 3)
-        {
-            
-                const inputElement = document.querySelector(`#name`);
-                const errorMsg = document.querySelector('#name ~.form-error');
-
-                inputElement.classList.add('form-input-error');
-                errorMsg.innerHTML= 'Name must be at least three charachters long.';
-                hasError = true;
-
         }
         return hasError;
     }
@@ -156,68 +109,25 @@ module.exports = function makeErrorTnputHandler ({validator}){
         let hasError = false;
 
          if (password.length <8 && password.length>0){
-            const inputElement = document.querySelector('#password');
-            const errorMsg = document.querySelector('#password ~.form-error');
-            inputElement.classList.add('form-input-error');
-            errorMsg.innerHTML= 'Password must be at least 8 charachters long.';
+            
+            renderFormError({inputTitle:'password',
+                message:'Password must be at least 8 charachters long.'});
+            
             hasError = true
         }
-        if (password!==confirmPassword)
-        {
-            const inputElement = document.querySelector('#confirmPassword');
-            const errorMsg = document.querySelector('#confirmPassword ~.form-error');
-            inputElement.classList.add('form-input-error');
-            errorMsg.innerHTML= 'Password dosen\'t match.';
-            inputElement.addEventListener('input',()=>{
-                inputElement.classList.remove('form-input-error');
-                errorMsg.innerHTML = '';
-            });
+        if (password!==confirmPassword){
+
+            renderFormError({inputTitle:'confirmPassword',
+                message:'Password dosen\'t match.'});
             hasError = true;
         }
         return hasError;
     }
     
-    // function updateUserErrorHandler(userData){
-
-    //     const {confirmPassword,accessRights,...userTextData} = userData;
-    //     let hasError = false;
-    //     for (const [key,value] of Object.entries(userTextData)){
-
-    //         const inputElement = document.querySelector(`#${key}`);
-    //         const errorMsg = document.querySelector(`#${key} ~.form-error`);
-            
-    //         inputElement.addEventListener('input',()=>{
-    //             inputElement.classList.remove('form-input-error');
-    //             errorMsg.innerHTML = '';
-    //         });
-
-    //         if(!value || value === "")
-    //         {
-    //             inputElement.classList.add('form-input-error');
-    //             errorMsg.innerHTML= `Must have a ${key}.`;
-    //             hasError = true;
-    //         }
-    //     }
-    // }
-
-    function existingUsernameForm(){
-        const inputElement = document.querySelector('#username');
-            const errorMsg = document.querySelector('#username ~.form-error');
-            inputElement.classList.add('form-input-error');
-            errorMsg.innerHTML= 'This username is taken.';
-            haserror = true;
-            inputElement.addEventListener('input',()=>{
-                inputElement.classList.remove('form-input-error');
-                errorMsg.innerHTML = '';
-            });
-    }
-
     return Object.freeze({
         inputErrorHandler,
         passMisMatchHandle,
-        existsError,
         userFormErrorHandler,
-        existingUsernameForm,
         userFormPassErrorHandle,
         createUserErrorHandler
     });

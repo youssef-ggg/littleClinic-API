@@ -1,13 +1,15 @@
 const validator = require('validator');
 
+const renderFormError = require('./renderFormError');
+
 const makeErrorTnputHandler = require('./checkUserInput');
 
 const {inputErrorHandler,passMisMatchHandle,existsError,
     userFormErrorHandler,userFormPassErrorHandle,
-    createUserErrorHandler} = makeErrorTnputHandler({validator});
+    createUserErrorHandler} = makeErrorTnputHandler({validator,renderFormError});
 
 module.exports = {
-    inputErrorHandler,passMisMatchHandle,existsError,userFormErrorHandler,userFormPassErrorHandle,
+    inputErrorHandler,passMisMatchHandle,userFormErrorHandler,userFormPassErrorHandle,
     createUserErrorHandler
 }
 

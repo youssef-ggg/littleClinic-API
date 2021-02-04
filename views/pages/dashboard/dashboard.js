@@ -9,6 +9,11 @@ const renderUpdateForm = require('../../components/updateForm');
 const renderAppointmentsTable = require('../../components/appointmentTable');
 const {tabs,clearLeftNav} = require('../../components/leftNav');
 const errorHandler = require('./errorHandler');
+const dashboardFormInputReader = require('../../inputHandler/dashboard/formInputHandler');
+//CRUD Requests
+const createRequest = require('../../requests/createRequest');
+const getByQueryRequest = require('../../requests/getByQueryRequest');
+//.............
 const {userFormErrorHandler,createUserErrorHandler} = require('../../errorHandler/index');
 
 const {patientTableFormat,patientFormFormat,patientTableNavTabs,
@@ -18,7 +23,7 @@ const {diagnosisFormFormat,diagnosisUnitView,diagnosisFormSideNav,diagnosisTable
 const {appointmentFormFormat,appointmentTableFormat,apntmntTableLeftNav
         ,apntmntPatientTableLeftNav,appointmentUnitView,
         appointmentSingleSideNav} = require('../../config/appointment');
-const {usersTableFormat,userTableNavTabs,userUnitViewFormat,
+const {usersTableFormat,userTableNavTabs,userUnitViewFormat,usersUpdateFormFormat,
     usersFormFormat,userUnitLeftNav} = require('../../config/users');
 const {updateModalSuccess,deleteModal,updateModalMatchOld} = require('../../config/common');
 
@@ -120,44 +125,18 @@ const createUser = ()=>{
     saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
 
-        const accessList = [];
-        document.querySelectorAll('#accessRights-item')
-            .forEach(node=>node.innerHTML!=""?accessList.push(node.innerHTML):false);
-
-        const userData = {
-            username:document.querySelector('input[name="username"]').value,
-            name:document.querySelector('input[name="name"]').value,
-            occupation:document.querySelector('input[name="occupation"]').value,
-            password:document.querySelector('input[name="password"]').value,
-            confirmPassword:document.querySelector('input[name="confirmPassword"]').value,
-            accessRights:accessList
-        };
-
-        if(!createUserErrorHandler(userData,axiosAuth)){
-            if(userData.accessRights.length<=0)
-            {
-                userData.accessRights.push('visitor');
-            }
-            try {
-                const response = await axiosAuth.post(`/users/add`,userData);
-                if(response.status == 201)
-                {
-                    const {data} = response;
-                    const {user} = data;
-                    toastNotify('Staff member created successfully.','success');
-                    userSingleView(user);
-                }
-            
-            } catch (error) {
-                //TODO ERROR log
-                
-                
-            }
+        const userData = dashboardFormInputReader(usersFormFormat);
+        const exists = await getByQueryRequest({getData:userData,requestRoute:'/users/user',
+            query:'username',axiosAuth});
+        
+        if(!createUserErrorHandler(userData,exists)){
+            createRequest({postData:userData,moduleTitle:'Staff member',
+                requestRoute:'/users/add',axiosAuth});
         }
         
     });
 
-    cancelBtn.addEventListener('click',function(event){
+    cancelBtn.addEventListener('click',async function(event){
         event.preventDefault();
         usersTableView();
     });
@@ -165,7 +144,7 @@ const createUser = ()=>{
 
 const updateUserView = userData=>{
 
-    renderUpdateForm('Staff',usersFormFormat,userData);
+    renderUpdateForm('Staff',usersUpdateFormFormat,userData);
     clearLeftNav('Update Staff');
 
     const saveBtn = document.querySelector('#save');
