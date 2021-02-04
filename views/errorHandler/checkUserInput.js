@@ -81,7 +81,12 @@ module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
 
         const {confirmPassword,accessRights,...userTextData} = userData;
         let hasError = false;
-        
+        if(validator.blacklist(userTextData.username,' ').length < 3){
+            
+            renderFormError({inputTitle:'username',message:'Username must be at least three characters.'});
+            hasError = true;
+
+        }
         if (!validator.isAlpha(validator.blacklist(userTextData.name, ' '))){
 
             renderFormError({inputTitle:'name',message:'Name must only contian letters.'});
