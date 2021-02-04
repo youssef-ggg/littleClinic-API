@@ -1,5 +1,5 @@
 const {ipcRenderer} = require('electron');
-const {inputErrorHandler,passMisMatchHandle,existsError} = require('../../errorHandler');
+const {inputErrorHandler,passMisMatchHandle} = require('../../errorHandler');
 
 const submit = document.querySelector('#sign-up');
 
@@ -29,7 +29,5 @@ submit.addEventListener('click',function(event){
 });
 
 
-ipcRenderer.on('error',function(event,error){
-    existsError(error);
-});
+
 

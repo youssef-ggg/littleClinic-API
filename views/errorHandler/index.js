@@ -4,7 +4,7 @@ const renderFormError = require('./renderFormError');
 
 const makeErrorTnputHandler = require('./checkUserInput');
 
-const {inputErrorHandler,passMisMatchHandle,existsError,
+const {inputErrorHandler,passMisMatchHandle,
     userFormErrorHandler,userFormPassErrorHandle,
     createUserErrorHandler} = makeErrorTnputHandler({validator,renderFormError});
 
