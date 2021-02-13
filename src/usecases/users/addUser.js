@@ -6,7 +6,7 @@ module.exports = function makeAddUser({usersCollection}){
         
         const {username,name} = userInfo;
         const usernameRegex = /^[a-zA-Z0-9.-_]*$/;
-        const nameRegex = /^[a-zA-Z .]*$/;
+        const nameRegex = /^[a-zA-Z .']*$/;
         
         if(!username){
             throw new Error('user must have a username.');
