@@ -44,18 +44,14 @@ module.exports = function makeUsersCollection({makeDb,ObjectID})
 
     async function findById({id:_id}){
 
-      try {
-        const db = await makeDb();
-        const result = await db.collection('users').find({_id:ObjectID(_id)});
-        const found = await result.toArray();   
-        if(found.length === 0)
-          return null;
-          const {_id:id,...info} = found[0];
-          return {id,...info};
-      } 
-      catch (error) {
-        return error;
-      }
+      const db = await makeDb();
+      const result = await db.collection('users').find({_id:ObjectID(_id)});
+      const found = await result.toArray();   
+      if(found.length === 0)
+        return null;
+      
+      const {_id:id,...info} = found[0];
+      return {id,...info};
 
     }
 
@@ -91,7 +87,26 @@ module.exports = function makeUsersCollection({makeDb,ObjectID})
         }
     }
 
-    async function update(){
+    async function update(userData){
+
+      const {id,...setNewUser} = userData;
+      try {
+        const options =  {returnOriginal: false};
+        const db = await makeDb();
+        const result = await db.collection('users').findOneAndUpdate({_id:ObjectID(id)},
+        {
+          $set:{...setNewUser}
+        },
+        options
+       );
+
+       const {value} = result;
+       const {_id,...rest} = value;
+        return {id:_id.toString(),...rest};
+      } catch (error) {
+        //TODO: add error log
+        return error;
+      }
 
     }
 }
