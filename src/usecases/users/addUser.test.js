@@ -4,7 +4,7 @@ const makeAddUser = require('./addUser');
 const makeUserDbCollection = require('../../dataAcces/users');
 const makeFakeUser = require('../../__test__/fixtures/user');
 const {makeDb,clearDb,closeDb} = require('../../__test__/fixtures/db');
-const addUser = require('./addUser');
+
 
 describe('add user',()=>{
     let usersCollection;

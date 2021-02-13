@@ -2,7 +2,7 @@ const faker = require("faker");
 const makeCreateUser = require('./createUser.js');
 const makeFakeUser = require('../../__test__/fixtures/user.js');
 
-describe('post comment controller',()=>{
+describe('Create user controller',()=>{
     
     it('successfully creates a user',async()=>{
         const fakeUser = makeFakeUser();
@@ -93,8 +93,8 @@ describe('post comment controller',()=>{
             },
             statusCode: 400,
             body: { error: 'BOOM!' }
-          }
-          const actual = await createUser(request)
-          expect(actual).toEqual(expected)
+          };
+          const actual = await createUser(request);
+          expect(actual).toEqual(expected);
     });
 });
