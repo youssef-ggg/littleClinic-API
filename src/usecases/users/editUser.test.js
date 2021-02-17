@@ -56,22 +56,7 @@ describe('edit user',()=>{
         const {username,password,...editData} = userToEdit;
         expect(editUser(editData)).rejects.toThrow('name must be at least three characters.');
     });
-    it('name must not contain invalid charachters.',()=>{
-        const editUser = makeEditUser({
-            usersCollection: {
-                update: () => {
-                  throw new Error('update should not have been called.')
-                },
-                findById: () => {
-                    throw new Error('find by id should not have been called.')
-                }
-            }
-
-        });
-        const userToEdit = makeFakeUser({id:faker.random.uuid,name:faker.random.alpha({count:2})});
-        const {username,password,...editData} = userToEdit;
-        expect(editUser(editData)).rejects.toThrow('name must be at least three characters.');
-    });
+    
     it('name must not contain invalid characters.',()=>{
         const editUser = makeEditUser({
             usersCollection: {
