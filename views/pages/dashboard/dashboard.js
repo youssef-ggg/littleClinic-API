@@ -8,13 +8,14 @@ const renderUnitView = require('../../components/unitView');
 const renderUpdateForm = require('../../components/updateForm');
 const renderAppointmentsTable = require('../../components/appointmentTable');
 const {tabs,clearLeftNav} = require('../../components/leftNav');
-const errorHandler = require('./errorHandler');
+const errorHandlerService = require('../../errorHandler');
 const dashboardFormInputReader = require('../../inputHandler/dashboard/formInputHandler');
 //CRUD Requests
 const createRequest = require('../../requests/createRequest');
+const updateRequest = require('../../requests/updateRequest');
 const getByQueryRequest = require('../../requests/getByQueryRequest');
 //.............
-const {userFormErrorHandler,createUserErrorHandler} = require('../../errorHandler/index');
+// const {userFormErrorHandler,createUserErrorHandler} = require('../../errorHandler/index');
 
 const {patientTableFormat,patientFormFormat,patientTableNavTabs,
     patientViewFormat,patientViewSideNav} = require('../../config/patients');
@@ -128,12 +129,12 @@ const createUser = ()=>{
         const userData = dashboardFormInputReader(usersFormFormat);
         const exists = await getByQueryRequest({getData:userData,requestRoute:'/users/user',
             query:'username',axiosAuth});
-        
+          
+        const {createUserErrorHandler} = errorHandlerService;
         if(!createUserErrorHandler(userData,exists)){
             createRequest({postData:userData,moduleTitle:'Staff member',
                 requestRoute:'/users/add',axiosAuth});
-        }
-        
+        }        
     });
 
     cancelBtn.addEventListener('click',async function(event){
@@ -152,42 +153,21 @@ const updateUserView = userData=>{
 
     saveBtn.addEventListener('click',function(event){
         event.preventDefault();
+
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
         const container = document.querySelector('.container');
-        const accessList = [];
-        document.querySelectorAll('#accessRights-item')
-            .forEach(node=>node.innerHTML!=""?accessList.push(node.innerHTML):false);
+        const userUpdatedData = dashboardFormInputReader(usersUpdateFormFormat);        
+        const {updateUserDataErrorHandle} = errorHandlerService;
 
-        const userupdatedData = {
-            username:document.querySelector('input[name="username"]').value,
-            name:document.querySelector('input[name="name"]').value,
-            occupation:document.querySelector('input[name="occupation"]').value,
-            accessRights:accessList
-        };
-       
-        //const {formInputPatient} = errorHandler();
-
-    //     if (!formInputPatient(patientInputData)){    
-    //         if(updateEqualityCheck(patientInputData,patientData))
-    //         {
-    //             modal(container,updateModalMatchOld);
-    //         }
-    //         else
-    //         {
-    //             patientInputData.modifiedOn = Date.now();
-    //             patientInputData.id = patientData.id;
-    //             modal(container,updateModalSuccess);
-    //             const applyChanges =document.querySelector('#apply');
-
-    //             applyChanges.addEventListener('click',function(event){
-    //                 const overlay = document.querySelector('.modal-overlay');
-    //                 overlay.parentNode.removeChild(overlay);
-    //                 ipcRenderer.send('updatePatient',patientInputData);
-    //             });
-    //         }
-    //     }
+        if(updateEqualityCheck(userUpdatedData,userData)){
+            modal(container,updateModalMatchOld);
+        }
+        else if(!updateUserDataErrorHandle(userUpdatedData)){ 
+                
+            updateRequest({patchData:userUpdatedData,moudleTitle:'Staff member',
+                requestRoute:`users/edit/${userData.id}`,axiosAuth});
+        }     
     });
-
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
         userSingleView(userData);

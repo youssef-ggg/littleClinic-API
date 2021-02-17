@@ -1,14 +1,34 @@
 
-module.exports = function renderFormError({inputTitle,message}){
+module.exports = function renderFormError({inputTitle,message,inputType}){
+    
+    if (inputType == 'text'){
+        const inputElement = document.querySelector(`#${inputTitle}`);
+        const errorMsg = document.querySelector(`#${inputTitle} ~.form-error`);
+        
+        inputElement.classList.add('form-input-error');
+        errorMsg.innerHTML = message;
+        
+        inputElement.addEventListener('input',()=>{
+            inputElement.classList.remove('form-input-error');
+            errorMsg.innerHTML = '';
+        });
+    }
+    else if (inputType === 'textArray'){
+        const inputElement = document.querySelector(`#${inputTitle}`);
+        const errorMsg = document.querySelector(`#${inputTitle} ~.form-error`);
+        const textInput = document.querySelector(`#${inputTitle} input[type='text']`);
+        const addBtn = document.querySelector(`#${inputTitle} button`);
 
-    const inputElement = document.querySelector(`#${inputTitle}`);
-    const errorMsg = document.querySelector(`#${inputTitle} ~.form-error`);
-    
-    inputElement.classList.add('form-input-error');
-    errorMsg.innerHTML = message;
-    
-    inputElement.addEventListener('input',()=>{
-        inputElement.classList.remove('form-input-error');
-        errorMsg.innerHTML = '';
-    });
+        
+        textInput.classList.add('form-input-error');
+        addBtn.classList.add('form-input-error');
+        errorMsg.innerHTML = message;
+        
+        inputElement.addEventListener('input',()=>{
+            
+            textInput.classList.remove('form-input-error');
+            addBtn.classList.remove('form-input-error');
+            errorMsg.innerHTML = '';
+        });
+    }
 }
