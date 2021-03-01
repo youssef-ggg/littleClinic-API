@@ -14,37 +14,35 @@ module.exports = function makeEditUser({usersCollection}){
         if(Object.keys(userChanges).length == 0){
             throw new Error('No changes to update.');
         }
-        if('username' in userChanges)
-        {
-            if(userChanges.username == null || userChanges.username == ''){
-                throw new Error('user must have a username.');
-            }
-            else if(userChanges.username.length < 3){
-                throw new Error('username must be at least three characters.');
-            }
-            else if(!usernameRegex.test(userChanges.username)){
-                throw new Error('username must not contain invalid characters.');
-            }
+   
+        if(userChanges.username == null || userChanges.username == ''){
+            throw new Error('user must have a username.');
         }
-        if('name' in userChanges){
-            if(userChanges.name == null || userChanges.name == '')
-                throw new Error('Empty name supplied.')
-            if(userChanges.name.length<3){
-                throw new Error('name must be at least three characters.');
-            }
-            else if(!nameRegex.test(userChanges.name)){
-                throw new Error('name must not contain invalid characters.');
-            }
+        else if(userChanges.username.length < 3){
+            throw new Error('username must be at least three characters.');
         }
-        if ('accessRights' in userChanges)
-        {
-            if(userChanges.accessRights == null || userChanges.accessRights.length == 0)
-            {
+        else if(!usernameRegex.test(userChanges.username)){
+            throw new Error('username must not contain invalid characters.');
+        }
 
-                throw new Error('Empty access rights supplied.');
-                
-            }
+      
+        if(userChanges.name == null || userChanges.name == '')
+            throw new Error('Empty name supplied.')
+        if(userChanges.name.length<3){
+            throw new Error('name must be at least three characters.');
         }
+        else if(!nameRegex.test(userChanges.name)){
+            throw new Error('name must not contain invalid characters.');
+        }
+    
+    
+        if(userChanges.accessRights == null || userChanges.accessRights.length == 0)
+        {
+
+            throw new Error('Empty access rights supplied.');
+            
+        }
+        
         const existing = await usersCollection.findById({id});
        
         if(!existing){
@@ -55,6 +53,7 @@ module.exports = function makeEditUser({usersCollection}){
         
         return await usersCollection.update({
             id:updatedUser.getId(),
+            username:updatedUser.getUserName(),
             name:updatedUser.getName(),
             occupation:updatedUser.getOccupation(),
             modifiedOn:updatedUser.getModifiedOn(),

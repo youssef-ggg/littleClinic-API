@@ -56,6 +56,11 @@ module.exports = Object.freeze({
     ],
     usersUpdateFormFormat:[
         {
+            label:'Username',
+            id:'username',
+            type:'text'
+        },
+        {
             label:'Name',
             id:'name',
             type:'text',

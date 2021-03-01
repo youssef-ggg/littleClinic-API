@@ -147,6 +147,7 @@ module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
     function updateUserDataErrorHandle(userData){
         let hasError = false;
         const {accessRights,...updatedTextData} = userData;
+        const usernameRegex = /^[a-zA-Z0-9.-_]*$/; 
         const nameRegex = /^[a-zA-Z .']*$/;
         const occupationRegex = /^[a-zA-Z0-9 '/_/.-]*$/;
 
@@ -157,6 +158,11 @@ module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
         {
             renderFormError({inputTitle:'accessRights',
                 message:`can't update to empty access rights.`,inputType:'textArray'});
+            hasError = true;
+        }
+        if(!usernameRegex.test(updatedTextData.username)){
+            renderFormError({inputTitle:'username',
+            message:'username can\'t contian invalid characters.',inputType:'text'});
             hasError = true;
         }
         if(!nameRegex.test(updatedTextData.name)){

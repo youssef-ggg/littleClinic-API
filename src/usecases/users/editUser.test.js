@@ -25,6 +25,22 @@ describe('edit user',()=>{
         const userToEdit = makeFakeUser({id:null});
         expect(editUser(userToEdit)).rejects.toThrow('You must supply an id.');
     });
+    it('must have a username.',()=>{
+        const editUser = makeEditUser({
+            usersCollection: {
+                update: () => {
+                  throw new Error('update should not have been called.')
+                },
+                findById: () => {
+                    throw new Error('find by id should not have been called.')
+                }
+            }
+
+        });
+        const userToEdit = makeFakeUser({id:faker.random.uuid,username:null});
+        const {password,...editData} = userToEdit;
+        expect(editUser(editData)).rejects.toThrow('user must have a username.');
+    });
     it('Empty name supplied.',()=>{
         const editUser = makeEditUser({
             usersCollection: {
@@ -38,7 +54,7 @@ describe('edit user',()=>{
 
         });
         const userToEdit = makeFakeUser({id:faker.random.uuid,name:null});
-        const {username,password,...editData} = userToEdit;
+        const {password,...editData} = userToEdit;
         expect(editUser(editData)).rejects.toThrow('Empty name supplied.');
     });
     it('name must be at least three characters',()=>{
@@ -54,7 +70,7 @@ describe('edit user',()=>{
 
         });
         const userToEdit = makeFakeUser({id:faker.random.uuid,name:faker.random.alpha({count:2})});
-        const {username,password,...editData} = userToEdit;
+        const {password,...editData} = userToEdit;
         expect(editUser(editData)).rejects.toThrow('name must be at least three characters.');
     });
     
@@ -71,7 +87,7 @@ describe('edit user',()=>{
 
         });
         const userToEdit = makeFakeUser({id:faker.random.uuid(),name:'asd-d0 0'});
-        const {username,password,...editData} = userToEdit;
+        const {password,...editData} = userToEdit;
         expect(editUser(editData)).rejects.toThrow('name must not contain invalid characters.');
 
     });
@@ -88,7 +104,7 @@ describe('edit user',()=>{
 
         });
         const userToEdit = makeFakeUser({id:faker.random.uuid(),accessRights:[]});
-        const {username,password,...editData} = userToEdit;
+        const {password,...editData} = userToEdit;
         
         expect(editUser(editData)).rejects.toThrow('Empty access rights supplied.');
     });
@@ -96,7 +112,7 @@ describe('edit user',()=>{
         const fakeUser = makeFakeUser({id:123});
         const editUser = makeEditUser({usersCollection});
 
-        const {username,password,...editData} = fakeUser;
+        const {password,...editData} = fakeUser;
 
         expect(editUser(editData)).rejects.toEqual(Error('user dosen\'t exist.'));
         
@@ -109,13 +125,14 @@ describe('edit user',()=>{
 
         const inserted = await addUser(fakeUser);
         const {id} = inserted;
-        let {name,occupation,accessRights} = inserted;
+        let {name,username,occupation,accessRights} = inserted;
         
+        username = faker.internet.userName();
         name = faker.name.findName();
         occupation = faker.name.jobType();
         accessRights = [faker.name.jobType()];
         
-        const edited = await editUser({id,name,occupation,accessRights});
+        const edited = await editUser({id,username,name,occupation,accessRights});
         
         
         expect(edited.id).toBe(id);
