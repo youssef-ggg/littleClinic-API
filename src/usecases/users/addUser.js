@@ -1,6 +1,6 @@
 const {makeUser} = require('../../models');
 
-module.exports = function makeAddUser({usersCollection}){
+module.exports = function makeAddUser({usersCollection,argon2}){
 
     return async function addUser(userInfo){
         
@@ -29,8 +29,9 @@ module.exports = function makeAddUser({usersCollection}){
         }
 
         try {
-            const user = makeUser(userInfo);
-            const exists = await usersCollection.findByUserName({username:user.getUserName()});
+            
+            const exists = await usersCollection.findByUserName({username:userInfo.username});
+            //change this section
             if (exists)
             {
                 return {
@@ -38,10 +39,13 @@ module.exports = function makeAddUser({usersCollection}){
                     errorMessage:'This user Already Exists',
                 }
             }
-            
+
+            const hashedPassword = await argon2.hash(userInfo.password);
+            const user = makeUser({hashedPassword,...userInfo});
+
             return usersCollection.insert({
                 username : user.getUserName(),
-                hashedPassword : await user.getHashedPassword(),//Change dependancy enjection to here
+                hashedPassword:user.getHashedPassword(),//Changed dependancy enjection to here
                 name : user.getName(),
                 occupation:user.getOccupation(),
                 createdOn : user.getCreateOn(),

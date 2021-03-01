@@ -83,6 +83,12 @@
     color:white;
 }
 
+.toast-fail{
+    background-color: darkred ;
+    border-color: rgb(109, 0, 0);
+    color:white;
+}
+
 .toast-success-warn{
     background-color: orange ;
     border-color: darkorange;

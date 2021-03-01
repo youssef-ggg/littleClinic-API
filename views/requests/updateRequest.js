@@ -8,12 +8,13 @@ module.exports = async function updateRequest(request){
         const response = await axiosAuth.patch(requestRoute,patchData);
         if(response.status == 201){
             const {data} = response;
-            const {user} = data;
             toastNotify(`${moudleTitle} updated successfully.`,'success');
-            userSingleView(user);
+            return data;
         }
     } catch (error) {
         //TODO:: console log
-        console.log(error);
+        //console.log(error.response.data);
+        toastNotify(`${error.response.data.error}`,'fail');
+        return error.response.data;
     }
 }

@@ -1,7 +1,7 @@
 
 module.exports = function renderFormError({inputTitle,message,inputType}){
     
-    if (inputType == 'text'){
+    if (inputType == 'text' || inputType=='password'){
         const inputElement = document.querySelector(`#${inputTitle}`);
         const errorMsg = document.querySelector(`#${inputTitle} ~.form-error`);
         

@@ -1,4 +1,5 @@
 const {ObjectID} = require('mongodb');
+const argon2 = require('argon2');
 const faker = require('faker');
 
 const makeUserDbCollection = require('../../dataAcces/users');
@@ -104,7 +105,7 @@ describe('edit user',()=>{
 
         const fakeUser = makeFakeUser();
         const editUser = makeEditUser({usersCollection});
-        const addUser = makeAddUser({usersCollection});
+        const addUser = makeAddUser({usersCollection,argon2});
 
         const inserted = await addUser(fakeUser);
         const {id} = inserted;

@@ -1,9 +1,8 @@
-function BuildMakeUser({hashPassword})
+function BuildMakeUser()
 {
     return function makeUser({
         id,
         username,
-        password,
         hashedPassword,
         name,
         occupation = 'general-staff',
@@ -16,7 +15,7 @@ function BuildMakeUser({hashPassword})
         return Object.freeze({
            getId:()=> id,
            getUserName:()=>username,
-           getHashedPassword:()=>hashedPassword || hashPassword(password),//hashPassword() returns promise
+           getHashedPassword:()=>hashedPassword,
            getName:()=>name,
            getOccupation:()=>occupation,
            getCreateOn:()=>createdOn,

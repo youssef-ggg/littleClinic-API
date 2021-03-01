@@ -25,12 +25,13 @@ const {appointmentFormFormat,appointmentTableFormat,apntmntTableLeftNav
         ,apntmntPatientTableLeftNav,appointmentUnitView,
         appointmentSingleSideNav} = require('../../config/appointment');
 const {usersTableFormat,userTableNavTabs,userUnitViewFormat,usersUpdateFormFormat,
-    usersFormFormat,userUnitLeftNav} = require('../../config/users');
+    usersUpdatePasswordForm,usersFormFormat,userUnitLeftNav} = require('../../config/users');
 const {updateModalSuccess,deleteModal,updateModalMatchOld} = require('../../config/common');
 
 const modal = require('../../utilites/modal');
 const toastNotify = require('../../utilites/toastNotify');
 const dashboardUtitltyFunctions = require('./utility');
+const renderFormError = require('../../errorHandler/renderFormError');
 
 
 const API_URL = 'http://localhost:5000';//remove from here, maybe use .env file.
@@ -93,6 +94,7 @@ const userSingleView = (userData)=>{
 
     const edit = document.querySelector('#edit');
     const remove = document.querySelector('#delete');
+    const editPassBtn = document.querySelector('#changeUsrpass');
     const container = document.querySelector('.container');
 
     edit.addEventListener('click',function(event){
@@ -114,6 +116,9 @@ const userSingleView = (userData)=>{
                 
         });
     });
+    editPassBtn.addEventListener('click',function(event){
+        updateUserPassword(userData);
+    });
 }
 
 const createUser = ()=>{
@@ -132,8 +137,10 @@ const createUser = ()=>{
           
         const {createUserErrorHandler} = errorHandlerService;
         if(!createUserErrorHandler(userData,exists)){
-            createRequest({postData:userData,moduleTitle:'Staff member',
+            const responseData = await createRequest({postData:userData,moduleTitle:'Staff member',
                 requestRoute:'/users/add',axiosAuth});
+            const {user} = responseData;
+            userSingleView(user);
         }        
     });
 
@@ -151,7 +158,7 @@ const updateUserView = userData=>{
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
 
-    saveBtn.addEventListener('click',function(event){
+    saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
 
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
@@ -164,8 +171,12 @@ const updateUserView = userData=>{
         }
         else if(!updateUserDataErrorHandle(userUpdatedData)){ 
                 
-            updateRequest({patchData:userUpdatedData,moudleTitle:'Staff member',
+            const  responseData = await updateRequest({patchData:userUpdatedData,
+                moudleTitle:'Staff member',
                 requestRoute:`users/edit/${userData.id}`,axiosAuth});
+
+            const {user} = responseData;
+            userSingleView(user);
         }     
     });
     cancelBtn.addEventListener('click',function(event){
@@ -174,6 +185,43 @@ const updateUserView = userData=>{
     });
     
 }
+
+const updateUserPassword = userData=>{
+    renderUpdateForm('User Password',usersUpdatePasswordForm,userData);
+    clearLeftNav('Update Password');
+
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
+
+    saveBtn.addEventListener('click',async function(event){
+        event.preventDefault();
+        const userUpdatePassData = dashboardFormInputReader(usersUpdatePasswordForm);
+        const {updateUserPasswordErrorHandle} = errorHandlerService;
+
+        if(!updateUserPasswordErrorHandle(userUpdatePassData)){
+            
+            const responseData = await updateRequest({patchData:userUpdatePassData,
+                moudleTitle:'Update Password',
+                requestRoute:`users/editPassword/${userData.id}`,axiosAuth});
+                
+            if('error' in responseData){
+                renderFormError({inputTitle:'oldPassword',message:'Incorrect old password',
+                    inputType:'password'});
+            }
+            else {
+                const {user} = responseData;
+                userSingleView(user);
+            }           
+        }
+        
+    });
+
+    cancelBtn.addEventListener('click',function(event){
+        event.preventDefault();
+        userSingleView(userData);
+    });
+
+};
 
 //patient menu item
 patientBtn.addEventListener('click',function(event){

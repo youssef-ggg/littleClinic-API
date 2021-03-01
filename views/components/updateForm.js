@@ -159,9 +159,13 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
                 const dateFormat = new Date(elementsValues[element.id]);
                 input.value = dateFormat.toLocaleDateString('fr-CA');
             }
-            else
+            else if (element.type == 'password'){
+                input.value = '';
+            }
+            else{
                 input.value = elementsValues[element.id];
-
+            }
+                
             formItem.appendChild(input);
 
         }

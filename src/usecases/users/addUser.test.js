@@ -1,4 +1,5 @@
 const {ObjectID} = require('mongodb');
+const argon2 = require('argon2');
 const faker = require('faker');
 const makeAddUser = require('./addUser');
 const makeUserDbCollection = require('../../dataAcces/users');
@@ -95,18 +96,19 @@ describe('add user',()=>{
     });
     it('user inserted in database.',async()=>{
         const newUser = makeFakeUser();
-        const adduser = makeAddUser({usersCollection});
+        const adduser = makeAddUser({usersCollection,argon2});
         const inserted = await adduser(newUser);
         
         const {id,hashedPassword,...restInserted} = inserted;
         const {password,...restNewUser} = newUser;
-        expect(restInserted).toMatchObject(restNewUser);
+        
+       expect(restInserted).toMatchObject(restNewUser);
         expect.stringContaining(id);
     });
 
     it('user already exists',async()=>{
         const newUser = makeFakeUser();
-        const adduser = makeAddUser({usersCollection});
+        const adduser = makeAddUser({usersCollection,argon2});
         const inserted = await adduser(newUser);
         const insertedTwice = await adduser(newUser);
         expect(insertedTwice).toMatchObject({

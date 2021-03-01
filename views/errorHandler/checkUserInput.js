@@ -176,6 +176,36 @@ module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
         return hasError;
 
     }
+
+    function updateUserPasswordErrorHandle(userPassData){
+        let hasError = false;
+
+        const {oldPassword,password,confirmPassword} = userPassData;
+        if(invalidEmptyInputHandler(userPassData)){
+            hasError = true;
+        }
+        if(oldPassword == password){
+            renderFormError({inputTitle:'password',
+                message:'New Password must not be equal to old password.',inputType:'password'});
+            
+            hasError = true;
+        }
+        if (password.length <8 && password.length>0){
+            
+            renderFormError({inputTitle:'password',
+                message:'Password must be at least 8 charachters long.',inputType:'password'});
+            
+            hasError = true
+        }
+        if (password!==confirmPassword){
+
+            renderFormError({inputTitle:'confirmPassword',
+                message:'Password dosen\'t match.',inputType:'password'});
+            hasError = true;
+        }
+        return hasError;
+
+    }
     
     return Object.freeze({
         inputErrorHandler,
@@ -183,6 +213,7 @@ module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
         userFormErrorHandler,
         userFormPassErrorHandle,
         updateUserDataErrorHandle,
+        updateUserPasswordErrorHandle,
         createUserErrorHandler
     });
 }

@@ -1,16 +1,16 @@
 
 module.exports = async function createRequest(request){
 
-    const {postData,moudleTitle,requestRoute,axiosAuth} = request;
+    const {postData,moduleTitle,requestRoute,axiosAuth} = request;
     try {
         
         const response = await axiosAuth.post(requestRoute,postData);
         if(response.status == 201)
         {
             const {data} = response;
-            const {user} = data;
-            toastNotify(`${moudleTitle} created successfully.`,'success');
-            userSingleView(user);
+            toastNotify(`${moduleTitle} created successfully.`,'success');
+
+            return data;
         }
     } 
     catch (error) {

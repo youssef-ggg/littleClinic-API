@@ -5,11 +5,12 @@ const renderFormError = require('./renderFormError');
 const makeErrorTnputHandler = require('./checkUserInput');
 
 const {inputErrorHandler,passMisMatchHandle,
-    userFormErrorHandler,userFormPassErrorHandle,
-    createUserErrorHandler,updateUserDataErrorHandle} = makeErrorTnputHandler({validator,renderFormError});
+    userFormErrorHandler,userFormPassErrorHandle,createUserErrorHandler,
+    updateUserDataErrorHandle,updateUserPasswordErrorHandle
+} = makeErrorTnputHandler({validator,renderFormError});
 
 module.exports = {
     inputErrorHandler,passMisMatchHandle,userFormErrorHandler,userFormPassErrorHandle,
-    createUserErrorHandler,updateUserDataErrorHandle
+    createUserErrorHandler,updateUserDataErrorHandle,updateUserPasswordErrorHandle
 }
 

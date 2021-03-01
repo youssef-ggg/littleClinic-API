@@ -71,6 +71,23 @@ module.exports = Object.freeze({
             type:'textArray'
         }
     ],
+    usersUpdatePasswordForm:[
+        {
+            label:'Old Password',
+            id:'oldPassword',
+            type:'password',
+        },
+        {
+            label:'New Password',
+            id:'password',
+            type:'password'
+        },
+        {
+            label:'Confirm New Password',
+            id:'confirmPassword',
+            type:'password'
+        }
+    ],
     userUnitViewFormat:userData=>{
 
         const {username,name,occupation,createdOn,modifiedOn,accessRights} = userData;
@@ -95,8 +112,8 @@ module.exports = Object.freeze({
     },
     userUnitLeftNav:[
         {
-            name:'Change password',
-            id:'changeUsrPass',
+            name:'Change Password',
+            id:'changeUsrpass',
             icon:'fas fa-user-lock'
         }
     ]
