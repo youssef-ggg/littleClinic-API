@@ -9,14 +9,14 @@ const makeListPatientPaginated = require('./listPatientsPaginated');
 const makeGetNumberOfPatients = require('./getNumberOfPatients');
 
 const createPatient = makeCreatepatient({addPatient,jwtVerifyToken});
-const getPatientLists = makeGetPatients({listPatients,jwtVerifyToken});
+const getPatientsList = makeGetPatients({listPatients,jwtVerifyToken});
 const getPatientByID = makeGetPatientByID({getPatient,jwtVerifyToken});
 const setUpdatePatient = makeSetUpdatePaitent({updatePatient,jwtVerifyToken});
 const listPatientsPaginated  = makeListPatientPaginated({getPatientsPaginated});
 const getNumberOfPatients = makeGetNumberOfPatients({getPatientCount,jwtVerifyToken});
 
 const patientController = Object.freeze({
-    createPatient,getPatientLists,getPatientByID,setUpdatePatient,listPatientsPaginated,
+    createPatient,getPatientsList,getPatientByID,setUpdatePatient,listPatientsPaginated,
     getNumberOfPatients
 });
 

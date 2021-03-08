@@ -1,6 +1,7 @@
 module.exports =  function makeGetPatients({listPatients,jwtVerifyToken}){
 
-    return async function getPatientLists(httpRequest){
+    return async function getPatientsList(httpRequest){
+       
         const headers = {
             'Content-Type':'application/json',
         }
@@ -13,12 +14,14 @@ module.exports =  function makeGetPatients({listPatients,jwtVerifyToken}){
                     ...verification
                 }
             }
+
             const patientsList =  await listPatients();
             return {
                 headers,
                 statusCode:200,
                 body:patientsList
             }
+            
         } catch (error) {
             //TODO add error log
             console.log(error);

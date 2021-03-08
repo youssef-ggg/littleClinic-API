@@ -1,13 +1,19 @@
 module.exports = function makePatientsRouter({routes,makeCallBack,patientController})
 {
-    const {getPatientLists,createPatient,getPatientByID,getNumberOfPatients,
-        setUpdatePatient} = patientController;
+    const 
+    {
+        getPatientsList,
+        createPatient,
+        getPatientByID,
+        getNumberOfPatients,
+        setUpdatePatient
+    } = patientController;
 
-    routes.get('/list',makeCallBack(getPatientLists));
-    routes.post('/addPatient',makeCallBack(createPatient));
-    routes.get('/patientCount',makeCallBack(getNumberOfPatients));
-    routes.get('/:id',makeCallBack(getPatientByID));
-    routes.patch('/:id',makeCallBack(setUpdatePatient));
+    routes.get('/patients/listAll',makeCallBack(getPatientsList));
+    routes.post('/patients/addPatient',makeCallBack(createPatient));
+    routes.get('/patients/patientCount',makeCallBack(getNumberOfPatients));
+    routes.get('/patients/all/:id',makeCallBack(getPatientByID));
+    routes.patch('/patients/edit/:id',makeCallBack(setUpdatePatient));
 
 
     return routes;

@@ -13,16 +13,16 @@ module.exports = function makeUserRoutes({routes,makeCallBack,userController})
         getUserByUsername
     } = userController;
 
-routes.post('/login',makeCallBack(loginUser));
-routes.get('/listAll',makeCallBack(getUsersList));
-routes.get('/:id',makeCallBack(getUser));
-routes.get('/user/:username',makeCallBack(getUserByUsername));
-routes.post('/register',makeCallBack(registerUser));
-routes.post('/add',makeCallBack(createUser));
-routes.patch('/edit/:id',makeCallBack(updateUser));
-routes.patch('/editPassword/:id',makeCallBack(updateUserPass));
-routes.delete('/delete/:id',makeCallBack(deleteUser));
+    routes.post('/users/login',makeCallBack(loginUser));
+    routes.get('/users/listAll',makeCallBack(getUsersList));
+    routes.get('/users/:id',makeCallBack(getUser));
+    routes.get('users/user/:username',makeCallBack(getUserByUsername));
+    routes.post('/users/register',makeCallBack(registerUser));
+    routes.post('/users/add',makeCallBack(createUser));
+    routes.patch('/users/edit/:id',makeCallBack(updateUser));
+    routes.patch('/users/editPassword/:id',makeCallBack(updateUserPass));
+    routes.delete('/users/delete/:id',makeCallBack(deleteUser));
 
-return routes;
+    return routes;
 
 }

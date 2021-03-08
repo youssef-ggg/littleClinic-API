@@ -8,8 +8,8 @@ dotenv.config();
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/users',userRoutes);
-app.use('/patients',patientRoutes);
+app.use('/',userRoutes);
+app.use('/',patientRoutes);
 
 
 app.listen(process.env.SERVER_PORT,()=>{

@@ -61,6 +61,7 @@ userBtn.addEventListener('click',function(event){
 });
 
 const usersTableView = async ()=>{
+    //remove from here and ad to request. 
     const response = await axiosAuth.get(`/users/listAll`);
     const {data} = response;
     const userMetaData = {
@@ -225,84 +226,106 @@ const updateUserPassword = userData=>{
 
 //patient menu item
 patientBtn.addEventListener('click',function(event){
-    ipcRenderer.send('requestPatients',{pageNum:PAGEINDEX,pageSize:PAGESIZE});
+    patientTableView();
 });
 
 //patient table view
-ipcRenderer.on('patientList',function(event,{patientsData,paginationData}){
-    
-    const centerContent = document.querySelector('.content-center');
-    centerContent.innerHTML='';
-
-    const {pageNum,pageSize,numberOfPatients} = paginationData;
-    let patientDataTable = [];
-    if (pageSize<numberOfPatients)
-    {
-        // paginatedPatients = patientsData;
-        rendertableAction({entityName:'Patient',pageNum,pageSize,tableCount:numberOfPatients});
-        patientDataTable = patientTableFormat(patientsData);
-
-        const leftPaginate = document.querySelector('#paginateLeft');
-        const rightPaginate = document.querySelector('#paginateRight');
-
-        leftPaginate.addEventListener('click',function(event){
-
-            ipcRenderer.send('requestPatients',{pageNum:(pageNum-1),pageSize});
-        });
-    
-        rightPaginate.addEventListener('click',function(event){
-    
-            ipcRenderer.send('requestPatients',{pageNum:(pageNum+1),pageSize});
-        });
-    }
-    else 
-        patientDataTable = patientTableFormat(patientsData);
-    tabs('Patients Manager',patientTableNavTabs);
+const patientTableView = async()=>{
+    const response = await axiosAuth.get(`/patients/listAll`);
+    const {data} = response;
     const patientMetaData = {
-        ipcRequest:'reqPatient'
+        unitView:{
+            //change here
+            unitRenderer:patientSingleView = ()=>{},
+            axiosAuth,
+            url:'patients/patient?id='
+        },
     };
-    renderTable(patientDataTable,patientMetaData);
+    const centerContent = document.querySelector('.content-center');
+    centerContent.innerHTML = '';
+    
+    renderActions('patient');
+    const patientTableData =  patientTableFormat(data);
+    renderTable(patientTableData,patientMetaData);
+    tabs('Patients Manager',patientTableNavTabs);
+
+    const addPatientBtn = document.querySelector('#createModel');
+
+    addPatientBtn.addEventListener('click',function(event){
+        
+    });
+}
+// ipcRenderer.on('patientList',function(event,{patientsData,paginationData}){
+    
+
+//     let patientDataTable = [];
+//     if (pageSize<numberOfPatients)
+//     {
+//         // paginatedPatients = patientsData;
+//         rendertableAction({entityName:'Patient',pageNum,pageSize,tableCount:numberOfPatients});
+//         patientDataTable = patientTableFormat(patientsData);
+
+//         const leftPaginate = document.querySelector('#paginateLeft');
+//         const rightPaginate = document.querySelector('#paginateRight');
+
+//         leftPaginate.addEventListener('click',function(event){
+
+//             ipcRenderer.send('requestPatients',{pageNum:(pageNum-1),pageSize});
+//         });
+    
+//         rightPaginate.addEventListener('click',function(event){
+    
+//             ipcRenderer.send('requestPatients',{pageNum:(pageNum+1),pageSize});
+//         });
+//     }
+//     else 
+//         patientDataTable = patientTableFormat(patientsData);
+//     tabs('Patients Manager',patientTableNavTabs);
+//     const patientMetaData = {
+//         ipcRequest:'reqPatient'
+//     };
+//     renderTable(patientDataTable,patientMetaData);
    
     
     
-    const createBtn = document.querySelector('#createModel');
+//     const createBtn = document.querySelector('#createModel');
     
 
-    createBtn.addEventListener('click',function(event){
+//     createBtn.addEventListener('click',function(event){
             
-        renderForm('Patient',patientFormFormat);
-        clearLeftNav('Creating New Patient');
-        const saveBtn = document.querySelector('#save');
-        const cancelBtn = document.querySelector('#cancel');
+//         renderForm('Patient',patientFormFormat);
+//         clearLeftNav('Creating New Patient');
+//         const saveBtn = document.querySelector('#save');
+//         const cancelBtn = document.querySelector('#cancel');
         
-        saveBtn.addEventListener('click',function(event){
-            event.preventDefault();
+//         saveBtn.addEventListener('click',function(event){
+//             event.preventDefault();
             
-            const {formInputPatient} = errorHandler();
+//             const {formInputPatient} = errorHandler();
 
-            const patientInputData = {
-                name:document.querySelector('input[name="name"]').value,
-                phoneNumber:document.querySelector('input[name="phoneNumber"]').value,
-                gender:document.querySelector('input[id="Female"]').checked ? 'female':
-                    document.querySelector('input[id="Male"]').checked ? 'male':null,
-                birthDate:Date.parse(document.querySelector('input[name="birthDate"]').value),
-            }
-            if(!formInputPatient(patientInputData))
-            {
-                ipcRenderer.send('createPatient',patientInputData);   
-            }
+//             const patientInputData = {
+//                 name:document.querySelector('input[name="name"]').value,
+//                 phoneNumber:document.querySelector('input[name="phoneNumber"]').value,
+//                 gender:document.querySelector('input[id="Female"]').checked ? 'female':
+//                     document.querySelector('input[id="Male"]').checked ? 'male':null,
+//                 birthDate:Date.parse(document.querySelector('input[name="birthDate"]').value),
+//             }
+//             if(!formInputPatient(patientInputData))
+//             {
+//                 ipcRenderer.send('createPatient',patientInputData);   
+//             }
             
 
-        });
+//         });
 
-        cancelBtn.addEventListener('click',function(event){
-            event.preventDefault();
-            ipcRenderer.send('requestPatients',{pageNum,pageSize});
-        });
+//         cancelBtn.addEventListener('click',function(event){
+//             event.preventDefault();
+//             ipcRenderer.send('requestPatients',{pageNum,pageSize});
+//         });
 
-    });
+//     });
     
-});
+// });
 
 //patient single view
 ipcRenderer.on('patientFormView',function(event,patient){

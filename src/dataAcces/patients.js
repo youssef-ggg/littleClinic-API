@@ -44,7 +44,7 @@ module.exports = function makePatientCollection({makeDb,ObjectID}){
 
         try{
             const db = await makeDb();
-            const result = await db.collection('patients').insertOne(patientInfo);
+            const result = await db.collection('patients').insertOne({...patientInfo});
             const insertedInfo = result.ops[0];
             const {_id,...insertedPatient} = insertedInfo;
             return {id:_id.toString(),...insertedPatient};

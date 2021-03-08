@@ -7,21 +7,21 @@ module.exports = function buildMakePatient(){
         gender,
         birthDate,
         balance = 0,
-        totalExpenses = 0,//used for discounts
+        numberOfVisits = 0,//used for discounts
         active = true,
         createdOn = Date.now(),
         modifiedOn = Date.now(),
         medicalRecordId
     }={}){
         
-        if(!name) 
+        if(!name)
             throw new Error('Patient must have a name.');
         if (name.length<3) 
             throw new Error('Patient name must be at least 3 charachters.');
         if (!gender)
-            throw new Error('patient must have a biological gender');
+            throw new Error('patient must have a biological gender.');
         if(!birthDate)
-            throw new Error('user must have a birth date.');
+            throw new Error('patient must have a birth date.');
 
         return Object.freeze({
             getId:()=>id,
@@ -30,7 +30,7 @@ module.exports = function buildMakePatient(){
             getGender:()=>gender,
             getBirthDate:()=>birthDate,
             getBalance:()=>balance,
-            getTotalExpensis:()=>totalExpenses,
+            getNumberOfVisits:()=>numberOfVisits,
             getActive:()=>active,
             getCreatedOn:()=>createdOn,
             getModifiedOn:()=>modifiedOn,
