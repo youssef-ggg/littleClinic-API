@@ -16,12 +16,13 @@ module.exports =  function makeGetPatientByID({getPatient,jwtVerifyToken}){
             }
             
             const patient  = await getPatient(httpRequest.query.id);
-            if(patient && patient.length>0)
+
+            if(patient)
             {
                 return {
                     headers,
                     statusCode:200,
-                    body:{patient:patient[0]}
+                    body:patient
                 }
             }
             else {

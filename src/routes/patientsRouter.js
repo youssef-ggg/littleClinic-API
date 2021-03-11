@@ -12,7 +12,7 @@ module.exports = function makePatientsRouter({routes,makeCallBack,patientControl
     routes.get('/patients/listAll',makeCallBack(getPatientsList));
     routes.post('/patients/addPatient',makeCallBack(createPatient));
     routes.get('/patients/patientCount',makeCallBack(getNumberOfPatients));
-    routes.get('/patients/all/:id',makeCallBack(getPatientByID));
+    routes.get('/patients/:id',makeCallBack(getPatientByID));
     routes.patch('/patients/edit/:id',makeCallBack(setUpdatePatient));
 
 

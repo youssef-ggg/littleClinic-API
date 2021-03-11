@@ -24,6 +24,7 @@ module.exports = function makePatientCollection({makeDb,ObjectID}){
     }
 
     async function findById({id:_id}){
+
         try {
 
             const db = await makeDb();
@@ -32,7 +33,8 @@ module.exports = function makePatientCollection({makeDb,ObjectID}){
             
             if(found.length === 0)
                 return null;
-            const {_id:id,...info} = found;
+            
+            const {_id:id,...info} = found[0];
             return {id,...info};
 
         } catch (error) {
@@ -47,7 +49,7 @@ module.exports = function makePatientCollection({makeDb,ObjectID}){
             const result = await db.collection('patients').insertOne({...patientInfo});
             const insertedInfo = result.ops[0];
             const {_id,...insertedPatient} = insertedInfo;
-            return {id:_id.toString(),...insertedPatient};
+            return {id:_id,...insertedPatient};
 
         }catch(error){
             return error;
