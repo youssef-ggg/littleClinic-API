@@ -16,6 +16,21 @@ module.exports = function dashboardFormInputReader(inputFormat){
                 userInput[input.id] = list;
             }
         }
+        else if (input.type == 'date'){
+            const birthDate = document.querySelector(`input[name="${input.id}"]`).value;
+            userInput[input.id] = new Date(birthDate).getTime();
+        }
+        else if (input.type == 'radio'){
+
+            input.choices.forEach(choice=>{
+                if(document.querySelector(`input[id="${choice}"]`).checked){
+                    userInput[input.id] = choice;
+                }
+            });
+            if (!userInput[input.id]){
+                userInput[input.id] = "";
+            }
+        }
     });
 
     return userInput;

@@ -56,7 +56,7 @@ module.exports = Object.freeze({
     ],
     patientViewFormat:(patientData)=>{
          
-        const {name,phoneNumber ,gender,birthDate,balance,totalExpenses,active,medicalRecordId} = patientData;
+        const {name,phoneNumber ,gender,birthDate,balance,numberOfVisits,active,medicalRecordId} = patientData;
         const ageDifMs = Date.now() - birthDate;
         const ageDate = new Date(ageDifMs);
         const age = Math.abs(ageDate.getUTCFullYear() - 1970);
@@ -75,7 +75,7 @@ module.exports = Object.freeze({
             'Birth Date':dateFormat.toLocaleDateString('en-EN',dateOptions),
             Age:age,
             Balance:balance,
-            'Total Expensis':totalExpenses,
+            'Number of Vistis':numberOfVisits,
             Active:active
             }
             

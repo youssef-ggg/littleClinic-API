@@ -251,82 +251,10 @@ const patientTableView = async()=>{
     const addPatientBtn = document.querySelector('#createModel');
 
     addPatientBtn.addEventListener('click',function(event){
-        //add something here
+        createPatientView();
     });
 }
-// ipcRenderer.on('patientList',function(event,{patientsData,paginationData}){
-    
 
-//     let patientDataTable = [];
-//     if (pageSize<numberOfPatients)
-//     {
-//         // paginatedPatients = patientsData;
-//         rendertableAction({entityName:'Patient',pageNum,pageSize,tableCount:numberOfPatients});
-//         patientDataTable = patientTableFormat(patientsData);
-
-//         const leftPaginate = document.querySelector('#paginateLeft');
-//         const rightPaginate = document.querySelector('#paginateRight');
-
-//         leftPaginate.addEventListener('click',function(event){
-
-//             ipcRenderer.send('requestPatients',{pageNum:(pageNum-1),pageSize});
-//         });
-    
-//         rightPaginate.addEventListener('click',function(event){
-    
-//             ipcRenderer.send('requestPatients',{pageNum:(pageNum+1),pageSize});
-//         });
-//     }
-//     else 
-//         patientDataTable = patientTableFormat(patientsData);
-//     tabs('Patients Manager',patientTableNavTabs);
-//     const patientMetaData = {
-//         ipcRequest:'reqPatient'
-//     };
-//     renderTable(patientDataTable,patientMetaData);
-   
-    
-    
-//     const createBtn = document.querySelector('#createModel');
-    
-
-//     createBtn.addEventListener('click',function(event){
-            
-//         renderForm('Patient',patientFormFormat);
-//         clearLeftNav('Creating New Patient');
-//         const saveBtn = document.querySelector('#save');
-//         const cancelBtn = document.querySelector('#cancel');
-        
-//         saveBtn.addEventListener('click',function(event){
-//             event.preventDefault();
-            
-//             const {formInputPatient} = errorHandler();
-
-//             const patientInputData = {
-//                 name:document.querySelector('input[name="name"]').value,
-//                 phoneNumber:document.querySelector('input[name="phoneNumber"]').value,
-//                 gender:document.querySelector('input[id="Female"]').checked ? 'female':
-//                     document.querySelector('input[id="Male"]').checked ? 'male':null,
-//                 birthDate:Date.parse(document.querySelector('input[name="birthDate"]').value),
-//             }
-//             if(!formInputPatient(patientInputData))
-//             {
-//                 ipcRenderer.send('createPatient',patientInputData);   
-//             }
-            
-
-//         });
-
-//         cancelBtn.addEventListener('click',function(event){
-//             event.preventDefault();
-//             ipcRenderer.send('requestPatients',{pageNum,pageSize});
-//         });
-
-//     });
-    
-// });
-
-//patient single view
 const patientSingleView = (patientData)=>{
 
     const formatedPatient = patientViewFormat(patientData);
@@ -335,37 +263,35 @@ const patientSingleView = (patientData)=>{
     tabs('patient',patientViewSideNav({medicalId:123}));
 }
 
-// ipcRenderer.on('patientFormView',function(event,patient){
-//     const singlePatient = patient[0]; //change this to only in data access
-//     const patientModel = patientViewFormat(singlePatient);
-    
-//     renderUnitView('Patient Information',patientModel);
-//     tabs('Patient Manager',patientViewSideNav({medicalRecordId:'45907123'}));
+const createPatientView = ()=>{
 
-//     const newDiagnosisBtn = document.querySelector('#createDiagnosis');
-//     const newAppointmentBtn = document.querySelector('#createAppointment');
-//     const diagnosticLogBtn = document.querySelector('#diagnosticLog');
-//     const appointmentLog = document.querySelector('#apointLog');
-//     const updatePatientBtn = document.querySelector('#edit');
+    renderForm('Patient',patientFormFormat);
+    clearLeftNav('Add Patient');
 
-//     diagnosisView(newDiagnosisBtn,singlePatient);
-    
-//     newAppointmentBtn.addEventListener('click',function(event){
-//         createAppointmentView(singlePatient);
-//     });
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
 
-//     updatePatientBtn.addEventListener('click',function (event){
-//         udpatePatientForm(singlePatient);
-//     });
+    saveBtn.addEventListener('click',async function(event){
+        event.preventDefault();
 
-//     diagnosticLogBtn.addEventListener('click',function(event){
-//         ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
-//     });
+        const patientData = dashboardFormInputReader(patientFormFormat);
+          
+        const {createPatientErrorHandler} = errorHandlerService;
 
-//     appointmentLog.addEventListener('click',function(event){
-//         ipcRenderer.send('reqPatientAppointmentLog',singlePatient);
-//     })
-// });
+        if(!createPatientErrorHandler(patientData)){
+            const responseData = await createRequest({postData:patientData,moduleTitle:'Patient member',
+                requestRoute:'/patients/addpatient',axiosAuth});
+            const {createdPatient} = responseData;
+            patientSingleView(createdPatient);
+        }    
+    });
+
+    cancelBtn.addEventListener('click',function(event){
+        event.preventDefault();
+        patientTableView();
+    });
+
+}
 
 //update patient info
 const udpatePatientForm  = patientData=>{

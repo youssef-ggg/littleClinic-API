@@ -1,4 +1,4 @@
-
+//needs refactoring
 module.exports = function makeErrorTnputHandler ({validator,renderFormError}){
 
     function inputErrorHandler(inputObj){

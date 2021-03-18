@@ -12,7 +12,7 @@ module.exports = function makeAddPatient({patientsCollection}){
             gender:patient.getGender(),
             birthDate:patient.getBirthDate(),
             balance:patient.getBalance(),
-            totalExpenses:patient.getTotalExpensis(),
+            numberOfVisits:patient.getNumberOfVisits(),
             active:patient.getActive(),
             createdOn:patient.getCreatedOn(),
             modifiedOn:patient.getModifiedOn(),

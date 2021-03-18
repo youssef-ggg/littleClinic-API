@@ -46,6 +46,7 @@ module.exports = function renderForm(eleName,elementKeys){
         {
             const radioBox = document.createElement('div');
             radioBox.className = 'radio-box';
+            radioBox.id=element.id;
 
             formItem.appendChild(radioBox);
             

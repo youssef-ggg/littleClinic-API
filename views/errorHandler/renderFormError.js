@@ -30,5 +30,15 @@ module.exports = function renderFormError({inputTitle,message,inputType}){
             addBtn.classList.remove('form-input-error');
             errorMsg.innerHTML = '';
         });
+    }else if (inputType === 'radio'){
+        const inputRadio = document.querySelector(`#${inputTitle} input[type="radio"]`);
+        const errorMsg  = document.querySelector('.radio-box ~.form-error');
+
+        inputRadio.addEventListener('input',()=>{
+            inputElement.classList.remove('form-input-error');
+            errorMsg.innerHTML = '';
+        });
+        
+        errorMsg.innerHTML = message;
     }
 }
