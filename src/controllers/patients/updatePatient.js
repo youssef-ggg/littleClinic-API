@@ -1,6 +1,6 @@
-module.exports = function makeSetUpdatePaitent({updatePatient,jwtVerifyToken}){
+module.exports = function makeUpdatePatient({editPatient,jwtVerifyToken}){
 
-    return async function setUpdatePaitent(httpRequest)
+    return async function updatePatient(httpRequest)
     {
         const headers = {
             'Content-Type':'application/json'
@@ -21,18 +21,30 @@ module.exports = function makeSetUpdatePaitent({updatePatient,jwtVerifyToken}){
                 }
             }
 
+            const {id} = httpRequest.params
             //TODO:change later to add source
-            const patientUdpdated = await updatePatient(patientsInfo);
+            const patient = await editPatient({id,...patientsInfo});
             
             return {
                 headers,
-                statusCode:200,
-                body:{patientUdpdated}
+                statusCode:201,
+                body:patient
             }
 
         } catch (error) {
             //TODO:Error Logging
             console.log(error);
+            if (error.name == 'RangeError'){
+                return {
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    statusCode: 404,
+                    body: {
+                      error: error.message
+                    }
+                  }
+            }
             return{
                 headers,
                 statusCode:400,

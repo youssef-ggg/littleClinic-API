@@ -18,13 +18,11 @@ module.exports = function makeUpdateUser({editUser,jwtVerifyToken}){
 
             const {id} = httpRequest.params;
             const editedUserData = {id,...httpRequest.body};
-            const updatedUser = await editUser(editedUserData);
+            const user = await editUser(editedUserData);
             return {
                 headers,
                 statusCode:201,
-                body:{
-                    user:updatedUser
-                }
+                body:user
             }
             
         } catch (error) {

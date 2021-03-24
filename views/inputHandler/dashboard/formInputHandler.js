@@ -31,6 +31,10 @@ module.exports = function dashboardFormInputReader(inputFormat){
                 userInput[input.id] = "";
             }
         }
+        else if (input.type == 'number'){
+            const number = document.querySelector(`input[name="${input.id}"]`).value;
+            userInput[input.id] = parseFloat(number);
+        }
     });
 
     return userInput;

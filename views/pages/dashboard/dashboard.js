@@ -18,7 +18,7 @@ const getByQueryRequest = require('../../requests/getByQueryRequest');
 // const {userFormErrorHandler,createUserErrorHandler} = require('../../errorHandler/index');
 
 const {patientTableFormat,patientFormFormat,patientTableNavTabs,
-    patientViewFormat,patientViewSideNav} = require('../../config/patients');
+    patientViewFormat,patientUpdateFormat,patientViewSideNav} = require('../../config/patients');
 const {diagnosisFormFormat,diagnosisUnitView,diagnosisFormSideNav,diagnosisTableLeftNav
         ,diagnosisTableFormat} = require('../../config/diagnosis');
 const {appointmentFormFormat,appointmentTableFormat,apntmntTableLeftNav
@@ -176,8 +176,7 @@ const updateUserView = userData=>{
                 moudleTitle:'Staff member',
                 requestRoute:`users/edit/${userData.id}`,axiosAuth});
 
-            const {user} = responseData;
-            userSingleView(user);
+            userSingleView(responseData);
         }     
     });
     cancelBtn.addEventListener('click',function(event){
@@ -261,6 +260,12 @@ const patientSingleView = (patientData)=>{
     renderUnitView('Patient',formatedPatient);
     //changing medical id with real patient id
     tabs('patient',patientViewSideNav({medicalId:123}));
+
+    const editBtn = document.querySelector('#edit');
+
+    editBtn.addEventListener('click',function(event){
+        udpatePatientForm(patientData);
+    });
 }
 
 const createPatientView = ()=>{
@@ -293,52 +298,38 @@ const createPatientView = ()=>{
 
 }
 
-//update patient info
 const udpatePatientForm  = patientData=>{
     
-    renderUpdateForm('Patient',patientFormFormat,patientData);
+    renderUpdateForm('Patient',patientUpdateFormat,patientData);
     clearLeftNav('Updating patient information');
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
-
-    saveBtn.addEventListener('click',function(event){
+   
+    saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
         const container = document.querySelector('.container');
-        const patientInputData = {
-            name:document.querySelector('input[name="name"]').value,
-            phoneNumber:document.querySelector('input[name="phoneNumber"]').value,
-            gender:document.querySelector('input[id="Female"]').checked ? 'female':
-                document.querySelector('input[id="Male"]').checked ? 'male':null,
-            birthDate:Date.parse(document.querySelector('input[name="birthDate"]').value),
-        };
-        const {formInputPatient} = errorHandler();
+        const patientInputData = dashboardFormInputReader(patientUpdateFormat);
 
-        if (!formInputPatient(patientInputData)){    
-            if(updateEqualityCheck(patientInputData,patientData))
-            {
-                modal(container,updateModalMatchOld);
-            }
-            else
-            {
-                patientInputData.modifiedOn = Date.now();
-                patientInputData.id = patientData.id;
-                modal(container,updateModalSuccess);
-                const applyChanges =document.querySelector('#apply');
+        const {updatePatientErrorHandler} = errorHandlerService;
 
-                applyChanges.addEventListener('click',function(event){
-                    const overlay = document.querySelector('.modal-overlay');
-                    overlay.parentNode.removeChild(overlay);
-                    ipcRenderer.send('updatePatient',patientInputData);
-                });
-            }
+        if(updateEqualityCheck(patientInputData,patientData)){
+            modal(container,updateModalMatchOld);
+        }
+        else if(!updatePatientErrorHandler(patientInputData)){
+
+            const  responseData = await updateRequest({patchData:patientInputData,
+                moudleTitle:'Patient',
+                requestRoute:`/patients/edit/${patientData.id}`,axiosAuth});
+
+            patientSingleView(responseData);
         }
     });
 
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
-        ipcRenderer.send('reqPatient',patientData);
+        patientSingleView(patientData);
     });
 
 };

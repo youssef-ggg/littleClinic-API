@@ -1,10 +1,8 @@
 const {makePatient} = require('../../models');
-const medicalRecord = require('../../models/medicalRecord');
-const getUserById = require('../users/getUserById');
 
-module.exports = function makeUpdatePatient({patientsCollection}){
+module.exports = function makeEditPatient({patientsCollection}){
 
-    return async function updatePatient({id,...changes}){
+    return async function editPatient({id,...changes}){
       
         const checkIdHex = /^[0-9A-Fa-f]{24}/;
         
@@ -15,7 +13,7 @@ module.exports = function makeUpdatePatient({patientsCollection}){
         const existing = await patientsCollection.findById({id});
        
         if(!existing){
-            throw new RangeError('Comment not found.');
+            throw new RangeError('patient not found.');
         }
         const updatedPatient = makePatient({id,...changes});
         
@@ -26,9 +24,9 @@ module.exports = function makeUpdatePatient({patientsCollection}){
             gender:updatedPatient.getGender(),
             birthDate:updatedPatient.getBirthDate(),
             balance:updatedPatient.getBalance(),
-            totalExpensis:updatedPatient.getTotalExpensis(),
+            numberOfVisits:updatedPatient.getNumberOfVisits(),
             createdOn:updatedPatient.getCreatedOn(),
-            medicalRecordID:updatedPatient.getMedicalRecordID()
+            // medicalRecordID:updatedPatient.getMedicalRecordID()
 
         }); 
     }

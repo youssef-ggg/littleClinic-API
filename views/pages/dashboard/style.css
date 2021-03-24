@@ -3,7 +3,13 @@
  @import "../../assets/css/formView.css";
  @import "../../assets//css/modal.css";
  @import "../../assets/css/apntmntTable.css";
-@import "../../node_modules/font-roboto/dist/styles/roboto.min.css";
+ @import "../../node_modules/font-roboto/dist/styles/roboto.min.css";
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 html,body{
     font-family: Roboto;

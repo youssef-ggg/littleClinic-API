@@ -5,8 +5,9 @@ module.exports = function dashboardUtitltyFunctions(){
 
         for(key in updatedObject)
         {
-            if(JSON.stringify(updatedObject[key]) != JSON.stringify(object[key]))
+            if(JSON.stringify(updatedObject[key]) != JSON.stringify(object[key])){
                 objectsequal = false;
+            }
 
         }
 

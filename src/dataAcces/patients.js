@@ -61,18 +61,24 @@ module.exports = function makePatientCollection({makeDb,ObjectID}){
         const {id,...setNewPatient} = patientData;
         
         try {
+            const options =  {returnOriginal: false};
             const db = await makeDb();
-            const result = await db.collection('patients').updateOne({_id:ObjectID(id)},
-            {
-                $set:{...setNewPatient}
-            });
+            const result = await db.collection('patients').findOneAndUpdate({_id:ObjectID(id)},
+                {
+                    $set:{...setNewPatient}
+                },
+                options
+            );
 
-            return result;
+            const {value} = result;
+            const {_id,...rest} = value;
+            return {id:_id.toString(),...rest};
+            
         } catch (error) {
             return error;
         }
     }
-    // incomplete 
+
     async function findPaginated({pageNum,pageSize}){
 
         const skips = (pageNum - 1) * pageSize;

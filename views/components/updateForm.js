@@ -65,13 +65,16 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
                 radioInput.name = element.id;
                 checkmark.className = 'checkmark';
 
-                if (elementsValues[element.id] == choice.toLowerCase())
+                if (elementsValues[element.id].toLowerCase() == choice.toLowerCase()){
                     radioInput.checked = true;
-
+                }
+                    
                 radioBox.appendChild(choiceLabel);
                 choiceLabel.appendChild(radioInput);
                 choiceLabel.appendChild(checkmark);
-                choiceLabel.appendChild(document.createTextNode(choice)); 
+                choiceLabel.appendChild(
+                    document.createTextNode(choice.charAt(0).toUpperCase() + choice.slice(1))
+                ); 
                 
                 
             });

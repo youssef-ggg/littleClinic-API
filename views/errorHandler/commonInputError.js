@@ -7,7 +7,7 @@ module.exports = function commonErrorInput(){
         let hasError = false;
         for (const [key,value] of Object.entries(data)){
 
-            if(!value || value === ""){
+            if(value === null || value === "" ){
 
                 renderFormError({inputTitle:key,message:`Must have a ${key}.`,inputType:'text'});
                 hasError = true;

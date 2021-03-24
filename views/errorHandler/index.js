@@ -7,7 +7,7 @@ const makeErrorTnputHandler = require('./checkUserInput');
 const checkPatientInput = require('./checkPatientInput');
 
 const {
-    createPatientErrorHandler
+    createPatientErrorHandler,updatePatientErrorHandler
 } = checkPatientInput({commonInputError,renderFormError});
 
 const {passMisMatchHandle,
@@ -18,6 +18,6 @@ const {passMisMatchHandle,
 module.exports = {
     passMisMatchHandle,userFormErrorHandler,userFormPassErrorHandle,
     createUserErrorHandler,updateUserDataErrorHandle,updateUserPasswordErrorHandle,
-    createPatientErrorHandler
+    createPatientErrorHandler,updatePatientErrorHandler
 }
 

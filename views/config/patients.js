@@ -81,6 +81,40 @@ module.exports = Object.freeze({
             
         return patientModel;
     },
+    patientUpdateFormat:[
+        {
+            label:'Name',
+            id:'name',
+            type:'text',
+        },
+        {
+            label:'Phone Number',
+            id:'phoneNumber',
+            type:'text',
+        },
+        {
+            label:'Gender',
+            type:'radio',
+            id:'gender',
+            choices:['female','male'],
+        },
+        {
+            label:'Birth Date',
+            type:'date',
+            id:'birthDate',
+        },
+        {
+            label:'Balance',
+            type:'number',
+            id:'balance',
+        },
+        {
+            label:'Number Of Visits',
+            type:'text',
+            id:'numberOfVisits',
+        },
+
+    ],
     patientViewSideNav:(tabsIDs)=>{
 
         const {medicalRecordId} = tabsIDs;
