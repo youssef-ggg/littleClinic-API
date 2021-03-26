@@ -57,20 +57,6 @@ ipcMain.on('reqUser',async function(event,userData){
 })
 
 //patient Events
-ipcMain.on('requestPatients',async function(event,paginationData){
-    const {getPatientsList,getNumberOfPatients,listPatientsPaginated} = patientController;
-    const numberOfPatients = await getNumberOfPatients();
-    const {pageNum,pageSize} = paginationData;
-    let patientsData = [];
-
-    if(numberOfPatients<=pageSize)
-        patientsData = await getPatientsList();
-    else
-        patientsData = await listPatientsPaginated(pageNum,pageSize);
-    
-        paginationData['numberOfPatients'] = numberOfPatients;
-    event.sender.send('patientList',{patientsData,paginationData});
-});
 
 ipcMain.on('requestPatientsPage',async function(event,pageData){
     const {pageNum,pageSize} = pageData;
@@ -79,43 +65,7 @@ ipcMain.on('requestPatientsPage',async function(event,pageData){
     event.sender.send('patientListPaginated',patientData);
 });
 
-ipcMain.on('createPatient',async function(event,patientData){
-    const {createPatient,getPatientByID} = patientController;
-    const patientResult = await createPatient(patientData);
-    const {id} = patientResult;
-    const patient = await getPatientByID(id);
-    event.sender.send('patientFormView',patient);
-    event.sender.send('updateSuccess',{message:'Patient created Successfully.',state:'success'});
-});
-
-ipcMain.on('reqPatient',async function(event,patientData){
-
-    const {getPatientByID} = patientController;
-    const {id} = patientData;
-    const patient = await getPatientByID(id);
-    event.sender.send('patientFormView',patient);
-});
-
-ipcMain.on('updatePatient', async function (event,PatientDta){
-
-    const {setUpdatePatient,getPatientByID} = patientController;
-    const result = await setUpdatePatient(PatientDta);
-
-    const id = PatientDta.id;
-    const patient = await getPatientByID(id);
-    event.sender.send('patientFormView',patient);
-    event.sender.send('updateSuccess',{message:'Patient updated Successfully.',state:'success'});
-});
-
 //Diagnosis events
-ipcMain.on('createDiagnosis',async function(event,diagnosisData){
-   const {createDiagnosis} = diagnosisController;
-   const diagnosisResult = await createDiagnosis(diagnosisData);
-   event.sender.send('diagnosisSingleView',diagnosisResult);
-   event.sender.send('updateSuccess',{message:'Diagnosis created Successfully.',state:'success'});
-
-});
-
 ipcMain.on('reqDiagnosis',async function(event,diagnosisData){
     const id = diagnosisData.id;
     const {getDiagnosisById} = diagnosisController;

@@ -41,4 +41,17 @@ module.exports = function renderFormError({inputTitle,message,inputType}){
         
         errorMsg.innerHTML = message;
     }
+    else if (inputType === 'textarea'){
+
+        const inputElement = document.querySelector(`#${inputTitle}`);
+        const errorMsg = document.querySelector(`#${inputTitle} ~.form-error`);
+
+        inputElement.addEventListener('input',()=>{
+            inputElement.classList.remove('form-input-error');
+            errorMsg.innerHTML = '';
+        });
+        
+        errorMsg.innerHTML = message;
+        
+    }
 }

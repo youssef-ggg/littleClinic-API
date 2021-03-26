@@ -54,7 +54,7 @@ describe('update user controller',()=>{
                 'Content-Type':'application/json'
             },
             statusCode:201,
-            body:{user:{id,...fakeUser}}
+            body:{id,...fakeUser}
         }
         const actual = await updateUser(request);
 

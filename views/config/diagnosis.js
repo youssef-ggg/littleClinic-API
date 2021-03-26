@@ -66,9 +66,9 @@ module.exports = Object.freeze({
         const diagnosisModel= {
             'Cheif Complaint':cheifComplaint,
             Problems:problems,
-            Medication:medications.length!=0?medications:'No prescribed medication.',
-            Treatment:treatment.length !=0?treatment :'No treament offered.',
-            Orders:orders!=0?orders:'No orders given.',
+            Medication:medications!=undefined?medications:'No prescribed medication.',
+            Treatment:treatment!=undefined?treatment :'No treament offered.',
+            Orders:orders!=undefined?orders:'No orders given.',
             'Created Date':dateFormatCreate.toLocaleDateString('en-EN',dateOptions),
             'Created Time':dateFormatCreate.toLocaleTimeString('en-EN'),
             'Modified Date':dateFormatmodified.toLocaleDateString('en-EN',dateOptions),

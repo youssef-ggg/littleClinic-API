@@ -262,9 +262,14 @@ const patientSingleView = (patientData)=>{
     tabs('patient',patientViewSideNav({medicalId:123}));
 
     const editBtn = document.querySelector('#edit');
+    const newDiagnosisBtn = document.querySelector('#createDiagnosis');
 
     editBtn.addEventListener('click',function(event){
         udpatePatientForm(patientData);
+    });
+
+    newDiagnosisBtn.addEventListener('click',function(event){
+        createDiagnosisView(patientData);
     });
 }
 
@@ -333,62 +338,51 @@ const udpatePatientForm  = patientData=>{
     });
 
 };
+const createDiagnosisView = (patientData)=>{
+    
+    renderForm('Diagnosis',diagnosisFormFormat);
+    clearLeftNav('Creating New Diagnosis');
 
-//create diagnosis view
-const diagnosisView = (newDiagnosisBtn,singlePatient) =>{
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
+    
+    saveBtn.addEventListener('click',async function(event){
+        event.preventDefault();
 
-    newDiagnosisBtn.addEventListener('click',function(event){
- 
-        renderForm('Diagnosis',diagnosisFormFormat);
-        clearLeftNav('Creating New Diagnosis');
+        const diagnosisData = dashboardFormInputReader(diagnosisFormFormat);
+        const {createDiagnosisErrorHandler} = errorHandlerService;
+        
+        diagnosisData.patientId = patientData.id;
 
         
-        const saveBtn = document.querySelector('#save');
-        const cancelBtn = document.querySelector('#cancel');
+        if(!createDiagnosisErrorHandler(diagnosisData)){
+            const responseData = await createRequest({
+            postData:diagnosisData,
+            moduleTitle:'Diagnosis',
+            requestRoute:'/patients/diagnosis/addDiagnosis',
+            axiosAuth});
 
-        saveBtn.addEventListener('click',function(event){
-            event.preventDefault();
-
-            const {formInputDiagnosis} = errorHandler();
-
-            let problemList = [];
-            let medicationList = [];
-            let treatmentList = [];
-            let ordersList = [];
+            diagnosisSingleView(responseData);
             
-            document.querySelectorAll('#problems-item')
-                .forEach(node=>node.innerHTML!=""?problemList.push(node.innerHTML):false);
-            document.querySelectorAll('#medications-item')
-                .forEach(node=>node.innerHTML!=""?medicationList.push(node.innerHTML):false);
-            document.querySelectorAll('#treatment-item')
-                .forEach(node=>node.innerHTML!=""?treatmentList.push(node.innerHTML):false);
-            document.querySelectorAll('#orders-item')
-                .forEach(node=>node.innerHTML!=""?ordersList.push(node.innerHTML):false);
-
-            const diagnosis = {
-                patientId:singlePatient.id,
-                cheifComplaint:document.querySelector('#cheifComplaint').value,
-                problems:problemList,
-                medications:medicationList,
-                treatment:treatmentList,
-                orders:ordersList,
-            };
-
-             if(!formInputDiagnosis(diagnosis))
-             {
-                ipcRenderer.send('createDiagnosis',diagnosis);   
-             }
-            
-        });
-
-        cancelBtn.addEventListener('click',function(event){
-            event.preventDefault();
-            ipcRenderer.send('reqPatient',singlePatient);
-        });
-
+        }
     });
-}
 
+    cancelBtn.addEventListener('click',function(event){
+        event.preventDefault();
+        patientSingleView(patientData);
+    });
+
+}
+const diagnosisSingleView = (diagnosisData)=>{
+    const diagnosisPretty = diagnosisUnitView(diagnosisData);
+    renderUnitView('Diagnosis Information',diagnosisPretty);
+    tabs('Diagnosis Manager',diagnosisFormSideNav());
+
+    const updateDiagnosis = document.querySelector('#edit');
+    const backToDiagLog = document.querySelector('#back');
+    const deleteDiagnosis = document.querySelector('#delete');
+
+}
 //diagnosis single view
 ipcRenderer.on('diagnosisSingleView',function(event,diagnosisData){
     const diagnosisPretty = diagnosisUnitView(diagnosisData);

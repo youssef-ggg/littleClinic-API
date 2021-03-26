@@ -7,12 +7,15 @@ const makeDeleteSingleDiagnosis = require('./deleteSingleDiangosis');
 
 const {addDiagnosis,getDiagnosisByPatientId,getDiagnosis,
     updateDiagnosis,deleteDiagnosisById} = diagnosisServices;
+const {jwtSignToken,jwtVerifyToken} = require('../../jwtAuthorization');
 
-const createDiagnosis = makeCreateDiagnosis({addDiagnosis});
+const createDiagnosis = makeCreateDiagnosis({addDiagnosis,jwtVerifyToken});
 const getByPatientId = makeGetByPatientId({getDiagnosisByPatientId});
 const getDiagnosisById = makeGetDiagnosisById({getDiagnosis});
 const setUpdateDiagnosis = makeSetUpdateDiagnosis({updateDiagnosis});
 const deleteSingleDiangosis = makeDeleteSingleDiagnosis({deleteDiagnosisById});
+
+
 
 const diagnosisController = Object.freeze({
     createDiagnosis,getByPatientId,getDiagnosisById,setUpdateDiagnosis,

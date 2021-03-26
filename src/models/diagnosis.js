@@ -14,10 +14,13 @@ module.exports = function buildMakeDiagnosis(){
     }={})
     {
 
+        if(patientId == null || patientId == ''){
+            throw new Error('must have a patient\'s id.')
+        }
         if(!cheifComplaint ||cheifComplaint == '')
-            throw new Error('A visit must have a Cheif Compliant.'); 
+            throw new Error('A diagnosis must have a Cheif Compliant.'); 
         if(!problems || problems.length == 0)
-            throw new Error('A visit must have a diagonised problem.');
+            throw new Error('must have a diagonised problem.');
 
         return Object.freeze({
            GetpatientId:()=>patientId,
