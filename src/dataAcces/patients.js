@@ -35,6 +35,7 @@ module.exports = function makePatientCollection({makeDb,ObjectID}){
                 return null;
             
             const {_id:id,...info} = found[0];
+            //fix this to string
             return {id,...info};
 
         } catch (error) {

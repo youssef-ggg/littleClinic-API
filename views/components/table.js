@@ -61,6 +61,7 @@ module.exports = function renderTable (modelList,modelMetaData){
             const {unitRenderer,axiosAuth,url} = unitView;
             
             tableRow.addEventListener('click',async function(){
+                //fix bug here transfere query string some where else
                 const response = await axiosAuth.get(`${url}${id}`);
                 unitRenderer(response.data);
             });

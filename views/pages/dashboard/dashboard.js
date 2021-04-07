@@ -258,11 +258,12 @@ const patientSingleView = (patientData)=>{
 
     const formatedPatient = patientViewFormat(patientData);
     renderUnitView('Patient',formatedPatient);
-    //changing medical id with real patient id
+    //changing medical id something else
     tabs('patient',patientViewSideNav({medicalId:123}));
 
     const editBtn = document.querySelector('#edit');
     const newDiagnosisBtn = document.querySelector('#createDiagnosis');
+    const diagnosticLogBtn = document.querySelector('#diagnosticLog');
 
     editBtn.addEventListener('click',function(event){
         udpatePatientForm(patientData);
@@ -270,6 +271,17 @@ const patientSingleView = (patientData)=>{
 
     newDiagnosisBtn.addEventListener('click',function(event){
         createDiagnosisView(patientData);
+    });
+
+    diagnosticLogBtn.addEventListener('click',async function(event){
+
+        const diagnosisList = await getByQueryRequest({
+            getData:{patientId:patientData.id},
+            requestRoute:'patients/diangosis',
+            query:'patientId',
+            axiosAuth
+        });
+        diagnosisTableView({patientData,diagnosisList});
     });
 }
 
@@ -359,7 +371,7 @@ const createDiagnosisView = (patientData)=>{
             const responseData = await createRequest({
             postData:diagnosisData,
             moduleTitle:'Diagnosis',
-            requestRoute:'/patients/diagnosis/addDiagnosis',
+            requestRoute:'/patients/diagnosis/addDiagnosis/',
             axiosAuth});
 
             diagnosisSingleView(responseData);
@@ -382,45 +394,60 @@ const diagnosisSingleView = (diagnosisData)=>{
     const backToDiagLog = document.querySelector('#back');
     const deleteDiagnosis = document.querySelector('#delete');
 
-}
-//diagnosis single view
-ipcRenderer.on('diagnosisSingleView',function(event,diagnosisData){
-    const diagnosisPretty = diagnosisUnitView(diagnosisData);
-   
-    renderUnitView('Diagnosis Information',diagnosisPretty);
-    tabs('Diagnosis Manager',diagnosisFormSideNav());
-
-    const updateDiagnosis = document.querySelector('#edit');
-    const backToDiagLog = document.querySelector('#back');
-    const deleteDiagnosis = document.querySelector('#delete');
-
-    const container = document.querySelector('.container');
-
-    const singlePatient = {id:diagnosisData.patientId};
-    
-    updateDiagnosis.addEventListener('click',function(event){
-        updateDiagnosisView(diagnosisFormFormat,diagnosisData)
-    });
-
-    deleteDiagnosis.addEventListener('click',function(event){
-        const entityData = {title:'Diagnosis'}
-        modal(container,deleteModal(entityData));
-        const confirmDelete = document.querySelector('#confirm');
-
-        confirmDelete.addEventListener('click',function(event){
-            const overlay = document.querySelector('.modal-overlay');
-                overlay.parentNode.removeChild(overlay);
-                ipcRenderer.send('deleteDiagnosis',diagnosisData);
-                ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
+    backToDiagLog.addEventListener('click',async function(event){  
+    //decrease server and db calls ? if needed
+        const diagnosisList = await getByQueryRequest({
+            getData:{patientId:diagnosisData.patientId},
+            requestRoute:'patients/diangosis',
+            query:'patientId',
+            axiosAuth
         });
 
+        const patientData = await getByQueryRequest({
+            getData:{id:diagnosisData.patientId},
+            requestRoute:'/patients',
+            query:'id',
+            axiosAuth
+        });
+
+        diagnosisTableView({patientData,diagnosisList});
     });
 
-    backToDiagLog.addEventListener('click',function(event){
+}
+//diagnosis single view
+// ipcRenderer.on('diagnosisSingleView',function(event,diagnosisData){
+
+//     const updateDiagnosis = document.querySelector('#edit');
+//     const backToDiagLog = document.querySelector('#back');
+//     const deleteDiagnosis = document.querySelector('#delete');
+
+//     const container = document.querySelector('.container');
+
+//     const singlePatient = {id:diagnosisData.patientId};
+    
+//     updateDiagnosis.addEventListener('click',function(event){
+//         updateDiagnosisView(diagnosisFormFormat,diagnosisData)
+//     });
+
+//     deleteDiagnosis.addEventListener('click',function(event){
+//         const entityData = {title:'Diagnosis'}
+//         modal(container,deleteModal(entityData));
+//         const confirmDelete = document.querySelector('#confirm');
+
+//         confirmDelete.addEventListener('click',function(event){
+//             const overlay = document.querySelector('.modal-overlay');
+//                 overlay.parentNode.removeChild(overlay);
+//                 ipcRenderer.send('deleteDiagnosis',diagnosisData);
+//                 ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
+//         });
+
+//     });
+
+//     backToDiagLog.addEventListener('click',function(event){
         
-        ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
-    });
-});
+//         ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
+//     });
+// });
 
 //update diagnosis view
 const updateDiagnosisView = (diagnosisFormFormat,diagnosisData)=>{
@@ -487,6 +514,29 @@ const updateDiagnosisView = (diagnosisFormFormat,diagnosisData)=>{
     });
 
 };
+
+const diagnosisTableView = ({patientData,diagnosisList})=>{
+    const diagnosisTableData = diagnosisTableFormat(diagnosisList);
+    const centerContent = document.querySelector('.content-center');
+    
+    centerContent.innerHTML='';
+    renderActions('Visits');
+    //incomplete
+    diagnosisMetaData ={
+        unitView:{
+            unitRenderer:diagnosisSingleView,
+            axiosAuth,
+            url:'/patients/getDiagnosis/query?id='
+        }
+    };
+    renderTable(diagnosisTableData,diagnosisMetaData);
+    tabs('Diagnostic Log Manager',diagnosisTableLeftNav());
+
+    const backToPatientBtn = document.querySelector('#back');
+    backToPatientBtn.addEventListener('click',function(event){
+        patientSingleView(patientData);
+    });
+}
 
 //diagnosis Table view
 ipcRenderer.on('diagnosisList',function(event,patientData){

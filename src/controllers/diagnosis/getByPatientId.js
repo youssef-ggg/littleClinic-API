@@ -1,12 +1,46 @@
-const getByPatientId = require("../../usecases/diagnosis/getByPatientId");
+module.exports = function makeGetByPatientId({listDiagnosisByPatientId,jwtVerifyToken}){
 
-module.exports = function makeGetByPatientId({getDiagnosisByPatientId}){
-
-    return async function getByPatientId(patientId)
+    return async function getByPatientId(httpRequest)
     {
-        const diagnosisList = await getDiagnosisByPatientId(patientId);
+        const headers = {
+            'Content-Type':'application/json'
+        }
 
-        return diagnosisList;
+        try {
+            const verification = jwtVerifyToken(httpRequest);
+            if (verification.statusCode == 403)
+            {
+                return {
+                    headers,
+                    ...verification
+                }
+            }
+
+            const diagnosisLog = await listDiagnosisByPatientId({patientId:httpRequest.query.patientId});
+            
+            if(diagnosisLog)
+            {
+                return {
+                    headers,
+                    statusCode:200,
+                    body:diagnosisLog
+                }
+            }
+            else {
+                return{
+                    headers,
+                    statusCode:404,
+                    body:{
+                        error:'no diagnosis found.'
+                    }
+                }
+            }
+            
+        } catch (error) {
+            //TODO: make error log.
+            console.log(error);
+            return error;
+        }
     }
 
 }

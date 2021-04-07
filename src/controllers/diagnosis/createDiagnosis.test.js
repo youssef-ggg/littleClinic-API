@@ -1,7 +1,6 @@
 const faker = require("faker");
 const makeCreateDiagnosis = require('./createDiagnosis.js');
 const makeFakeDiagnosis = require('../../__test__/fixtures/diagnosis.js');
-const diagnosisCollection = require("../../dataAcces/diagnosis.js");
 
 describe('create diagnosis controller',()=>{
 

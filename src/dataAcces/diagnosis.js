@@ -39,14 +39,17 @@ module.exports = function makeDiagnosisCollection({makeDb,ObjectID}){
         }
     }
 
-    async function findById({id}){
+    async function findById({id:_id}){
         try {
             const db = await makeDb();
-            const result = await db.collection('diagnosis').find({_id:ObjectID(id)});
-            return (await result.toArray()).map(({ _id: id, ...found }) => ({
-                id:id.toString(),
-                ...found
-            }));
+            const result = await db.collection('diagnosis').find({_id:ObjectID(_id)});
+            const found = await result.toArray();
+            if(found.length === 0)
+                return null;
+            
+            const {_id:id,...info} = found[0];
+            return {id:id.toString(),...info};
+
         } catch (error) {
             return error;
         }
