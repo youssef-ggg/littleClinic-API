@@ -3,7 +3,7 @@ const makeCreateDiagnosis = require('./createDiagnosis');
 const makeGetByPatientId = require('./getByPatientId');
 const makeGetDiagnosisById = require('./getDiagnosisById');
 const makeSetUpdateDiagnosis = require('./updateDiagnosis');
-const makeDeleteSingleDiagnosis = require('./deleteSingleDiangosis');
+const makeDeleteSingleDiagnosis = require('./deleteSingleDiagnosis');
 
 const {addDiagnosis,listDiagnosisByPatientId,getDiagnosis,
     updateDiagnosis,deleteDiagnosisById} = diagnosisServices;
@@ -13,7 +13,7 @@ const createDiagnosis = makeCreateDiagnosis({addDiagnosis,jwtVerifyToken});
 const getByPatientId = makeGetByPatientId({jwtVerifyToken,listDiagnosisByPatientId});
 const getDiagnosisById = makeGetDiagnosisById({getDiagnosis,jwtVerifyToken});
 const setUpdateDiagnosis = makeSetUpdateDiagnosis({updateDiagnosis});
-const deleteSingleDiangosis = makeDeleteSingleDiagnosis({deleteDiagnosisById});
+const deleteSingleDiangosis = makeDeleteSingleDiagnosis({deleteDiagnosisById,jwtVerifyToken});
 
 
 
