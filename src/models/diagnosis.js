@@ -23,7 +23,7 @@ module.exports = function buildMakeDiagnosis(){
             throw new Error('must have a diagonised problem.');
 
         return Object.freeze({
-           GetpatientId:()=>patientId,
+           getpatientId:()=>patientId,
            getCheifComplaint:()=>cheifComplaint,
            getVitalSigns:()=>MakeVitalSigns(vitalSigns),
            getPyhsicalExam:()=>makephysicalExam(pyhsicalExam),

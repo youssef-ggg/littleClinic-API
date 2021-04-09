@@ -5,7 +5,6 @@ const {makeDb,clearDb,closeDb} = require('../../__test__/fixtures/db');
 const makePatientCollection = require('../../dataAcces/patients');
 const makeFakePatient = require('../../__test__/fixtures/patient');
 const makeEditPatient = require('./editPatient');
-const editPatient = require('./editPatient');
 
 describe('update patient data.',()=>{
 

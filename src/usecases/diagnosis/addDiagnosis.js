@@ -7,7 +7,7 @@ module.exports = function makeAddDiagnosis({diagnosisCollection}){
         const diagnosis = makeDiagnosis(diagnosisInfo);
 
         return diagnosisCollection.insert({
-            patientId:diagnosis.GetpatientId(),
+            patientId:diagnosis.getpatientId(),
             cheifComplaint:diagnosis.getCheifComplaint(),
             medications:diagnosis.getMedications(),
             treatment:diagnosis.getTreatment(),
