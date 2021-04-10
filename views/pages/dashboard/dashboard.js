@@ -368,6 +368,7 @@ const createDiagnosisView = (patientData)=>{
 
         
         if(!createDiagnosisErrorHandler(diagnosisData)){
+            
             const responseData = await createRequest({
             postData:diagnosisData,
             moduleTitle:'Diagnosis',
@@ -414,6 +415,11 @@ const diagnosisSingleView = (diagnosisData)=>{
         diagnosisTableView({patientData,diagnosisList});
     });
 
+    updateDiagnosis.addEventListener('click',function(event){
+        updateDiagnosisView(diagnosisData)
+    });
+
+
     deleteDiagnosis.addEventListener('click',function(event){
 
         modal(container,deleteModal({title:'Diagnosis'}));
@@ -446,43 +452,8 @@ const diagnosisSingleView = (diagnosisData)=>{
     });
 
 }
-//diagnosis single view
-// ipcRenderer.on('diagnosisSingleView',function(event,diagnosisData){
 
-//     const updateDiagnosis = document.querySelector('#edit');
-//     const backToDiagLog = document.querySelector('#back');
-//     const deleteDiagnosis = document.querySelector('#delete');
-
-//     const container = document.querySelector('.container');
-
-//     const singlePatient = {id:diagnosisData.patientId};
-    
-//     updateDiagnosis.addEventListener('click',function(event){
-//         updateDiagnosisView(diagnosisFormFormat,diagnosisData)
-//     });
-
-//     deleteDiagnosis.addEventListener('click',function(event){
-//         const entityData = {title:'Diagnosis'}
-//         modal(container,deleteModal(entityData));
-//         const confirmDelete = document.querySelector('#confirm');
-
-//         confirmDelete.addEventListener('click',function(event){
-//             const overlay = document.querySelector('.modal-overlay');
-//                 overlay.parentNode.removeChild(overlay);
-//                 ipcRenderer.send('deleteDiagnosis',diagnosisData);
-//                 ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
-//         });
-
-//     });
-
-//     backToDiagLog.addEventListener('click',function(event){
-        
-//         ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
-//     });
-// });
-
-//update diagnosis view
-const updateDiagnosisView = (diagnosisFormFormat,diagnosisData)=>{
+const updateDiagnosisView = (diagnosisData)=>{
     
     renderUpdateForm('Diagnosis',diagnosisFormFormat,diagnosisData);
     clearLeftNav('Updating Diagnosis');
@@ -494,50 +465,44 @@ const updateDiagnosisView = (diagnosisFormFormat,diagnosisData)=>{
     saveBtn.addEventListener('click',function(event){
         event.preventDefault();
 
-        const {formInputDiagnosis} = errorHandler();
-
-        let problemList = [];
-        let medicationList = [];
-        let treatmentList = [];
-        let ordersList = [];
-        
-        document.querySelectorAll('#problems-item')
-            .forEach(node=>node.innerHTML!=""?problemList.push(node.innerHTML):false);
-        document.querySelectorAll('#medications-item')
-            .forEach(node=>node.innerHTML!=""?medicationList.push(node.innerHTML):false);
-        document.querySelectorAll('#treatment-item')
-            .forEach(node=>node.innerHTML!=""?treatmentList.push(node.innerHTML):false);
-        document.querySelectorAll('#orders-item')
-            .forEach(node=>node.innerHTML!=""?ordersList.push(node.innerHTML):false);
-
-        const diagnosis = {
-            patientId:patientId,
-            cheifComplaint:document.querySelector('#cheifComplaint').value,
-            problems:problemList,
-            medications:medicationList,
-            treatment:treatmentList,
-            orders:ordersList,
-        };
+        const updatedDiagnosisData = dashboardFormInputReader(diagnosisFormFormat);
 
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
         const container = document.querySelector('.container');
-        if(updateEqualityCheck(diagnosis,diagnosisData))
-        {
-            modal(container,updateModalMatchOld);
-        }
-        else if(!formInputDiagnosis(diagnosis))
-        {
-            diagnosis.modifiedOn = Date.now();
-            diagnosis.id = diagnosisData.id;
-            modal(container,updateModalSuccess);
-            const applyChanges =document.querySelector('#apply');
+        const {updateDiagnosisErrorHandler} = errorHandlerService;
 
-            applyChanges.addEventListener('click',function(event){
-                const overlay = document.querySelector('.modal-overlay');
-                overlay.parentNode.removeChild(overlay);
-                ipcRenderer.send('UpdateDiagnosis',diagnosis);
-            });
+        
+        if(!updateDiagnosisErrorHandler(updatedDiagnosisData))
+        {
+     
+            if(updateEqualityCheck(updatedDiagnosisData,diagnosisData)){
+
+                modal(container,updateModalMatchOld);
+            }
+            else {
+                 //updatedDiagnosisData.id = diagnosisData.id;
+                modal(container,updateModalSuccess);
+                const applyChanges =document.querySelector('#apply');
+
+                applyChanges.addEventListener('click',async function(event){
+                    const overlay = document.querySelector('.modal-overlay');
+                    overlay.parentNode.removeChild(overlay);
+
+                    const responseData = await updateRequest({patchData:{
+                        patientId:diagnosisData.patientId
+                        ,...updatedDiagnosisData},
+                        moudleTitle:'Diagnosis',
+                        requestRoute:`/patients/updateDiagnosis/${diagnosisData.id}`,axiosAuth});
+
+                    diagnosisSingleView(responseData);
+                });
+
+                
+                // diagnosisSingleView
+            }
+           
         }
+         
     });
 
     cancelBtn.addEventListener('click',function(event){

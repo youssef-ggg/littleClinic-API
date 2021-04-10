@@ -17,12 +17,13 @@ const {passMisMatchHandle,
 } = makeErrorTnputHandler({validator,renderFormError});
 
 const {
-    createDiagnosisErrorHandler
+    createDiagnosisErrorHandler,updateDiagnosisErrorHandler
 } = diagnosisErrorHandler({renderFormError});
 
 module.exports = {
     passMisMatchHandle,userFormErrorHandler,userFormPassErrorHandle,
     createUserErrorHandler,updateUserDataErrorHandle,updateUserPasswordErrorHandle,
-    createPatientErrorHandler,updatePatientErrorHandler,createDiagnosisErrorHandler
+    createPatientErrorHandler,updatePatientErrorHandler,createDiagnosisErrorHandler,
+    updateDiagnosisErrorHandler
 }
 

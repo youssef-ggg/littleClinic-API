@@ -46,6 +46,7 @@ module.exports = function renderFormError({inputTitle,message,inputType}){
         const inputElement = document.querySelector(`#${inputTitle}`);
         const errorMsg = document.querySelector(`#${inputTitle} ~.form-error`);
 
+        inputElement.classList.add('form-input-error');
         inputElement.addEventListener('input',()=>{
             inputElement.classList.remove('form-input-error');
             errorMsg.innerHTML = '';

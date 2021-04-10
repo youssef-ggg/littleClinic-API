@@ -130,7 +130,7 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
             listInputBox.appendChild(inputElment);
             listInputBox.appendChild(addToListBtn);
             
-            if (elementsValues[element.id].length > 0)
+            if (elementsValues[element.id] !== null && elementsValues[element.id].length > 0)
             {
                 elementsValues[element.id].forEach(value=>{
                     const listLine = document.createElement('div');

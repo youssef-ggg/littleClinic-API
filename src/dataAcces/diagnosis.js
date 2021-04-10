@@ -71,15 +71,22 @@ module.exports = function makeDiagnosisCollection({makeDb,ObjectID}){
     }
     async function update(diagnosisData)
     {
-        const {id,...setNewDiangosis} = diagnosisData
+        const {id,...setNewDiangosis} = diagnosisData;
+        const options =  {returnOriginal: false};
         try {
             const db = await makeDb();
-            const result = await db.collection('diagnosis').updateOne({_id:ObjectID(id)},
+            const result = await db.collection('diagnosis').findOneAndUpdate({_id:ObjectID(id)},
             {
-                $set:{...setNewDiangosis}
-            });
+                $set:{...setNewDiangosis},
+                
+            },
+            options
+            );
 
-            return result;
+            const {value} = result;
+            const {_id,...rest} = value;
+            return {id:_id.toString(),...rest};
+
         } catch (error) {
             return error;
         }
