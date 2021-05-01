@@ -7,6 +7,7 @@ module.exports = function makeAppointmentCollection({makeDb,ObjectID}){
         findByPatientIdActive,
         findByPatientIdDue,
         findByDateDuration,
+        findByDateTime,
         removeById,
         update
     });
@@ -97,6 +98,23 @@ module.exports = function makeAppointmentCollection({makeDb,ObjectID}){
         }
     }
 
+    async function findByDateTime({date}){
+        try {
+            const db = await makeDb();
+            const result = await db.collection('appointments')
+                .find({date});
+            
+            const found = await result.toArray();
+            if (found.length === 0) {
+              return null
+            }
+            const { _id: id, ...insertedInfo } = found[0]
+            return { id, ...insertedInfo }
+        } catch (error) {
+            return error;
+        }
+    }
+    
     async function removeById(appointmentInfo){
         const {id} = appointmentInfo;
         

@@ -1,4 +1,5 @@
 const appointmentServices = require('../../usecases/appointment');
+const  {jwtSignToken,jwtVerifyToken} = require('../../jwtAuthorization');
 
 const makeCreateAppointment = require('./createAppointment');
 const makeGetAppointmentById = require('./getAppointmentById');
@@ -13,7 +14,7 @@ const {addAppointment,getAppointmentByPatientId,getAppointment,
     getAppointmentByPatientIdActive,getAppointmentByPatientIdDue,getByDuration,
     deleteAppointmentById,updateAppointment} = appointmentServices;
 
-const createAppointment = makeCreateAppointment({addAppointment});
+const createAppointment = makeCreateAppointment({addAppointment,jwtVerifyToken});
 const getAppointmentById = makeGetAppointmentById({getAppointment});
 const getByPatientId = makeGetByPatientId({getAppointmentByPatientId});
 const getByPatientIdActive = makeGetByPatientIdActive({getAppointmentByPatientIdActive});

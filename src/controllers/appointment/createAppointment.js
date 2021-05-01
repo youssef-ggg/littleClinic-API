@@ -1,17 +1,41 @@
-const { app } = require("electron");
+module.exports = function makeCreateAppointment({addAppointment,jwtVerifyToken}){
 
-module.exports = function makeCreateAppointment({addAppointment}){
+    return async function createAppointment(httpRequest){
 
-    return async function createAppointment(appointment){
+        const headers = {
+            'Content-Type':'application/json'
+        }
 
         try {
+
+            const verification = jwtVerifyToken(httpRequest);
+            if (verification.statusCode == 403)
+            {
+                return {
+                    headers,
+                    ...verification
+                }
+            }
+            const {...appointmentData} = httpRequest.body;
+            const appointment = await addAppointment(appointmentData);
             
-            const createdAppointment = await addAppointment(appointment);
-            return createdAppointment;
+
+            return {
+                headers,
+                statusCode:201,
+                body:appointment
+            }
             
         } catch (error) {
+            //TODO::error logger
             console.log(error);
-            return error;
+            return{
+                headers,
+                statusCode:400,
+                body:{
+                    error:error.message,
+                },
+            };
         }
 
 
