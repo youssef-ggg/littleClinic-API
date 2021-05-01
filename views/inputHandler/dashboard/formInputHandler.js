@@ -17,8 +17,17 @@ module.exports = function dashboardFormInputReader(inputFormat){
             }
         }
         else if (input.type == 'date'){
-            const birthDate = document.querySelector(`input[name="${input.id}"]`).value;
-            userInput[input.id] = new Date(birthDate).getTime();
+            
+            const date = document.querySelector(`input[name="${input.id}"]`).value;
+            if(date == '' || date == null)
+                userInput[input.id] = null;
+            else 
+                userInput[input.id] = new Date(date).getTime();
+        }
+        else if (input.type == 'time'){
+            const time = document.querySelector(`input[name="${input.id}"]`).value;
+            userInput[input.id] = time;
+        
         }
         else if (input.type == 'radio'){
 
