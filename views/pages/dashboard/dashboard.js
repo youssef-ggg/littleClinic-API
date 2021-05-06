@@ -593,7 +593,7 @@ const createAppointmentView = (singlePatient)=>{
 
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
-
+        patientSingleView(singlePatient);
     });
 
 }
@@ -612,8 +612,9 @@ const appointmentSingleView=(appointmentData) =>{
     renderUnitView('Appointment Information',appointmentFormFormat);
     tabs('Appointment Manager',appointmentSingleSideNav());
 
-    const updateAppointment = document.querySelector('#edit');
+    
     const backToAppLog = document.querySelector('#back');
+    const updateAppointment = document.querySelector('#edit');
     const deleteAppointment = document.querySelector('#delete');
     const container = document.querySelector('.container');
 
@@ -637,6 +638,10 @@ const appointmentSingleView=(appointmentData) =>{
         })
         
         appointmentListByPatient({patientData,appointmentList})
+    });
+
+    updateAppointment.addEventListener('click',function(event){
+        updateAppointmentView(appointmentData);
     });
 
 }
@@ -671,10 +676,10 @@ ipcRenderer.on('appointmentSingleView',function(event,appointmetData){
         });
     });
 
-    backToAppLog.addEventListener('click',function(event){
+    // backToAppLog.addEventListener('click',function(event){
         
-        ipcRenderer.send('reqPatientAppointmentLog',singlePatient);
-    });
+    //     ipcRenderer.send('reqPatientAppointmentLog',singlePatient);
+    // });
 });
 
 //Update appointments
