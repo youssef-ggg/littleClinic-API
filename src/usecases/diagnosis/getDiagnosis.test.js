@@ -7,18 +7,18 @@ const makeFakeDiagnosis = require('../../__test__/fixtures/diagnosis');
 
 describe('get single diagnosis',()=>{
 
-    let diagnosisCollection,getGetDiagnosis;
+    let diagnosisCollection,getDiagnosis;
 
     beforeAll(()=>{
         diagnosisCollection = makeDiagnosisCollection({makeDb,ObjectID});
-        getGetDiagnosis = makeGetDiagnosis({diagnosisCollection});
+        getDiagnosis = makeGetDiagnosis({diagnosisCollection});
     });
 
     it('successfull request',async ()=>{
         const fakeDiagnosis = makeFakeDiagnosis();
         
         const insertedDiagnosis = await diagnosisCollection.insert(fakeDiagnosis);
-        const returnedDiagnosis = await getGetDiagnosis({id:insertedDiagnosis.id});
+        const returnedDiagnosis = await getDiagnosis({id:insertedDiagnosis.id});
        
         expect(returnedDiagnosis).toMatchObject(insertedDiagnosis);
     });

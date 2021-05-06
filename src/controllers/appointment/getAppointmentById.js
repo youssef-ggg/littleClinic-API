@@ -1,10 +1,38 @@
-module.exports = function makeGetAppointmentById({getAppointment}){
+module.exports = function makeGetAppointmentById({getAppointment,jwtVerifyToken}){
 
-    return async function getAppointmentById(id)
+    return async function getAppointmentById(httpRequest)
     {
-        const appointment = await getAppointment(id);
+        const headers = {
+            'Content-Type':'application/json'
+        }
 
-        return appointment;
+        const verification = jwtVerifyToken(httpRequest);
+        if (verification.statusCode == 403)
+        {
+            return {
+                headers,
+                ...verification
+            }
+        }
+        const appointment = await getAppointment({id:httpRequest.query.id});
+
+        if (appointment){
+            return {
+                headers,
+                statusCode:200,
+                body:appointment
+            };
+        }
+        else {
+            return {
+                headers,
+                statusCode:404,
+                body:{
+                    error:'appointment was not found.'
+                }
+            }
+        }
+        
     }
 
 }

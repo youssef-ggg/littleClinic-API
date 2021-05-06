@@ -114,12 +114,18 @@ module.exports = Object.freeze({
         ]
     },
     appointmentUnitView:appointmentData=>{
-        const {title,patientName,time,date,createdOn,modifiedOn} = appointmentData;
+        const {title,patientName,date,createdOn,modifiedOn} = appointmentData;
 
         const dateFormatAppointment = new Date(date);
         const dateFormatCreate = new Date(createdOn);
         const dateFormatmodified = new Date(modifiedOn);
 
+        const formatedTime = `${dateFormatAppointment.getHours()}:${
+            dateFormatAppointment.getMinutes()>10?
+            dateFormatAppointment.getMinutes():'0'+dateFormatAppointment.getMinutes()
+        }`;
+        
+        
         const dateOptions = {
             weekday:'long',
             month:'long',
@@ -130,8 +136,10 @@ module.exports = Object.freeze({
         const appointmentModel = {
             'Title':title,
             'Patient Name':patientName,
-            'Time':time,
+            'Time':formatedTime,
             'Date':dateFormatAppointment.toLocaleDateString('en-EN',dateOptions),
+            'Created On':dateFormatCreate.toLocaleDateString('en-En',dateOptions),
+            'Modified On':dateFormatmodified.toLocaleDateString('en-En',dateOptions)
         }
 
         return appointmentModel;

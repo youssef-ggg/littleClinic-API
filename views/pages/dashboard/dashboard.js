@@ -620,14 +620,23 @@ const appointmentSingleView=(appointmentData) =>{
     const singlePatient = {id:appointmentData.patientId};
 
     backToAppLog.addEventListener('click',async function(event){
+        //decrease calls to server in the future
         const appointmentList = await getByQueryRequest({
             getData:{patientId:singlePatient.id},
             requestRoute:'/appointment/patient',
             query:'patientId',
             axiosAuth
         });
-        //console.log(appointmentList);
-        appointmentListByPatient({patientData:{...singlePatient},appointmentList})
+
+        //decrease calls to server in the future
+        const patientData = await getByQueryRequest({
+            getData:{id:singlePatient.id},
+            requestRoute:'/patients',
+            query:'id',
+            axiosAuth
+        })
+        
+        appointmentListByPatient({patientData,appointmentList})
     });
 
 }
@@ -766,7 +775,7 @@ const appointmentListByPatient = ({patientData,appointmentList}) => {
         unitView:{
             unitRenderer:appointmentSingleView,
             axiosAuth,
-            url:''
+            url:'/appointment/getAppointment/query?id='
         },
     };
 

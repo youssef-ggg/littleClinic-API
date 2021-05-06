@@ -15,7 +15,7 @@ const {addAppointment,listAppointmentByPatientId,getAppointment,
     deleteAppointmentById,updateAppointment} = appointmentServices;
 
 const createAppointment = makeCreateAppointment({addAppointment,jwtVerifyToken});
-const getAppointmentById = makeGetAppointmentById({getAppointment});
+const getAppointmentById = makeGetAppointmentById({getAppointment,jwtVerifyToken});
 const getByPatientId = makeGetByPatientId({listAppointmentByPatientId,jwtVerifyToken});
 const getByPatientIdActive = makeGetByPatientIdActive({getAppointmentByPatientIdActive});
 const getByPatientIdDue = makeGetByPatientIdDue({getAppointmentByPatientIdDue});
