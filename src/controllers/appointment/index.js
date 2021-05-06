@@ -10,13 +10,13 @@ const makeGetByDateDuration = require('./getByDateDuration');
 const makeDeleteSingleAppointment = require('./deleteSingleAppointment');
 const makeSetUpdateAppointment = require('./updateAppointment');
 
-const {addAppointment,getAppointmentByPatientId,getAppointment,
+const {addAppointment,listAppointmentByPatientId,getAppointment,
     getAppointmentByPatientIdActive,getAppointmentByPatientIdDue,getByDuration,
     deleteAppointmentById,updateAppointment} = appointmentServices;
 
 const createAppointment = makeCreateAppointment({addAppointment,jwtVerifyToken});
 const getAppointmentById = makeGetAppointmentById({getAppointment});
-const getByPatientId = makeGetByPatientId({getAppointmentByPatientId});
+const getByPatientId = makeGetByPatientId({listAppointmentByPatientId,jwtVerifyToken});
 const getByPatientIdActive = makeGetByPatientIdActive({getAppointmentByPatientIdActive});
 const getByPatientIdDue = makeGetByPatientIdDue({getAppointmentByPatientIdDue});
 const getByDateDuration = makeGetByDateDuration({getByDuration});

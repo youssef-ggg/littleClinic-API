@@ -32,6 +32,7 @@ const modal = require('../../utilites/modal');
 const toastNotify = require('../../utilites/toastNotify');
 const dashboardUtitltyFunctions = require('./utility');
 const renderFormError = require('../../errorHandler/renderFormError');
+const appointment = require('../../../src/dataAcces/appointment');
 
 
 const API_URL = 'http://localhost:5000';//remove from here, maybe use .env file.
@@ -263,7 +264,9 @@ const patientSingleView = (patientData)=>{
 
     const editBtn = document.querySelector('#edit');
     const newDiagnosisBtn = document.querySelector('#createDiagnosis');
+    const newAppointmentBtn = document.querySelector('#createAppointment');
     const diagnosticLogBtn = document.querySelector('#diagnosticLog');
+    const appointmentLog = document.querySelector('#appointmentLog');
 
     editBtn.addEventListener('click',function(event){
         udpatePatientForm(patientData);
@@ -271,6 +274,10 @@ const patientSingleView = (patientData)=>{
 
     newDiagnosisBtn.addEventListener('click',function(event){
         createDiagnosisView(patientData);
+    });
+
+    newAppointmentBtn.addEventListener('click',function(event){
+        createAppointmentView(patientData);
     });
 
     diagnosticLogBtn.addEventListener('click',async function(event){
@@ -283,7 +290,20 @@ const patientSingleView = (patientData)=>{
         });
         diagnosisTableView({patientData,diagnosisList});
     });
+
+    appointmentLog.addEventListener('click',async function(event){
+        const response = await getByQueryRequest({
+            getData:{patientId:patientData.id},
+            requestRoute:'/appointment/patient',
+            query:'patientId',
+            axiosAuth
+        });
+        // console.log(response);
+        appointmentListByPatient({patientData,appointmentList:response})
+    });
 }
+
+
 
 const createPatientView = ()=>{
 
@@ -480,7 +500,6 @@ const updateDiagnosisView = (diagnosisData)=>{
                 modal(container,updateModalMatchOld);
             }
             else {
-                 //updatedDiagnosisData.id = diagnosisData.id;
                 modal(container,updateModalSuccess);
                 const applyChanges =document.querySelector('#apply');
 
@@ -496,10 +515,7 @@ const updateDiagnosisView = (diagnosisData)=>{
 
                     diagnosisSingleView(responseData);
                 });
-
-                
-                // diagnosisSingleView
-            }
+           }
            
         }
          
@@ -507,7 +523,7 @@ const updateDiagnosisView = (diagnosisData)=>{
 
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
-        ipcRenderer.send('reqDiagnosis',diagnosisData);
+        diagnosisSingleView(diagnosisData);
     });
 
 };
@@ -546,29 +562,38 @@ const createAppointmentView = (singlePatient)=>{
     if (singlePatient)
         document.querySelector('input[name="patientName"]').value = singlePatient.name;
 
-    saveBtn.addEventListener('click',function(event){
+    saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
 
+        const appointment = dashboardFormInputReader(appointmentFormFormat);
         
-        const appointment = {
-            title:document.querySelector('input[name="title"]').value,
-            patientName : document.querySelector('input[name="patientName"]').value,
-            time : document.querySelector('input[name="time"]').value,
-            date : new Date(`${document.querySelector('input[name="date"]').value}T${
-                document.querySelector('input[name="time"]').value}`).getTime(),
-            patientId : singlePatient.id?singlePatient.id:null 
-        }
-        const {formInputAppointment} = errorHandler();
+        const {createAppointmentErrorHandler} = errorHandlerService;
         
-        if(!formInputAppointment(appointment))
+        if(!createAppointmentErrorHandler(appointment))
         {
-            ipcRenderer.send('createAppointment',appointment);
+            const dateTime = new Date(appointment.date);
+            const hours = appointment.time.split(':');
+
+            dateTime.setHours(parseInt(hours[0]),parseInt(hours[1]),0);
+            appointment.date = dateTime.getTime();
+            appointment.patientId = singlePatient.id;
+            const {time,...appointmentData} = appointment;
+
+            const responseData = await createRequest({
+                postData:appointmentData,
+                moduleTitle:'Appointment',
+                requestRoute:'/appointment/addAppointment',
+                axiosAuth});
+    
+                appointmentSingleView(responseData);
+                
+            
         }
     });
 
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
-        ipcRenderer.send('reqPatient',singlePatient);
+
     });
 
 }
@@ -581,9 +606,9 @@ apntmntBtn.addEventListener('click',function(event){
 });
 
 //Appointments single view
-ipcRenderer.on('appointmentSingleView',function(event,appointmetData){
-    const appointmentFormFormat = appointmentUnitView(appointmetData);
-   
+const appointmentSingleView=(appointmentData) =>{
+    
+    const appointmentFormFormat = appointmentUnitView(appointmentData);
     renderUnitView('Appointment Information',appointmentFormFormat);
     tabs('Appointment Manager',appointmentSingleSideNav());
 
@@ -592,7 +617,33 @@ ipcRenderer.on('appointmentSingleView',function(event,appointmetData){
     const deleteAppointment = document.querySelector('#delete');
     const container = document.querySelector('.container');
 
-    const singlePatient = {id:appointmetData.patientId};
+    const singlePatient = {id:appointmentData.patientId};
+
+    backToAppLog.addEventListener('click',async function(event){
+        const appointmentList = await getByQueryRequest({
+            getData:{patientId:singlePatient.id},
+            requestRoute:'/appointment/patient',
+            query:'patientId',
+            axiosAuth
+        });
+        //console.log(appointmentList);
+        appointmentListByPatient({patientData:{...singlePatient},appointmentList})
+    });
+
+}
+
+ipcRenderer.on('appointmentSingleView',function(event,appointmetData){
+    // const appointmentFormFormat = appointmentUnitView(appointmetData);
+   
+    // renderUnitView('Appointment Information',appointmentFormFormat);
+    // tabs('Appointment Manager',appointmentSingleSideNav());
+
+    // const updateAppointment = document.querySelector('#edit');
+    // const backToAppLog = document.querySelector('#back');
+    // const deleteAppointment = document.querySelector('#delete');
+    // const container = document.querySelector('.container');
+
+    // const singlePatient = {id:appointmetData.patientId};
    
     updateAppointment.addEventListener('click',function(event){
        updateAppointmentView(appointmetData)
@@ -708,16 +759,21 @@ ipcRenderer.on('appointmentByDuration',function(event,{appointmentList,startDate
     });
 });
 
-//Get Appointments by patient
-ipcRenderer.on('appointmentList',function(event,patientData){
-    const {singlePatient,appointmentList} = patientData;
+const appointmentListByPatient = ({patientData,appointmentList}) => {
 
+    //needs work
     const appointmentMetaData = {
-        ipcRequest:'reqAppointment'
+        unitView:{
+            unitRenderer:appointmentSingleView,
+            axiosAuth,
+            url:''
+        },
     };
 
     const appointmentTableData = appointmentTableFormat(appointmentList);
     const centerContent = document.querySelector('.content-center');
+    
+
     centerContent.innerHTML='';
 
     renderActions('Appointments');
@@ -730,22 +786,30 @@ ipcRenderer.on('appointmentList',function(event,patientData){
     const pastAppointmentsBtn = document.querySelector('#pstApntmt');
 
     backToPatientBtn.addEventListener('click',function(event){
-        ipcRenderer.send('reqPatient',singlePatient);
+        patientSingleView(patientData);
     });
 
     activeAppointmentsBtn.addEventListener('click',function(event){
-        ipcRenderer.send('reqActiveAppPatientID',singlePatient);
+        centerContent.innerHTML='';
+        const activeAppList = appointmentList.filter(appointment => appointment.date > Date.now());
+        const appointmentTableData = appointmentTableFormat(activeAppList);
+        renderTable(appointmentTableData,appointmentMetaData);
     });
-    
+
     allAppointmentsBtn.addEventListener('click',function(event){
-        ipcRenderer.send('reqPatientAppointmentLog',singlePatient);
+        centerContent.innerHTML='';
+        const appointmentTableData = appointmentTableFormat(appointmentList);
+        renderTable(appointmentTableData,appointmentMetaData);
     });
 
     pastAppointmentsBtn.addEventListener('click',function(event){
-        ipcRenderer.send('reqPastAppPatientID',singlePatient);
+        centerContent.innerHTML='';
+        const dueAppList = appointmentList.filter(appointment => appointment.date <= Date.now());
+        const appointmentTableData = appointmentTableFormat(dueAppList);
+        renderTable(appointmentTableData,appointmentMetaData);
     });
 
-});
+};
 
 //logout
 logoutBtn.addEventListener('click',function(event){

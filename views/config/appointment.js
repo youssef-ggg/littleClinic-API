@@ -34,9 +34,12 @@ module.exports = Object.freeze({
             }
             const due = Date.now() < dateFormat.getTime()?'Pending':'Passed';
 
+            const timeFormat = `${dateFormat.getHours()}:${
+                dateFormat.getMinutes()>9?dateFormat.getMinutes():'0'+dateFormat.getMinutes()
+            }`;
             appointmentTable.push({
                 id,
-                'Time':time,
+                'Time':timeFormat,
                 'Patient Name':patientName,
                 'Title':title,
                 'Date':dateFormat.toLocaleDateString('en-EN',dateOptions),

@@ -65,40 +65,6 @@ ipcMain.on('requestPatientsPage',async function(event,pageData){
     event.sender.send('patientListPaginated',patientData);
 });
 
-//Diagnosis events
-ipcMain.on('reqDiagnosis',async function(event,diagnosisData){
-    const id = diagnosisData.id;
-    const {getDiagnosisById} = diagnosisController;
-    const diagnosis = await getDiagnosisById(id);
-    event.sender.send('diagnosisSingleView',diagnosis[0]);
-});
-
-ipcMain.on('reqPatientDiagnosisLog',async function(event,singlePatient){
-    const {getByPatientId} = diagnosisController;
-    const diagnosisList = await getByPatientId(singlePatient.id);
-    event.sender.send('diagnosisList',{singlePatient,diagnosisList});
-});
-
-ipcMain.on('UpdateDiagnosis',async function(event,diagnosisData){
-    const {setUpdateDiagnosis}  = diagnosisController;
-    const result = await setUpdateDiagnosis(diagnosisData);
-
-    const id = diagnosisData.id;
-    const {getDiagnosisById} = diagnosisController;
-    const diagnosis = await getDiagnosisById(id);
-    event.sender.send('diagnosisSingleView',diagnosis[0]);
-    event.sender.send('updateSuccess',{message:'Diagnosis updated Successfully.',state:'success'});
-
-});
-
-ipcMain.on('deleteDiagnosis',async function(event,diagnosisData){
-
-    const {deleteSingleDiangosis} = diagnosisController;
-    const result = await deleteSingleDiangosis(diagnosisData);    
-    event.sender.send('updateSuccess',{message:'Diagnosis Deleted Successfully.',state:'success-warn'});
-
-});
-
 //Appointment Events
 ipcMain.on('getApntmntsThisWeek',async function(event,{startDate}){
 
@@ -122,14 +88,6 @@ ipcMain.on('updateAppointment',async function(event,appointmentData){
     event.sender.send('appointmentSingleView',appointment[0]);
     event.sender.send('updateSuccess',{message:'Appointment updated successfully.',state:'success'});
 
-});
-
-ipcMain.on('createAppointment',async function(event,appointment){
-
-    const {createAppointment} = appointmentController;
-    const result = await createAppointment(appointment);
-    event.sender.send('updateSuccess',{message:'appointment Created Successfully.',state:'success'});
-    event.sender.send('appointmentSingleView',result);
 });
 
 ipcMain.on('reqPatientAppointmentLog',async function(event,singlePatient){

@@ -1,10 +1,38 @@
-module.exports = function makeGetByPatientId({getAppointmentByPatientId}){
+module.exports = function makeGetByPatientId({listAppointmentByPatientId,jwtVerifyToken}){
 
-    return async function getByPatientId(patientId)
+    return async function getByPatientId(httpRequest)
     {
-        const appointmentList = await getAppointmentByPatientId(patientId);
+        const headers = {
+            'Content-Type':'application/json'
+        };
+        const verification = jwtVerifyToken(httpRequest);
+        if (verification.statusCode == 403)
+        {
+            return {
+                headers,
+                ...verification
+            }
+        }
         
-        return appointmentList;
+        const appointmentList = await listAppointmentByPatientId({patientId:httpRequest.query.patientId});
+        
+        if (appointmentList.length > 0 ){
+            return {
+                headers,
+                statusCode:200,
+                body:appointmentList
+            };
+        }
+        else{
+            return {
+                headers,
+                statusCode:404,
+                body:{
+                    error:'no appointments found.'
+                }
+            }
+        }
+        
     }
 
 }

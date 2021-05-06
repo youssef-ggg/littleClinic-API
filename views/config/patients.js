@@ -141,7 +141,7 @@ module.exports = Object.freeze({
             },
             {
                 name:'Appointments Log',
-                id:'apointLog',
+                id:'appointmentLog',
                 icon:'fas fa-history'
             },
             
