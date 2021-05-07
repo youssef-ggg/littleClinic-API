@@ -20,7 +20,7 @@ const getByPatientId = makeGetByPatientId({listAppointmentByPatientId,jwtVerifyT
 const getByPatientIdActive = makeGetByPatientIdActive({getAppointmentByPatientIdActive});
 const getByPatientIdDue = makeGetByPatientIdDue({getAppointmentByPatientIdDue});
 const getByDateDuration = makeGetByDateDuration({getByDuration});
-const deleteSingleAppointment = makeDeleteSingleAppointment({deleteAppointmentById});
+const deleteSingleAppointment = makeDeleteSingleAppointment({deleteAppointmentById,jwtVerifyToken});
 const setUpdateAppointment = makeSetUpdateAppointment({updateAppointment});
 
 const appointmentController = Object.freeze({
