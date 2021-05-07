@@ -635,13 +635,47 @@ const appointmentSingleView=(appointmentData) =>{
             requestRoute:'/patients',
             query:'id',
             axiosAuth
-        })
+        });
         
-        appointmentListByPatient({patientData,appointmentList})
+        appointmentListByPatient({patientData,appointmentList});
     });
 
     updateAppointment.addEventListener('click',function(event){
         updateAppointmentView(appointmentData);
+    });
+
+    deleteAppointment.addEventListener('click',function(event){
+        
+        const entityData = {title:'Appointment'}
+        modal(container,deleteModal(entityData));
+        const confirmDelete = document.querySelector('#confirm');
+
+        confirmDelete.addEventListener('click',async function(event){
+
+            const overlay = document.querySelector('.modal-overlay');
+            overlay.parentNode.removeChild(overlay);
+            const response = await axiosAuth.delete(`/appointment/delete/${appointmentData.id}`);
+            // make response handle diffrent errors 
+            toastNotify('Appointment removed successfully.','success-warn');
+
+            //decrease calls to server in the future
+            const appointmentList = await getByQueryRequest({
+                getData:{patientId:singlePatient.id},
+                requestRoute:'/appointment/patient',
+                query:'patientId',
+                axiosAuth
+            });
+
+            //decrease calls to server in the future
+            const patientData = await getByQueryRequest({
+                getData:{id:singlePatient.id},
+                requestRoute:'/patients',
+                query:'id',
+                axiosAuth
+            });
+            appointmentListByPatient({patientData,appointmentList});
+        });
+
     });
 
 }
@@ -659,9 +693,9 @@ ipcRenderer.on('appointmentSingleView',function(event,appointmetData){
 
     // const singlePatient = {id:appointmetData.patientId};
    
-    updateAppointment.addEventListener('click',function(event){
-       updateAppointmentView(appointmetData)
-    });
+    // updateAppointment.addEventListener('click',function(event){
+    //    updateAppointmentView(appointmetData)
+    // });
 
     deleteAppointment.addEventListener('click',function(event){
         const entityData = {title:'Appointment'}
@@ -727,7 +761,7 @@ const updateAppointmentView = (appointmentData)=>{
 
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
-        ipcRenderer.send('reqAppointment',appointmentData);
+        appointmentSingleView(appointmentData);
     })
 
 }
