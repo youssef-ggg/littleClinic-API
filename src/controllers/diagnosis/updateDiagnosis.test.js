@@ -1,4 +1,3 @@
-const { fake } = require('faker');
 const faker = require('faker');
 
 const makeFakeDiagnosis = require('../../__test__/fixtures/diagnosis');

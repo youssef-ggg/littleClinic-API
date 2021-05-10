@@ -6,7 +6,7 @@ const makeListAppointmentByPatientId = require('./listByPatientId');
 const makeGetAppointmentByPatientIdActive = require('./getActiveAppointments');
 const makeGetAppointmentByPatientIdDue = require('./getDueByPatientId');
 const makeGetByDuration = require('./getByDuration');
-const makeUpdateAppointment = require('./updateAppointment');
+const makeEditAppointment = require('./editAppointment');
 const makeDeleteAppointmentById = require('./deleteAppointmentById');
 
 
@@ -16,12 +16,12 @@ const listAppointmentByPatientId = makeListAppointmentByPatientId({appointmentCo
 const getAppointmentByPatientIdActive = makeGetAppointmentByPatientIdActive({appointmentCollection});
 const getAppointmentByPatientIdDue = makeGetAppointmentByPatientIdDue({appointmentCollection});
 const getByDuration = makeGetByDuration({appointmentCollection});
-const updateAppointment = makeUpdateAppointment({appointmentCollection});
+const editAppointment = makeEditAppointment({appointmentCollection});
 const deleteAppointmentById = makeDeleteAppointmentById({appointmentCollection});
 
 const appointmentServices = Object.freeze({
     addAppointment,getAppointment,listAppointmentByPatientId,getAppointmentByPatientIdActive,
-    getAppointmentByPatientIdDue,getByDuration,deleteAppointmentById,updateAppointment
+    getAppointmentByPatientIdDue,getByDuration,deleteAppointmentById,editAppointment
 });
 
 module.exports = appointmentServices;

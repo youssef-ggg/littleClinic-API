@@ -8,11 +8,11 @@ const makeGetByPatientIdActive = require('./getByPatientIdActive');
 const makeGetByPatientIdDue = require('./getByPatientIdDue');
 const makeGetByDateDuration = require('./getByDateDuration');
 const makeDeleteSingleAppointment = require('./deleteSingleAppointment');
-const makeSetUpdateAppointment = require('./updateAppointment');
+const makeUpdateAppointment = require('./updateAppointment');
 
 const {addAppointment,listAppointmentByPatientId,getAppointment,
     getAppointmentByPatientIdActive,getAppointmentByPatientIdDue,getByDuration,
-    deleteAppointmentById,updateAppointment} = appointmentServices;
+    deleteAppointmentById,editAppointment} = appointmentServices;
 
 const createAppointment = makeCreateAppointment({addAppointment,jwtVerifyToken});
 const getAppointmentById = makeGetAppointmentById({getAppointment,jwtVerifyToken});
@@ -21,11 +21,11 @@ const getByPatientIdActive = makeGetByPatientIdActive({getAppointmentByPatientId
 const getByPatientIdDue = makeGetByPatientIdDue({getAppointmentByPatientIdDue});
 const getByDateDuration = makeGetByDateDuration({getByDuration});
 const deleteSingleAppointment = makeDeleteSingleAppointment({deleteAppointmentById,jwtVerifyToken});
-const setUpdateAppointment = makeSetUpdateAppointment({updateAppointment});
+const updateAppointment = makeUpdateAppointment({editAppointment,jwtVerifyToken});
 
 const appointmentController = Object.freeze({
     createAppointment,getByPatientId,getByPatientIdActive,getByPatientIdDue,getAppointmentById,
-    getByDateDuration,deleteSingleAppointment,setUpdateAppointment
+    getByDateDuration,deleteSingleAppointment,updateAppointment
 });
 
 module.exports = appointmentController;

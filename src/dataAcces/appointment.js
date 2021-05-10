@@ -131,15 +131,20 @@ module.exports = function makeAppointmentCollection({makeDb,ObjectID}){
     }
     async function update(appointmentData)
     {
-        const {id,...setNewAppointment} = appointmentData
+        const {id,...setNewAppointment} = appointmentData;
+        const options =  {returnOriginal: false};
         try {
             const db = await makeDb();
-            const result = await db.collection('appointments').updateOne({_id:ObjectID(id)},
-            {
-                $set:{...setNewAppointment}
-            });
+            const result = await db.collection('appointments').findOneAndUpdate({_id:ObjectID(id)},
+                {
+                    $set:{...setNewAppointment}
+                },
+                options
+            );
 
-            return result;
+            const {value} = result;
+            const {_id,...rest} = value;
+            return {id:_id.toString(),...rest};
             
         } catch (error) {
             return error;

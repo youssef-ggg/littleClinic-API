@@ -18,7 +18,7 @@ module.exports = function makeUpdateDiagnosis({editDiagnosis,jwtVerifyToken}){
                 }
             }
 
-        const {id} = httpRequest.params;
+            const {id} = httpRequest.params;
             const editedDiagnosisData = {id,...httpRequest.body};
             const diagnosis = await editDiagnosis(editedDiagnosisData);
            

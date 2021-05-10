@@ -51,8 +51,8 @@ const patientBtn = document.querySelector('#patients');
 const apntmntBtn = document.querySelector('#appointments');
 const logoutBtn = document.querySelector('#logout');
  
-const PAGEINDEX = 1;
-const PAGESIZE = 10;
+// const PAGEINDEX = 1;
+// const PAGESIZE = 10;
 
 userNameHeader.innerHTML = currentuser.username;
 
@@ -515,10 +515,8 @@ const updateDiagnosisView = (diagnosisData)=>{
 
                     diagnosisSingleView(responseData);
                 });
-           }
-           
-        }
-         
+           }           
+        }         
     });
 
     cancelBtn.addEventListener('click',function(event){
@@ -586,8 +584,7 @@ const createAppointmentView = (singlePatient)=>{
                 axiosAuth});
     
                 appointmentSingleView(responseData);
-                
-            
+  
         }
     });
 
@@ -606,7 +603,7 @@ apntmntBtn.addEventListener('click',function(event){
 });
 
 //Appointments single view
-const appointmentSingleView=(appointmentData) =>{
+const appointmentSingleView = (appointmentData)=>{
     
     const appointmentFormFormat = appointmentUnitView(appointmentData);
     renderUnitView('Appointment Information',appointmentFormFormat);
@@ -680,42 +677,6 @@ const appointmentSingleView=(appointmentData) =>{
 
 }
 
-ipcRenderer.on('appointmentSingleView',function(event,appointmetData){
-    // const appointmentFormFormat = appointmentUnitView(appointmetData);
-   
-    // renderUnitView('Appointment Information',appointmentFormFormat);
-    // tabs('Appointment Manager',appointmentSingleSideNav());
-
-    // const updateAppointment = document.querySelector('#edit');
-    // const backToAppLog = document.querySelector('#back');
-    // const deleteAppointment = document.querySelector('#delete');
-    // const container = document.querySelector('.container');
-
-    // const singlePatient = {id:appointmetData.patientId};
-   
-    // updateAppointment.addEventListener('click',function(event){
-    //    updateAppointmentView(appointmetData)
-    // });
-
-    deleteAppointment.addEventListener('click',function(event){
-        const entityData = {title:'Appointment'}
-        modal(container,deleteModal(entityData));
-        const confirmDelete = document.querySelector('#confirm');
-
-        confirmDelete.addEventListener('click',function(event){
-            const overlay = document.querySelector('.modal-overlay');
-                overlay.parentNode.removeChild(overlay);
-                ipcRenderer.send('deleteAppointment',appointmetData);
-                // ipcRenderer.send('reqPatientDiagnosisLog',singlePatient);
-        });
-    });
-
-    // backToAppLog.addEventListener('click',function(event){
-        
-    //     ipcRenderer.send('reqPatientAppointmentLog',singlePatient);
-    // });
-});
-
 //Update appointments
 const updateAppointmentView = (appointmentData)=>{
     renderUpdateForm('Appointment',appointmentFormFormat,appointmentData);
@@ -723,38 +684,50 @@ const updateAppointmentView = (appointmentData)=>{
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
-    const {id,patientId} = appointmentData
+    const {id,patientId} = appointmentData;
+
+    const timeInput = document.querySelector('#time');
+    const dateTime = new Date(appointmentData.date);
+    appointmentData.time =  `${dateTime.getHours()}:${dateTime.getMinutes()}`;
+    timeInput.value = appointmentData.time;
 
     saveBtn.addEventListener('click',function(event){
         event.preventDefault();
         
-        const updatedApntmntData = {
-            id,
-            title:document.querySelector('#title').value,
-            patientName:document.querySelector('#patientName').value,
-            time:document.querySelector('#time').value,
-            date:new Date(`${document.querySelector('#date').value}T${
-                document.querySelector('#time').value}`).getTime(),
-            patientId:patientId,
+        const container = document.querySelector('.container');
+        const updatedAppointmentData = dashboardFormInputReader(appointmentFormFormat);
+        const datesTime = new Date(updatedAppointmentData.date);
+        const hours = updatedAppointmentData.time.split(':');
+
+        datesTime.setHours(parseInt(hours[0]),parseInt(hours[1]),0);
+        updatedAppointmentData.date = datesTime.getTime();
+        
+        updatedAppointmentData.id = id;
+        if(patientId){
+            updatedAppointmentData.patientId = patientId;
         }
 
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
-        const container = document.querySelector('.container');
-        const {formInputAppointment} = errorHandler();
-
-        if(updateEqualityCheck(updatedApntmntData,appointmentData))
-        {
+        const {updateAppointmentErrorHandler} = errorHandlerService;
+        
+        if(updateEqualityCheck(updatedAppointmentData,appointmentData)){
             modal(container,updateModalMatchOld);
         }
-        else if(!formInputAppointment(updatedApntmntData)){
-            updatedApntmntData.modifiedOn = Date.now();
+        else if(!updateAppointmentErrorHandler(updatedAppointmentData)){
             modal(container,updateModalSuccess);
-            const applyChanges =document.querySelector('#apply');
+            const applyChanges = document.querySelector('#apply');
 
-            applyChanges.addEventListener('click',function(event){
+            applyChanges.addEventListener('click',async function(event){
                 const overlay = document.querySelector('.modal-overlay');
                 overlay.parentNode.removeChild(overlay);
-                ipcRenderer.send('updateAppointment',updatedApntmntData);
+            
+                const responseData = await updateRequest({patchData:{
+                    patientId:updatedAppointmentData.patientId
+                    ,...updatedAppointmentData},
+                    moudleTitle:'Appointment',
+                    requestRoute:`/appointment/updateAppointment/${updatedAppointmentData.id}`,axiosAuth});
+
+                appointmentSingleView(responseData);
             });
         }
     });

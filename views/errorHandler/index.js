@@ -22,13 +22,13 @@ const {
 } = diagnosisErrorHandler({renderFormError});
 
 const {
-    createAppointmentErrorHandler
+    createAppointmentErrorHandler,updateAppointmentErrorHandler
 } = appointmentErrorHandler({commonInputError,renderFormError});
 
 module.exports = {
     passMisMatchHandle,userFormErrorHandler,userFormPassErrorHandle,
     createUserErrorHandler,updateUserDataErrorHandle,updateUserPasswordErrorHandle,
     createPatientErrorHandler,updatePatientErrorHandler,createDiagnosisErrorHandler,
-    updateDiagnosisErrorHandler,createAppointmentErrorHandler
+    updateDiagnosisErrorHandler,createAppointmentErrorHandler,updateAppointmentErrorHandler
 }
 
