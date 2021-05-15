@@ -1,10 +1,44 @@
-module.exports = function makeGetByDateDuration({getByDuration}){
+module.exports = function makeGetByDateDuration({listByDuration,jwtVerifyToken}){
 
-    return async function getByDateDuration({startDate,endDate})
+    return async function getByDateDuration(httpRequest)
     {
-        const appointments = await getByDuration({startDate,endDate});
+        const headers = {
+            'Content-Type':'application/json'
+        }
+    
+        try {
+            
+            const {startDate,endDate} = httpRequest.query;
+            const startDateFormat = new Date(parseInt(startDate));
+            const endDateFormat = new Date(parseInt(endDate));
+            const appointmentList = await listByDuration({startDate:startDateFormat,endDate:endDateFormat});
+            const verification = jwtVerifyToken(httpRequest);
+            
+            if (verification.statusCode == 403)
+            {
+                return {
+                    headers,
+                    ...verification
+                }
+            }
 
-        return appointments;
+            return {
+                headers,
+                statusCode:200,
+                body:appointmentList
+            };
+        
+        } catch (error) {
+            //TODO::error logger
+            console.log(error);
+            return{
+                headers,
+                statusCode:400,
+                body:{
+                    error:error.message,
+                },
+            }
+        }
     }
 
 }

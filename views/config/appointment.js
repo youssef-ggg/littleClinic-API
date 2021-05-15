@@ -86,7 +86,12 @@ module.exports = Object.freeze({
                 name:'All Appointments',
                 id:'allapntmnt',
                 icon:'fas fa-calendar-alt'
-            }
+            },
+            {
+                name:'New Appointment',
+                id:'createAppointment',
+                icon:'fas fa-pencil-ruler'
+            },
         ];
     },
     apntmntPatientTableLeftNav:()=>{
@@ -120,8 +125,9 @@ module.exports = Object.freeze({
         const dateFormatCreate = new Date(createdOn);
         const dateFormatmodified = new Date(modifiedOn);
 
-        const formatedTime = `${dateFormatAppointment.getHours()}:${
-            dateFormatAppointment.getMinutes()>10?
+        const formatedTime = `${dateFormatAppointment.getHours()>9?
+        dateFormatAppointment.getHours():'0'+dateFormatAppointment.getHours()}:${
+            dateFormatAppointment.getMinutes()>9?
             dateFormatAppointment.getMinutes():'0'+dateFormatAppointment.getMinutes()
         }`;
         
@@ -144,13 +150,27 @@ module.exports = Object.freeze({
 
         return appointmentModel;
     },
+    patientsAppointmentSingleSideNav:()=>{
+        return [
+            {
+                name:'Back to Appointment Table',
+                id:'backToSchedule',
+                icon:'fas fa-arrow-circle-left' 
+            },
+            {
+                name:'Back To Appointment Log',
+                id:'back',
+                icon:'fas fa-history'
+            }
+        ]
+    },
     appointmentSingleSideNav:()=>{
         return [
             {
-                name:'back',
-                id:'back',
+                name:'Back to Appointment Table',
+                id:'backToSchedule',
                 icon:'fas fa-arrow-circle-left'
-            }
+            },
         ]
     }
 })

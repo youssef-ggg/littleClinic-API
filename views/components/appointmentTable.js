@@ -20,7 +20,6 @@ module.exports = function renderAppointmentsTable({appointmentList,apntmntMetaDa
     tableHeader.appendChild(headerRow);
     
     do{
-
         const headerCol = document.createElement('div');
         const headerCard = document.createElement('div');
         headerCol.appendChild(headerCard);
@@ -60,18 +59,12 @@ module.exports = function renderAppointmentsTable({appointmentList,apntmntMetaDa
                             </span>
                         <span class="name">${appointment.patientName}</span>
                         <span>${appointment.title}</span>`;
-                
-                
-                        
-                if(Date.now()>=appointment.date)
-                {
+                                    
+                if(Date.now()>=appointment.date){
                     appointmentCard.classList+=' apntmnt-card-passed'
                 }
                 bodyRow.appendChild(bodyCol);
-
-                }
-                    
-                
+                }     
             });
 
             currentDate.setDate(currentDate.getDate()+addDay);
@@ -88,6 +81,4 @@ module.exports = function renderAppointmentsTable({appointmentList,apntmntMetaDa
         tableBody.className = 'empty-appointment-body';
     }
     
-    
-
 }

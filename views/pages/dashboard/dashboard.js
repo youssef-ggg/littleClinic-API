@@ -23,7 +23,7 @@ const {diagnosisFormFormat,diagnosisUnitView,diagnosisFormSideNav,diagnosisTable
         ,diagnosisTableFormat} = require('../../config/diagnosis');
 const {appointmentFormFormat,appointmentTableFormat,apntmntTableLeftNav
         ,apntmntPatientTableLeftNav,appointmentUnitView,
-        appointmentSingleSideNav} = require('../../config/appointment');
+        appointmentSingleSideNav,patientsAppointmentSingleSideNav} = require('../../config/appointment');
 const {usersTableFormat,userTableNavTabs,userUnitViewFormat,usersUpdateFormFormat,
     usersUpdatePasswordForm,usersFormFormat,userUnitLeftNav} = require('../../config/users');
 const {updateModalSuccess,deleteModal,updateModalMatchOld} = require('../../config/common');
@@ -303,8 +303,6 @@ const patientSingleView = (patientData)=>{
     });
 }
 
-
-
 const createPatientView = ()=>{
 
     renderForm('Patient',patientFormFormat);
@@ -316,8 +314,7 @@ const createPatientView = ()=>{
     saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
 
-        const patientData = dashboardFormInputReader(patientFormFormat);
-          
+        const patientData = dashboardFormInputReader(patientFormFormat);        
         const {createPatientErrorHandler} = errorHandlerService;
 
         if(!createPatientErrorHandler(patientData)){
@@ -332,7 +329,6 @@ const createPatientView = ()=>{
         event.preventDefault();
         patientTableView();
     });
-
 }
 
 const udpatePatientForm  = patientData=>{
@@ -385,8 +381,7 @@ const createDiagnosisView = (patientData)=>{
         const {createDiagnosisErrorHandler} = errorHandlerService;
         
         diagnosisData.patientId = patientData.id;
-
-        
+       
         if(!createDiagnosisErrorHandler(diagnosisData)){
             
             const responseData = await createRequest({
@@ -395,17 +390,15 @@ const createDiagnosisView = (patientData)=>{
             requestRoute:'/patients/diagnosis/addDiagnosis/',
             axiosAuth});
 
-            diagnosisSingleView(responseData);
-            
+            diagnosisSingleView(responseData);            
         }
     });
-
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
         patientSingleView(patientData);
     });
-
 }
+
 const diagnosisSingleView = (diagnosisData)=>{
     const diagnosisPretty = diagnosisUnitView(diagnosisData);
     renderUnitView('Diagnosis Information',diagnosisPretty);
@@ -486,15 +479,12 @@ const updateDiagnosisView = (diagnosisData)=>{
         event.preventDefault();
 
         const updatedDiagnosisData = dashboardFormInputReader(diagnosisFormFormat);
-
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
         const container = document.querySelector('.container');
         const {updateDiagnosisErrorHandler} = errorHandlerService;
 
-        
-        if(!updateDiagnosisErrorHandler(updatedDiagnosisData))
-        {
-     
+        if(!updateDiagnosisErrorHandler(updatedDiagnosisData)){
+
             if(updateEqualityCheck(updatedDiagnosisData,diagnosisData)){
 
                 modal(container,updateModalMatchOld);
@@ -549,6 +539,26 @@ const diagnosisTableView = ({patientData,diagnosisList})=>{
     });
 }
 
+apntmntBtn.addEventListener('click',async function(event){
+    const startDate = new Date();
+    startDate.setHours(0,0,0);
+    const weekDuration = 6;
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate()+weekDuration);
+    endDate.setHours(23,59,59);
+
+    const response = 
+        await axiosAuth.get(`/appointment/appointmentsDuration/query?startDate=${
+            startDate.getTime()
+        }&endDate=${
+            endDate.getTime()
+        }`);
+
+    appointmentScheduleView({startDate,endDate,appointmentList:response.data});
+    // console.log(response);
+
+});
+
 //create appointment view
 const createAppointmentView = (singlePatient)=>{
     renderForm('Appointment',appointmentFormFormat);
@@ -557,9 +567,10 @@ const createAppointmentView = (singlePatient)=>{
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
 
-    if (singlePatient)
+    if (singlePatient){
         document.querySelector('input[name="patientName"]').value = singlePatient.name;
-
+    }
+        
     saveBtn.addEventListener('click',async function(event){
         event.preventDefault();
 
@@ -584,57 +595,70 @@ const createAppointmentView = (singlePatient)=>{
                 axiosAuth});
     
                 appointmentSingleView(responseData);
-  
         }
     });
-
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
         patientSingleView(singlePatient);
     });
-
 }
-
-//Appointment menu Item
-apntmntBtn.addEventListener('click',function(event){
-
-    const startDate = new Date();
-    ipcRenderer.send('getApntmntsThisWeek',{startDate});
-});
 
 //Appointments single view
 const appointmentSingleView = (appointmentData)=>{
     
     const appointmentFormFormat = appointmentUnitView(appointmentData);
     renderUnitView('Appointment Information',appointmentFormFormat);
-    tabs('Appointment Manager',appointmentSingleSideNav());
-
     
-    const backToAppLog = document.querySelector('#back');
+    if (appointmentData.patientId){
+        tabs('Appointment Manager',patientsAppointmentSingleSideNav());
+        const backToAppLog = document.querySelector('#back');
+
+        backToAppLog.addEventListener('click',async function(event){
+            //decrease calls to server in the future
+            const appointmentList = await getByQueryRequest({
+                getData:{patientId:singlePatient.id},
+                requestRoute:'/appointment/patient',
+                query:'patientId',
+                axiosAuth
+            });
+    
+            //decrease calls to server in the future
+            const patientData = await getByQueryRequest({
+                getData:{id:singlePatient.id},
+                requestRoute:'/patients',
+                query:'id',
+                axiosAuth
+            });
+            
+            appointmentListByPatient({patientData,appointmentList});
+        });
+    }else{
+        tabs('Appointment Manager',appointmentSingleSideNav());
+    }
+    
     const updateAppointment = document.querySelector('#edit');
     const deleteAppointment = document.querySelector('#delete');
+    const backToAppointments = document.querySelector('#backToSchedule');
     const container = document.querySelector('.container');
 
     const singlePatient = {id:appointmentData.patientId};
 
-    backToAppLog.addEventListener('click',async function(event){
-        //decrease calls to server in the future
-        const appointmentList = await getByQueryRequest({
-            getData:{patientId:singlePatient.id},
-            requestRoute:'/appointment/patient',
-            query:'patientId',
-            axiosAuth
-        });
+    backToAppointments.addEventListener('click',async function(event){
+        const startDate = new Date();
+        startDate.setHours(0,0,0);
+        const weekDuration = 6;
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate()+weekDuration);
+        endDate.setHours(23,59,59);
 
-        //decrease calls to server in the future
-        const patientData = await getByQueryRequest({
-            getData:{id:singlePatient.id},
-            requestRoute:'/patients',
-            query:'id',
-            axiosAuth
-        });
-        
-        appointmentListByPatient({patientData,appointmentList});
+        const response = 
+            await axiosAuth.get(`/appointment/appointmentsDuration/query?startDate=${
+                startDate.getTime()
+            }&endDate=${
+                endDate.getTime()
+            }`);
+
+        appointmentScheduleView({startDate,endDate,appointmentList:response.data});
     });
 
     updateAppointment.addEventListener('click',function(event){
@@ -672,9 +696,7 @@ const appointmentSingleView = (appointmentData)=>{
             });
             appointmentListByPatient({patientData,appointmentList});
         });
-
     });
-
 }
 
 //Update appointments
@@ -688,7 +710,9 @@ const updateAppointmentView = (appointmentData)=>{
 
     const timeInput = document.querySelector('#time');
     const dateTime = new Date(appointmentData.date);
-    appointmentData.time =  `${dateTime.getHours()}:${dateTime.getMinutes()}`;
+    appointmentData.time =  `${
+        dateTime.getHours()>9?dateTime.getHours():'0'+dateTime.getHours()}:${
+        dateTime.getMinutes()>9?dateTime.getMinutes():'0'+dateTime.getMinutes()}`;
     timeInput.value = appointmentData.time;
 
     saveBtn.addEventListener('click',function(event){
@@ -735,15 +759,11 @@ const updateAppointmentView = (appointmentData)=>{
     cancelBtn.addEventListener('click',function(event){
         event.preventDefault();
         appointmentSingleView(appointmentData);
-    })
-
+    });
 }
 
-//Get Appointments By duration
-ipcRenderer.on('appointmentByDuration',function(event,{appointmentList,startDate,endDate}){
-
+const appointmentScheduleView = async({startDate,endDate,appointmentList})=>{
     const apntmntMetaData = {
-        ipcRequest:'reqAppointment',
         startDate,
         endDate,
     };
@@ -761,24 +781,49 @@ ipcRenderer.on('appointmentByDuration',function(event,{appointmentList,startDate
 
     const openCmBtns = document.querySelectorAll('button[name="openCm"]');
     const changeStartDayWeek = document.querySelector('#startDayWeek');
+    const addAppointment = document.querySelector('#createAppointment');
     
-    changeStartDayWeek.addEventListener('click',function(event){
+    changeStartDayWeek.addEventListener('click',async function(event){
 
-        const inputStartDate = document.querySelector('#weekStart').value;
-        
+        const inputStartDate = document.querySelector('#weekStart').value; 
         const startDate = new Date(inputStartDate);
-        ipcRenderer.send('getApntmntsThisWeek',{startDate});
+        startDate.setHours(0,0,0);
+        const weekDuration = 6;
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate()+weekDuration);
+        endDate.setHours(23,59,59);
+
+        const response = 
+            await axiosAuth.get(`/appointment/appointmentsDuration/query?startDate=${
+                startDate.getTime()
+            }&endDate=${
+                endDate.getTime()
+            }`);
+
+        appointmentScheduleView({startDate,endDate,appointmentList:response.data});
+
+    });
+
+    addAppointment.addEventListener('click',function(event){
+        //needs work
+        createAppointmentView({});
     });
 
     openCmBtns.forEach(cmBtn => {
-        cmBtn.addEventListener('click',function(event){
-            const appointmentData = {
-                id:cmBtn.id
-            };
-             ipcRenderer.send('reqAppointment',appointmentData);
+        cmBtn.addEventListener('click',async function(event){
+
+            const response = await getByQueryRequest({
+                getData:{id:cmBtn.id},
+                requestRoute:'/appointment/getAppointment',
+                query:'id',
+                axiosAuth
+            });
+
+            const x = {startDate,endDate,appointmentList}
+            appointmentSingleView(response);
         });
     });
-});
+}
 
 const appointmentListByPatient = ({patientData,appointmentList}) => {
 
@@ -793,8 +838,7 @@ const appointmentListByPatient = ({patientData,appointmentList}) => {
 
     const appointmentTableData = appointmentTableFormat(appointmentList);
     const centerContent = document.querySelector('.content-center');
-    
-
+ 
     centerContent.innerHTML='';
 
     renderActions('Appointments');
@@ -829,7 +873,6 @@ const appointmentListByPatient = ({patientData,appointmentList}) => {
         const appointmentTableData = appointmentTableFormat(dueAppList);
         renderTable(appointmentTableData,appointmentMetaData);
     });
-
 };
 
 //logout

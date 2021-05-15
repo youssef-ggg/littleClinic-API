@@ -85,7 +85,7 @@ describe('create appointment controller',()=>{
 
         const createAppointment = makeCreateAppointment({
             addAppointment:newAppointment=>{
-                throw Error('BOOM CANT CREATE APPOINTMENT!'); 
+                throw Error('BOOM CANT CREATE APPOINTMENT!')
             },
             jwtVerifyToken:request=>{ 
                 return {

@@ -90,12 +90,6 @@ ipcMain.on('updateAppointment',async function(event,appointmentData){
 
 });
 
-ipcMain.on('reqPatientAppointmentLog',async function(event,singlePatient){
-    const {getByPatientId} = appointmentController;
-    const appointmentList = await getByPatientId(singlePatient.id);
-    event.sender.send('appointmentList',{singlePatient,appointmentList});
-});
-
 //maybe refactor later not to go back to db 
 ipcMain.on('reqAppointment',async function(event,appointmentData){
     const id = appointmentData.id;
