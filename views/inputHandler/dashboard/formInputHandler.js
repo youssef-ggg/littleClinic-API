@@ -12,9 +12,9 @@ module.exports = function dashboardFormInputReader(inputFormat){
             document.querySelectorAll(`#${input.id}-item`)
                 .forEach(node=>node.innerHTML!=""?list.push(node.innerHTML):false);
             
-            if(list.length>0){
-                userInput[input.id] = list;
-            }
+            
+            userInput[input.id] = list;
+            
         }
         else if (input.type == 'date'){
             

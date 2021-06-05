@@ -39,7 +39,7 @@ module.exports = function modal(parentDOM,modalData){
         modalContent.appendChild(modalButtonBox);
         modalData.buttons.forEach(button => {
             const modalButton = document.createElement('button');
-            modalButton.className = 'btn btn-modal';
+            modalButton.className = 'btn-modal';
             modalButton.innerHTML = button.name;
             modalButton.id = button.id;
             modalButtonBox.appendChild(modalButton);

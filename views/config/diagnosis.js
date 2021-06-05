@@ -29,26 +29,23 @@ module.exports = Object.freeze({
         },
        
     ],
-    diagnosisFormSideNav:()=>{
-
-        return [
-            {
-                name:'Back',
-                id:'back',
-                icon:'fas fa-arrow-circle-left'
-            },
-            {
-                name:'Vital Signs',
-                id:'vitalSigns',
-                icon:'fas fa-heartbeat'
-            },
-            {
-                name:'Physical Exam',
-                id:'pyhsicalExam',
-                icon:'fas fa-stethoscope'
-            },
-        ];
-    },
+    diagnosisFormSideNav: [
+        {
+            name:'Back',
+            id:'back',
+            icon:'fas fa-arrow-circle-left'
+        },
+        {
+            name:'Vital Signs',
+            id:'vitalSigns',
+            icon:'fas fa-heartbeat'
+        },
+        {
+            name:'Physical Exam',
+            id:'pyhsicalExam',
+            icon:'fas fa-stethoscope'
+        },
+    ],
     diagnosisUnitView:(diagnosisData)=>{
 
         const {cheifComplaint,problems,medications,treatment,orders,createdOn,modifiedOn} = diagnosisData;
@@ -99,14 +96,12 @@ module.exports = Object.freeze({
 
         return diagnosisTable;
     },
-    diagnosisTableLeftNav:()=>{
-        return [
-            {
-                name:'Back',
-                id:'back',
-                icon:'fas fa-arrow-circle-left'
-            }
-        ]
-    },
+    diagnosisTableLeftNav:[
+        {
+            name:'Back',
+            id:'back',
+            icon:'fas fa-arrow-circle-left'
+        }
+    ]
     
 });

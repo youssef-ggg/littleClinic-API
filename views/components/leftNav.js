@@ -2,7 +2,7 @@ module.exports = {
     
     tabs : (tabTitle,tabs)=>{
     
-        const leftContent = document.querySelector('.content-left');
+        const leftContent = document.querySelector('.wrapper');
         const leftContentHeader = document.createElement('div');
         const leftContentBody = document.createElement('div');
         const leftContentFooter = document.createElement('div');
@@ -30,6 +30,35 @@ module.exports = {
             tabButton.className = 'tabs';
             icon.className = tab.icon;
         });
+    },
+    cards:({parentElement,cardTitle,cardElements})=>{
+
+        const cardRow = document.createElement('div');
+        const cardCol = document.createElement('div');
+        const card = document.createElement('div');
+        const cardContent = document.createElement('div');
+        
+        card.classList.add('card');
+        cardContent.classList.add('card-content');
+        parentElement.appendChild(card);
+        card.appendChild(cardContent);
+        
+        cardElements.forEach(cardElement=>{
+            const cardBtn = document.createElement('button');
+            const btnIcon = document.createElement('i');
+            const btnText = document.createElement('span');
+
+            btnIcon.classList+=(cardElement.icon);
+            btnText.innerHTML = cardElement.name;
+            cardBtn.id = cardElement.id;
+
+            cardContent.appendChild(cardBtn);
+            cardBtn.appendChild(btnIcon);
+            cardBtn.appendChild(btnText);
+            btnText.innerHTML = cardElements[0].name;
+        });
+
+        
     },
     //give better name
     clearLeftNav:(tabInfo)=>{

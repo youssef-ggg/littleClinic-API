@@ -70,54 +70,50 @@ module.exports = Object.freeze({
         });
         return appointmentTable;
     },
-    apntmntTableLeftNav:()=>{
-        return [
-            {
-                name:'Today',
-                id:'today',
-                icon:'fas fa-calendar-day'
-            },
-            {
-                name:'By Week',
-                id:'week',
-                icon:'fas fa-calendar-week'
-            },
-            {
-                name:'All Appointments',
-                id:'allapntmnt',
-                icon:'fas fa-calendar-alt'
-            },
-            {
-                name:'New Appointment',
-                id:'createAppointment',
-                icon:'fas fa-pencil-ruler'
-            },
-        ];
-    },
-    apntmntPatientTableLeftNav:()=>{
-        return [
-            {
-                name:'Back',
-                id:'back',
-                icon:'fas fa-arrow-circle-left'
-            },
-            {
-                name:'Active Appointments',
-                id:'acApntmt',
-                icon:'fas fa-calendar-check'
-            },
-            {
-                name:'All Appointments',
-                id:'allApntmt',
-                icon:'fas fa-calendar-alt'
-            },
-            {
-                name:'Past Appointments',
-                id:'pstApntmt',
-                icon:'fas fa-calendar-times'
-            }
-        ]
-    },
+    apntmntTableLeftNav:[
+        {
+            name:'Today',
+            id:'today',
+            icon:'fas fa-calendar-day'
+        },
+        {
+            name:'By Week',
+            id:'week',
+            icon:'fas fa-calendar-week'
+        },
+        {
+            name:'All Appointments',
+            id:'allapntmnt',
+            icon:'fas fa-calendar-alt'
+        },
+        {
+            name:'New Appointment',
+            id:'createAppointment',
+            icon:'fas fa-pencil-ruler'
+        },
+    ],
+    apntmntPatientTableLeftNav:[
+        {
+            name:'Back',
+            id:'back',
+            icon:'fas fa-arrow-circle-left'
+        },
+        {
+            name:'Active Appointments',
+            id:'acApntmt',
+            icon:'fas fa-calendar-check'
+        },
+        {
+            name:'All Appointments',
+            id:'allApntmt',
+            icon:'fas fa-calendar-alt'
+        },
+        {
+            name:'Past Appointments',
+            id:'pstApntmt',
+            icon:'fas fa-calendar-times'
+        }
+    ],
     appointmentUnitView:appointmentData=>{
         const {title,patientName,date,createdOn,modifiedOn} = appointmentData;
 
@@ -150,27 +146,23 @@ module.exports = Object.freeze({
 
         return appointmentModel;
     },
-    patientsAppointmentSingleSideNav:()=>{
-        return [
-            {
-                name:'Back to Appointment Table',
-                id:'backToSchedule',
-                icon:'fas fa-arrow-circle-left' 
-            },
-            {
-                name:'Back To Appointment Log',
-                id:'back',
-                icon:'fas fa-history'
-            }
-        ]
-    },
-    appointmentSingleSideNav:()=>{
-        return [
-            {
-                name:'Back to Appointment Table',
-                id:'backToSchedule',
-                icon:'fas fa-arrow-circle-left'
-            },
-        ]
-    }
+    patientsAppointmentSingleSideNav:[
+        {
+            name:'Back to Appointment Table',
+            id:'backToSchedule',
+            icon:'fas fa-arrow-circle-left' 
+        },
+        {
+            name:'Back To Appointment Log',
+            id:'back',
+            icon:'fas fa-history'
+        }
+    ],
+    appointmentSingleSideNav:[
+        {
+            name:'Back to Appointment Table',
+            id:'backToSchedule',
+            icon:'fas fa-arrow-circle-left'
+        },
+    ],
 })

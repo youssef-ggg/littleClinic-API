@@ -17,9 +17,10 @@ module.exports = Object.freeze({
     },
     userTableNavTabs:[
         {
-            name:'Add user',
+            name:'Add User',
             id:'createModel',
-            icon:'fas fa-pencil-ruler'
+            icon:'fas fa-pencil-ruler',
+            type:'button'
         }
     ],
     usersFormFormat:[{

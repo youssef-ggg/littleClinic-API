@@ -30,8 +30,16 @@ module.exports = function renderFormError({inputTitle,message,inputType}){
             addBtn.classList.remove('form-input-error');
             errorMsg.innerHTML = '';
         });
+
+        addBtn.addEventListener('click',()=>{
+            textInput.classList.remove('form-input-error');
+            addBtn.classList.remove('form-input-error');
+            errorMsg.innerHTML = '';
+        });
+        
     }else if (inputType === 'radio'){
-        const inputRadio = document.querySelector(`#${inputTitle} input[type="radio"]`);
+        const inputElement = document.querySelector(`#${inputTitle}`);
+        const inputRadio = document.querySelector(`input[name="${inputTitle}"]`);
         const errorMsg  = document.querySelector('.radio-box ~.form-error');
 
         inputRadio.addEventListener('input',()=>{

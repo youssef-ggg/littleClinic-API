@@ -1,6 +1,6 @@
-module.exports = function renderForm(eleName,elementKeys){
+module.exports = function renderForm({parentDOM,eleName,elementKeys}){
 
-    const centerContent = document.querySelector('.content-center');
+    //fix to use card row and card col
     const form = document.createElement('form');
     const inputBox = document.createElement('div');
     const formTitle = document.createElement('div');
@@ -8,8 +8,7 @@ module.exports = function renderForm(eleName,elementKeys){
     const submit = document.createElement('button');
     const cancel = document.createElement('button');
 
-    centerContent.innerHTML = '';  
-    form.className = 'form';
+    form.classList += 'form col-8';
     inputBox.className = 'form-input-box';
     formTitle.className ='form-title';
     formTitle.innerHTML = `Create ${eleName}`;
@@ -17,12 +16,12 @@ module.exports = function renderForm(eleName,elementKeys){
     submit.type='submit';
     submit.id = 'save';
     submit.innerHTML = 'Save';
-    submit.className = 'btn form-btn';
+    submit.classList += 'btn form-btn';
     cancel.innerHTML = 'Cancel';
     cancel.className = 'btn form-btn';
     cancel.id = 'cancel';
 
-    centerContent.appendChild(form);
+    parentDOM.appendChild(form);
     form.appendChild(formTitle);
     form.appendChild(inputBox);
 

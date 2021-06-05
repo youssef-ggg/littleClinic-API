@@ -1,34 +1,39 @@
+
+ /* @import "../../node_modules/font-roboto/dist/styles/roboto.min.css";  */
+
 .form{
     background-color: white;
     border-radius: 5px;
     font-size: 16px;
-    
+    margin-left: 12px;
+    box-shadow: 1px 8px 16px 0px rgba(0,0,0,0.3);
 }
 
 .form *{
-    line-height: 1.5;
+    /* line-height: 1; */
     box-sizing: border-box;
     padding: 5px;
+    
 }
 
 .form-input-box {
     display: flex;
     flex-flow: row wrap;
-    
+    color: var(--main-bg-color);
 }
 
 .form-title{
-    font-size: 2em;
-    font-weight: 600;
+    font-size: 1.5em;
+    font-weight: 400;
     display: flex;
     justify-content:space-between;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .form-btn{
     align-items: center;
     border-radius: 5px;
-    font-size: large;
+    font-size: 18px;
     font-weight: 600;
 }
 
@@ -43,31 +48,36 @@
 }
 
 .form-label {
-    font-weight: 600;
-    padding: 10px;
+    font-weight: 400;
+    padding: 5px;
+    color: var(--main-color);
+    font-size: 20px;
 }
 
 
 .form-input{  
-    width: 100%;
-    max-width: 425px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    background: #f4f4f4;
-    transition: background 0.25s border-color 0.25s color 0.25s;
+    font-family: "Roboto";
+    background: var(--second-bg-color);
+    border: none;
+    padding:10px 20px 10px 20px;
+    width: 85%;
+    outline: none;  
+    color:var(--main-color);
+    border-radius: 20px;
+    font-size: 16px;
 }
 
 .form-update-input{
-    width: 100%;
+    width: 60%;
     border: none;
     background: none;
-    border-bottom: 3px solid #004fa3;
+    border-bottom: 3px solid var(--danger-color);
     
 }
 
 textarea.form-input ,textarea.form-update-input{
     resize: none;
-    /* font: sans-serif; */
+    font: 'Roboto',sans-serif;
     font-size: large;
     min-width: 400px;
     min-height: 50px;
@@ -78,9 +88,13 @@ textarea.form-input ,textarea.form-update-input{
     display: inline-flex;
 }
 
+.form-btn {
+    padding: 10px;
+}
+
 .add-btn{
     cursor: pointer;
-    color: #004fa3;
+    color: var(--danger-color);
     align-items: center;
     font-weight: 600;
     font-size: large;
@@ -88,31 +102,31 @@ textarea.form-input ,textarea.form-update-input{
     background-color: white;
 }
 .list-item {
-    font-size: smaller;
-    color: darkslategray;
+    /* font-size: smaller; */
+    color: var(--main-color);
 }
 
 .form-input:focus{
-    background: white;
+    background: var();
 
 }
 
 .form-input-error{
-    color: #810000;
-    background: white;
-    border-color: #810000;
+    color:var(--warning-color);
+    background: var(--main-bg-color);
+    border: 1px solid var(--warning-color);
 }
 
 .form-error {
     padding-top: 10px;
-    color: #810000;
+    color:var(--warning-color);
     font-size: 0.9em;
 
 }
 
 
 .form-btn{
-    font-weight: 600;
+    font-weight: 500;
     font-size: 1.1em;
     padding: 10px 16px;
     margin: 5px ;
@@ -127,12 +141,13 @@ textarea.form-input ,textarea.form-update-input{
 .radio-box{
     display: flex;
     flex-direction: column;
-    font-size: 22px;
     cursor: pointer;
 }
 .radio-box label{
     display: inline-block;
+    color: var(--main-color);
     padding-left: 35px;
+    font-size: 18px;
     bottom: 12px;
     position: relative;
 }  
@@ -149,24 +164,23 @@ textarea.form-input ,textarea.form-update-input{
     left:0;
     width: 25px;
     height: 25px;
-    background-color: lightgray;
-    border-radius: 50%;
-    
+    background-color: var(--second-bg-color);
+    border-radius: 50%;   
 }
 
 .radio-box .checkmark:hover {
-    background-color: darkgray;
+    background-color:var(--second-color);
 }
 
 .radio-box input:checked + .checkmark {
-    background-color: #004fa3;
+    background-color: var(--danger-color);
 }
 
 .radio-box input:checked + .checkmark:after{
     content:"";
     height:11px;
     width: 11px;
-    background-color: white;
+    background-color: var(--main-bg-color);
     position: absolute;
     border-radius: 50%;
     left: 50%;

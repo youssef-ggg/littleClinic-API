@@ -89,15 +89,20 @@ module.exports = {
         
         
     },
-    renderApntmntTableActions:(appointmentInputData)=>{
+    renderApntmntTableActions:({parentDOM,appointmentInputData})=>{
 
         const {date,btnId} = appointmentInputData;
 
-        const centerContent = document.querySelector('.content-center');
+        const cardCol = document.createElement('div');
+        const cardRow = document.createElement('div');
+
         const actionBox = document.createElement('div');
         const dateInput = document.createElement('input');
         const dateBtn = document.createElement('button');
 
+        
+        cardRow.classList+= 'row';
+        cardCol.classList+= 'col-8'
         dateInput.type = 'date';
         actionBox.className = 'apntmnt-input-box';
         dateInput.classList+='apntmnt-input';
@@ -111,7 +116,9 @@ module.exports = {
         const fullDate = `${year}-${month}-${day}`;
         dateInput.value =fullDate;
 
-        centerContent.appendChild(actionBox);
+        parentDOM.appendChild(cardRow);
+        cardRow.appendChild(cardCol);
+        cardCol.appendChild(actionBox);
         actionBox.appendChild(dateInput);
         actionBox.appendChild(dateBtn);
     }

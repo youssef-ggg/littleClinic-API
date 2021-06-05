@@ -1,8 +1,8 @@
 const dataAcces = require("../../src/dataAcces");
 
-module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValues){
+module.exports = function renderUpdateForm({parentDOM,eleName,elementsMetaData,elementsValues}){
     
-    const centerContent = document.querySelector('.content-center');
+    const cardCol = document.createElement('div');
     const form = document.createElement('form');
     const inputBox = document.createElement('div');
     const formTitle = document.createElement('div');
@@ -10,7 +10,7 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
     const submit = document.createElement('button');
     const cancel = document.createElement('button');
 
-    centerContent.innerHTML = '';  
+    cardCol.classList+='col-6';
     form.className = 'form';
     inputBox.className = 'form-input-box';
     formTitle.className ='form-title';
@@ -24,7 +24,8 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
     cancel.className = 'btn form-btn';
     cancel.id = 'cancel';
 
-    centerContent.appendChild(form);
+    parentDOM.appendChild(cardCol);
+    cardCol.appendChild(form);
     form.appendChild(formTitle);
     form.appendChild(inputBox);
 
@@ -82,7 +83,7 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
         else if(element.type === 'textarea') 
         {
             const textAreaInput = document.createElement('textarea');
-            textAreaInput.className = 'form-update-input';
+            textAreaInput.className = 'form-input';
             formItem.appendChild(textAreaInput);
             textAreaInput.id = element.id;
             textAreaInput.value = elementsValues[element.id];
@@ -94,7 +95,7 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
             const listInputBox = document.createElement('div');
 
             inputElment.type = 'text';
-            inputElment.className = 'form-update-input';
+            inputElment.className = 'form-input';
             listInputBox.id = element.id;
             addToListBtn.className = 'add-btn fas fa-plus';
             listInputBox.className = 'form-input-list';
@@ -153,7 +154,7 @@ module.exports = function renderUpdateForm(eleName,elementsMetaData,elementsValu
             }
         }
         else {
-            input.className = 'form-update-input';
+            input.className = 'form-input';
             input.id = element.id;
             input.name = element.id;
             input.type = element.type;

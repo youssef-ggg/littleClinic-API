@@ -9,51 +9,143 @@
 </head>
 <body>
     <div class="container">
-        <div class="nav">
-            
-            <div class="main-nav">
-                <button class="btn nav-link" id="users">
-                    <span class="fas fa-user-md"></span>
-                    Staff 
-                </button>
-                <button class="btn nav-link" id="appointments">
-                    <span class="fas fa-user-clock"></span>
-                    Appointments
-                </button>
-                <button class="btn nav-link" id="patients">
-                    <span class="fas fa-user-plus"></span>
-                     Patients
-                </button>
-                <button class="btn nav-link">
-                    <span class="fas fa-box-open"></span>
-                    Inventory
-                </button>
-                <button class="btn nav-link" id="logout">
-                    <span class="fas fa-sign-out-alt"></span>
-                    logout
-                </button>
-            </div>
-            <div class="right-nav">
-                <i class="fas fa-user-shield avatar"></i>
-               <h4 class="username"></h4>
-               
-            </div>
+        <div class="navbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class = "nav-link" id="toggleSideBar">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <img src="../../assets/images/icons/LC_logo.png" alt="LITTLE CLINIC" class="logo">
+                </li>
+            </ul>
+            <form action="" class="navbar-search">
+                <input type="text" name="search" id="" class="navbar-search-input">
+                <i class="fas fa-search"></i>
+            </form>
+            <ul class="navbar-nav nav-right">
+                <li class="nav-item">
+                    <a href="" class="nav-link">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="avt dropdown">
+                        <img src="../../assets/images/thirdman.jpg" alt="User Image" id="usrImg">
+                        <!-- <ul class="dropdown-menu">
+                            <li class="dropdown-menu-item">
+                                <a class="dropdown-menu-item-link" id="settings">
+                                    <div>
+                                        <i class="fas fa-cog"></i>
+                                    </div>
+                                    <span>Settings</span>
+                                </a>
+                            </li>
+                            <li class="dropdown-menu-item">
+                                <a class="dropdown-menu-item-link" id="logout">
+                                    <div>
+                                        <i class="fas fa-sign-out-alt"></i>
+                                    </div>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul> -->
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div class="content">
-            <div class="content-left">
-                <!-- <h1>leftContent</h1> -->
-            </div>
-            <div class="content-center">
+        
+        <div class="sidebar">
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link " id="users">
+                        <div>
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <span>
+                            Users
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link" id="appointments">
+                        <div>
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <span>
+                            Appointments
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link" id="patients">
+                        <div>
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <span>
+                            Patients
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link">
+                        <div>
+                            <i class="fas fa-paste"></i>
+                        </div>
+                        <span>
+                            Bookeeping
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link">
+                        <div>
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <span>
+                            Inventory
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a href="#" class="sidebar-nav-link">
+                        <div>
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <span>
+                            Settings
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-nav-item">
+                    <a class="sidebar-nav-link" id="logout">
+                        <div>
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <span>
+                            Log Out
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-            </div>
-            <div class="contentRight">
-                
-            </div>
+        <div class="wrapper">
+            <p><strong>
+                Welcome to Littile clinic
+            </strong>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Totam quisquam possimus in voluptatibus laudantium rem nostrum fugiat, quis cupiditate, aperiam quae. Quae reprehenderit deleniti fuga officiis quas molestiae perspiciatis vitae.</p>
         </div>
+
+            
+        <!-- </div> 
         <div class="footer">
             <h1>Little Clinic</h1>
         </div>
-    </div>
+    </div > -->
     <script src="dashboard.js"></script>
 </body>
 </html>

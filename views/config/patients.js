@@ -27,7 +27,18 @@ module.exports = Object.freeze({
         {
             name:'Add Patient',
             id:'createModel',
-            icon:'fas fa-pencil-ruler'
+            icon:'fas fa-pencil-ruler',
+            type:'button'
+        },
+        {
+            name:'Delete Selected',
+            icon:'fas fa-trash',
+            type:'button'
+        },
+        {
+           name:'Select All',
+           icon:'fas fa-check-square',
+           type:'button' 
         }
     ],
     patientFormFormat:[
@@ -115,37 +126,33 @@ module.exports = Object.freeze({
         },
 
     ],
-    patientViewSideNav:(tabsIDs)=>{
-
-        const {medicalRecordId} = tabsIDs;
-        return [
-            {
-                name:'New Diagnosis',
-                id:'createDiagnosis',
-                icon:'fas fa-file-signature'
-            },
-            {
-                name:'New Appointment',
-                id:'createAppointment',
-                icon:'fas fa-clock'
-            },
-            {
-                name:'Medical Record',
-                id:medicalRecordId,
-                icon:'fas fa-clipboard'
-            },
-            {
-                name:'Diagnostic Log',
-                id:'diagnosticLog',
-                icon:'fas fa-list'
-            },
-            {
-                name:'Appointments Log',
-                id:'appointmentLog',
-                icon:'fas fa-history'
-            },
-            
-        ]
-    }
+    patientViewSideNav:[
+        {
+            name:'New Diagnosis',
+            id:'createDiagnosis',
+            icon:'fas fa-file-signature'
+        },
+        {
+            name:'New Appointment',
+            id:'createAppointment',
+            icon:'fas fa-clock'
+        },
+        {
+            name:'Medical Record',
+            id:'medicalRecordId',
+            icon:'fas fa-clipboard'
+        },
+        {
+            name:'Diagnostic Log',
+            id:'diagnosticLog',
+            icon:'fas fa-list'
+        },
+        {
+            name:'Appointments Log',
+            id:'appointmentLog',
+            icon:'fas fa-history'
+        },
+        
+    ],    
 });
 

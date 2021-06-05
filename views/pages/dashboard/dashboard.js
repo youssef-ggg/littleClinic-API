@@ -2,12 +2,15 @@ const {ipcRenderer} = require('electron');
 const axios = require('axios');
 
 const renderTable = require('../../components/table');
+const renderTableBody = require('../../components/tableBody');
 const {renderActions,rendertableAction,renderApntmntTableActions} = require('../../components/actions');
 const renderForm = require('../../components/form');
 const renderUnitView = require('../../components/unitView');
 const renderUpdateForm = require('../../components/updateForm');
 const renderAppointmentsTable = require('../../components/appointmentTable');
-const {tabs,clearLeftNav} = require('../../components/leftNav');
+const {tabs,clearLeftNav,cards} = require('../../components/leftNav');
+const cardActions = require('../../components/cardActions');
+const singleNavView = require('../../components/singleViewNav');
 const errorHandlerService = require('../../errorHandler');
 const dashboardFormInputReader = require('../../inputHandler/dashboard/formInputHandler');
 //CRUD Requests
@@ -32,7 +35,7 @@ const modal = require('../../utilites/modal');
 const toastNotify = require('../../utilites/toastNotify');
 const dashboardUtitltyFunctions = require('./utility');
 const renderFormError = require('../../errorHandler/renderFormError');
-const appointment = require('../../../src/dataAcces/appointment');
+const table = require('../../components/table');
 
 
 const API_URL = 'http://localhost:5000';//remove from here, maybe use .env file.
@@ -45,6 +48,8 @@ const axiosAuth = axios.create({
         Authorization:`Bearer ${loginToken}`
     },
 });
+
+const toggleSideBar = document.querySelector('#toggleSideBar');
 const userNameHeader = document.querySelector('.username');
 const userBtn = document.querySelector('#users');
 const patientBtn = document.querySelector('#patients');
@@ -54,10 +59,48 @@ const logoutBtn = document.querySelector('#logout');
 // const PAGEINDEX = 1;
 // const PAGESIZE = 10;
 
-userNameHeader.innerHTML = currentuser.username;
+const dashboardContent = document.querySelector('.container');
+const centerContent = document.querySelector('.wrapper');
+// userNameHeader.innerHTML = currentuser.username;
+
+
+//toggle side Menu 
+toggleSideBar.addEventListener('click',function(event){
+    const body = document.getElementsByTagName('body')[0];
+    event.preventDefault();
+    body.classList.toggle('sidebar-expand');
+});
+
+//toggle right menu's 
+const userIconBtn = document.querySelector('#usrImg');
+
+userIconBtn.addEventListener('onclick',function(event){
+    event.preventDefault();
+    if (userIconBtn.classList.contains('dropdown-expand')) {
+        userIconBtn.classList.remove('dropdown-expand')
+    } else {
+        userIconBtn.classList.add('dropdown-expand')
+    }
+});
+//toggle active button
+const toggleActiveSideButton = (activeBtnID)=>{
+    const sideBarBtns = document.querySelectorAll('.sidebar-nav-link');
+
+    sideBarBtns.forEach(sideBtn=>{
+
+        if (sideBtn.id==activeBtnID){
+            sideBtn.classList.add('active');
+        }
+        else {        
+            sideBtn.classList.remove('active');
+        }
+    });
+}
+
 
 //users nav tab
 userBtn.addEventListener('click',function(event){
+    toggleActiveSideButton('users');
     usersTableView();
 });
 
@@ -71,14 +114,13 @@ const usersTableView = async ()=>{
             axiosAuth,
             url:'users/users?id='
         },
+        title:'Staff Members',
+        tableActions:userTableNavTabs
     };
-    const centerContent = document.querySelector('.content-center');
     centerContent.innerHTML = '';
     
-    renderActions('User');
     const usersTableData = usersTableFormat(data);
-    renderTable(usersTableData,userMetaData);
-    tabs('Staff Manager',userTableNavTabs);
+    renderTable({parentDOM:centerContent,modelList:usersTableData,modelMetaData:userMetaData});
 
     const addUserBtn = document.querySelector('#createModel');
 
@@ -90,14 +132,19 @@ const usersTableView = async ()=>{
 const userSingleView = (userData)=>{
     
     const formatedUser = userUnitViewFormat(userData);
+    const {tabs} = singleNavView;
+    const cardRow = document.createElement('div');
 
-    renderUnitView('User',formatedUser);
-    tabs('Staff',userUnitLeftNav);
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+
+    renderUnitView({parentDOM:cardRow,modelName:'Staff Member',model:formatedUser});
+    tabs({patentDOM:cardRow,navItems:userUnitLeftNav});
 
     const edit = document.querySelector('#edit');
     const remove = document.querySelector('#delete');
     const editPassBtn = document.querySelector('#changeUsrpass');
-    const container = document.querySelector('.container');
 
     edit.addEventListener('click',function(event){
         updateUserView(userData);
@@ -105,7 +152,8 @@ const userSingleView = (userData)=>{
     
     remove.addEventListener('click',function(event){
 
-        modal(container,deleteModal({title:'Staff member'}));
+         
+        modal(dashboardContent,deleteModal({title:'Staff member'}));
         const confirmDelete = document.querySelector('#confirm');
 
         confirmDelete.addEventListener('click',async function(event){
@@ -124,8 +172,9 @@ const userSingleView = (userData)=>{
 }
 
 const createUser = ()=>{
-    renderForm('User',usersFormFormat);
-    clearLeftNav('Add Staff');
+    
+    centerContent.innerHTML = '';  
+    renderForm({parentDOM:centerContent,eleName:'User',elementKeys:usersFormFormat}); 
     
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -154,8 +203,17 @@ const createUser = ()=>{
 
 const updateUserView = userData=>{
 
-    renderUpdateForm('Staff',usersUpdateFormFormat,userData);
-    clearLeftNav('Update Staff');
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+
+    renderUpdateForm({
+        parentDOM:cardRow,
+        eleName:'Staff',
+        elementsMetaData:usersUpdateFormFormat,
+        elementsValues:userData});
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -164,20 +222,27 @@ const updateUserView = userData=>{
         event.preventDefault();
 
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
-        const container = document.querySelector('.container');
+       
         const userUpdatedData = dashboardFormInputReader(usersUpdateFormFormat);        
         const {updateUserDataErrorHandle} = errorHandlerService;
 
         if(updateEqualityCheck(userUpdatedData,userData)){
-            modal(container,updateModalMatchOld);
+            modal(centerContent,updateModalMatchOld);
         }
         else if(!updateUserDataErrorHandle(userUpdatedData)){ 
-                
-            const  responseData = await updateRequest({patchData:userUpdatedData,
-                moudleTitle:'Staff member',
-                requestRoute:`users/edit/${userData.id}`,axiosAuth});
+            modal(dashboardContent,updateModalSuccess);
+            const confirmUpdate = document.querySelector('#apply');
 
-            userSingleView(responseData);
+            confirmUpdate.addEventListener('click',async function(event){
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const  responseData = await updateRequest({patchData:userUpdatedData,
+                    moudleTitle:'Staff member',
+                    requestRoute:`users/edit/${userData.id}`,axiosAuth});
+    
+                userSingleView(responseData);
+                    
+            });
         }     
     });
     cancelBtn.addEventListener('click',function(event){
@@ -188,8 +253,19 @@ const updateUserView = userData=>{
 }
 
 const updateUserPassword = userData=>{
-    renderUpdateForm('User Password',usersUpdatePasswordForm,userData);
-    clearLeftNav('Update Password');
+    
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+
+    renderUpdateForm({
+        parentDOM:cardRow,
+        eleName:'User Password',
+        elementsMetaData:usersUpdatePasswordForm,
+        elementsValues:userData});
+    
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -226,6 +302,7 @@ const updateUserPassword = userData=>{
 
 //patient menu item
 patientBtn.addEventListener('click',function(event){
+    toggleActiveSideButton('patients');
     patientTableView();
 });
 
@@ -239,15 +316,14 @@ const patientTableView = async()=>{
             axiosAuth,
             url:'patients/patient?id='
         },
+        title:'Patients',
+        tableActions:patientTableNavTabs
     };
-    const centerContent = document.querySelector('.content-center');
     centerContent.innerHTML = '';
     
-    renderActions('patient');
     const patientTableData =  patientTableFormat(data);
-    renderTable(patientTableData,patientMetaData);
-    tabs('Patients Manager',patientTableNavTabs);
-
+    renderTable({parentDOM:centerContent,modelList:patientTableData,modelMetaData:patientMetaData});
+    
     const addPatientBtn = document.querySelector('#createModel');
 
     addPatientBtn.addEventListener('click',function(event){
@@ -257,10 +333,19 @@ const patientTableView = async()=>{
 
 const patientSingleView = (patientData)=>{
 
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+
     const formatedPatient = patientViewFormat(patientData);
-    renderUnitView('Patient',formatedPatient);
+    const {tabs} = singleNavView;
+
+    renderUnitView({parentDOM:cardRow,modelName:'Patient',model:formatedPatient});
+    tabs({patentDOM:cardRow,navItems:patientViewSideNav});
     //changing medical id something else
-    tabs('patient',patientViewSideNav({medicalId:123}));
+    // tabs('patient',patientViewSideNav({medicalId:123}));
 
     const editBtn = document.querySelector('#edit');
     const newDiagnosisBtn = document.querySelector('#createDiagnosis');
@@ -298,15 +383,15 @@ const patientSingleView = (patientData)=>{
             query:'patientId',
             axiosAuth
         });
-        // console.log(response);
+        
         appointmentListByPatient({patientData,appointmentList:response})
     });
 }
 
 const createPatientView = ()=>{
 
-    renderForm('Patient',patientFormFormat);
-    clearLeftNav('Add Patient');
+    centerContent.innerHTML = ''; 
+    renderForm({parentDOM:centerContent,eleName:'Patient',elementKeys:patientFormFormat});
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -333,8 +418,16 @@ const createPatientView = ()=>{
 
 const udpatePatientForm  = patientData=>{
     
-    renderUpdateForm('Patient',patientUpdateFormat,patientData);
-    clearLeftNav('Updating patient information');
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+
+    renderUpdateForm({
+        parentDOM:cardRow,eleName:'Patient',
+        elementsMetaData:patientUpdateFormat,elementsValues:patientData
+    });
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -352,11 +445,20 @@ const udpatePatientForm  = patientData=>{
         }
         else if(!updatePatientErrorHandler(patientInputData)){
 
-            const  responseData = await updateRequest({patchData:patientInputData,
-                moudleTitle:'Patient',
-                requestRoute:`/patients/edit/${patientData.id}`,axiosAuth});
+            modal(dashboardContent,updateModalSuccess);
+            const confirmUpdate = document.querySelector('#apply');
 
-            patientSingleView(responseData);
+            confirmUpdate.addEventListener('click',async function(event){
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                
+                const  responseData = await updateRequest({patchData:patientInputData,
+                    moudleTitle:'Patient',
+                    requestRoute:`/patients/edit/${patientData.id}`,axiosAuth});
+    
+                patientSingleView(responseData);
+                    
+            });
         }
     });
 
@@ -368,8 +470,8 @@ const udpatePatientForm  = patientData=>{
 };
 const createDiagnosisView = (patientData)=>{
     
-    renderForm('Diagnosis',diagnosisFormFormat);
-    clearLeftNav('Creating New Diagnosis');
+    centerContent.innerHTML = ''; 
+    renderForm({parentDOM:centerContent,eleName:'Diagnosis',elementKeys:diagnosisFormFormat});
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -401,8 +503,15 @@ const createDiagnosisView = (patientData)=>{
 
 const diagnosisSingleView = (diagnosisData)=>{
     const diagnosisPretty = diagnosisUnitView(diagnosisData);
-    renderUnitView('Diagnosis Information',diagnosisPretty);
-    tabs('Diagnosis Manager',diagnosisFormSideNav());
+    const cardRow = document.createElement('div');
+    const {tabs} = singleNavView;
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+   
+    renderUnitView({parentDOM:cardRow,modelName:'Diagnosis Information',model:diagnosisPretty});
+    tabs({patentDOM:cardRow,navItems:diagnosisFormSideNav});
 
     const updateDiagnosis = document.querySelector('#edit');
     const backToDiagLog = document.querySelector('#back');
@@ -468,29 +577,35 @@ const diagnosisSingleView = (diagnosisData)=>{
 
 const updateDiagnosisView = (diagnosisData)=>{
     
-    renderUpdateForm('Diagnosis',diagnosisFormFormat,diagnosisData);
-    clearLeftNav('Updating Diagnosis');
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+    
+    renderUpdateForm({
+        parentDOM:cardRow,eleName:'Diagnosis',
+        elementsMetaData:diagnosisFormFormat,elementsValues:diagnosisData});
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
-    const {patientId} = diagnosisData;
 
     saveBtn.addEventListener('click',function(event){
         event.preventDefault();
 
         const updatedDiagnosisData = dashboardFormInputReader(diagnosisFormFormat);
         const  {updateEqualityCheck} = dashboardUtitltyFunctions();
-        const container = document.querySelector('.container');
+        
         const {updateDiagnosisErrorHandler} = errorHandlerService;
 
         if(!updateDiagnosisErrorHandler(updatedDiagnosisData)){
 
             if(updateEqualityCheck(updatedDiagnosisData,diagnosisData)){
 
-                modal(container,updateModalMatchOld);
+                modal(centerContent,updateModalMatchOld);
             }
             else {
-                modal(container,updateModalSuccess);
+                modal(centerContent,updateModalSuccess);
                 const applyChanges =document.querySelector('#apply');
 
                 applyChanges.addEventListener('click',async function(event){
@@ -518,20 +633,22 @@ const updateDiagnosisView = (diagnosisData)=>{
 
 const diagnosisTableView = ({patientData,diagnosisList})=>{
     const diagnosisTableData = diagnosisTableFormat(diagnosisList);
-    const centerContent = document.querySelector('.content-center');
-    
+
     centerContent.innerHTML='';
-    renderActions('Visits');
+    // renderActions('Visits');
 
     diagnosisMetaData ={
         unitView:{
             unitRenderer:diagnosisSingleView,
             axiosAuth,
             url:'/patients/getDiagnosis/query?id='
-        }
+        },
+        tableActions:diagnosisTableLeftNav,
+        title:'Diagnostic Log'
     };
-    renderTable(diagnosisTableData,diagnosisMetaData);
-    tabs('Diagnostic Log Manager',diagnosisTableLeftNav());
+
+    renderTable({
+        parentDOM:centerContent,modelList:diagnosisTableData,modelMetaData:diagnosisMetaData});
 
     const backToPatientBtn = document.querySelector('#back');
     backToPatientBtn.addEventListener('click',function(event){
@@ -540,6 +657,7 @@ const diagnosisTableView = ({patientData,diagnosisList})=>{
 }
 
 apntmntBtn.addEventListener('click',async function(event){
+    toggleActiveSideButton('appointments');
     const startDate = new Date();
     startDate.setHours(0,0,0);
     const weekDuration = 6;
@@ -555,14 +673,14 @@ apntmntBtn.addEventListener('click',async function(event){
         }`);
 
     appointmentScheduleView({startDate,endDate,appointmentList:response.data});
-    // console.log(response);
 
 });
 
 //create appointment view
 const createAppointmentView = (singlePatient)=>{
-    renderForm('Appointment',appointmentFormFormat);
-    clearLeftNav('Creating New Appointment');
+
+    centerContent.innerHTML = '';
+    renderForm({parentDOM:centerContent,eleName:'Appointment',elementKeys:appointmentFormFormat});
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -607,10 +725,18 @@ const createAppointmentView = (singlePatient)=>{
 const appointmentSingleView = (appointmentData)=>{
     
     const appointmentFormFormat = appointmentUnitView(appointmentData);
-    renderUnitView('Appointment Information',appointmentFormFormat);
+    const {tabs} = singleNavView;
+    const cardRow = document.createElement('div');
+
+    cardRow.classList+='row';
+    centerContent.innerHTML = '';
+    centerContent.appendChild(cardRow);
+
+    renderUnitView({parentDOM:cardRow,modelName:'Appointment Information',model:appointmentFormFormat});
     
+
     if (appointmentData.patientId){
-        tabs('Appointment Manager',patientsAppointmentSingleSideNav());
+        tabs({patentDOM:cardRow,navItems:patientsAppointmentSingleSideNav});
         const backToAppLog = document.querySelector('#back');
 
         backToAppLog.addEventListener('click',async function(event){
@@ -632,8 +758,9 @@ const appointmentSingleView = (appointmentData)=>{
             
             appointmentListByPatient({patientData,appointmentList});
         });
-    }else{
-        tabs('Appointment Manager',appointmentSingleSideNav());
+    }
+    else{
+        tabs({patentDOM:cardRow,navItems:appointmentSingleSideNav});
     }
     
     const updateAppointment = document.querySelector('#edit');
@@ -701,8 +828,18 @@ const appointmentSingleView = (appointmentData)=>{
 
 //Update appointments
 const updateAppointmentView = (appointmentData)=>{
-    renderUpdateForm('Appointment',appointmentFormFormat,appointmentData);
-    clearLeftNav('Updating Appointment');
+
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';  
+    centerContent.appendChild(cardRow);
+    cardRow.classList+='row';
+
+    renderUpdateForm({
+        parentDOM:cardRow,
+        eleName:'Appointment',
+        elementsMetaData:appointmentFormFormat,
+        elementsValues:appointmentData});
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -763,11 +900,11 @@ const updateAppointmentView = (appointmentData)=>{
 }
 
 const appointmentScheduleView = async({startDate,endDate,appointmentList})=>{
+    
     const apntmntMetaData = {
         startDate,
         endDate,
     };
-    const centerContent = document.querySelector('.content-center');
     
     centerContent.innerHTML='';
     const appointmentInputData = {
@@ -775,9 +912,8 @@ const appointmentScheduleView = async({startDate,endDate,appointmentList})=>{
         date : startDate
     };
 
-    renderApntmntTableActions(appointmentInputData);
-    renderAppointmentsTable({appointmentList,apntmntMetaData});
-    tabs('Appointments Log Manager',apntmntTableLeftNav());
+    renderApntmntTableActions({parentDOM:centerContent,appointmentInputData});
+    renderAppointmentsTable({parentDOM:centerContent,appointmentList,apntmntMetaData});
 
     const openCmBtns = document.querySelectorAll('button[name="openCm"]');
     const changeStartDayWeek = document.querySelector('#startDayWeek');
@@ -804,10 +940,10 @@ const appointmentScheduleView = async({startDate,endDate,appointmentList})=>{
 
     });
 
-    addAppointment.addEventListener('click',function(event){
-        //needs work
-        createAppointmentView({});
-    });
+    // addAppointment.addEventListener('click',function(event){
+    //     //needs work
+    //     createAppointmentView({});
+    // });
 
     openCmBtns.forEach(cmBtn => {
         cmBtn.addEventListener('click',async function(event){
@@ -834,17 +970,17 @@ const appointmentListByPatient = ({patientData,appointmentList}) => {
             axiosAuth,
             url:'/appointment/getAppointment/query?id='
         },
+        title:'Appointments Log',
+        tableActions:apntmntPatientTableLeftNav
     };
 
     const appointmentTableData = appointmentTableFormat(appointmentList);
-    const centerContent = document.querySelector('.content-center');
  
     centerContent.innerHTML='';
 
-    renderActions('Appointments');
-    renderTable(appointmentTableData,appointmentMetaData);
-    tabs('Appointments Log Manager',apntmntPatientTableLeftNav());
-
+    renderTable({
+        parentDOM:centerContent,modelList:appointmentTableData,modelMetaData:appointmentMetaData});
+    
     const backToPatientBtn = document.querySelector('#back');
     const activeAppointmentsBtn = document.querySelector('#acApntmt');
     const allAppointmentsBtn = document.querySelector('#allApntmt');
@@ -855,27 +991,38 @@ const appointmentListByPatient = ({patientData,appointmentList}) => {
     });
 
     activeAppointmentsBtn.addEventListener('click',function(event){
-        centerContent.innerHTML='';
+        
+        
         const activeAppList = appointmentList.filter(appointment => appointment.date > Date.now());
         const appointmentTableData = appointmentTableFormat(activeAppList);
-        renderTable(appointmentTableData,appointmentMetaData);
+        const cardContent = document.querySelector('.card-content');
+        cardContent.innerHTML = '';
+        renderTableBody({
+            parentDOM:cardContent,modelList:appointmentTableData,modelMetaData:appointmentMetaData});
     });
 
     allAppointmentsBtn.addEventListener('click',function(event){
-        centerContent.innerHTML='';
+        
         const appointmentTableData = appointmentTableFormat(appointmentList);
-        renderTable(appointmentTableData,appointmentMetaData);
+        const cardContent = document.querySelector('.card-content');
+        cardContent.innerHTML = '';
+        renderTableBody({
+            parentDOM:cardContent,modelList:appointmentTableData,modelMetaData:appointmentMetaData});
     });
 
     pastAppointmentsBtn.addEventListener('click',function(event){
-        centerContent.innerHTML='';
+        
         const dueAppList = appointmentList.filter(appointment => appointment.date <= Date.now());
         const appointmentTableData = appointmentTableFormat(dueAppList);
-        renderTable(appointmentTableData,appointmentMetaData);
+        const cardContent = document.querySelector('.card-content');
+        cardContent.innerHTML = '';
+        renderTableBody({
+            parentDOM:cardContent,modelList:appointmentTableData,modelMetaData:appointmentMetaData});
+        
     });
 };
 
-//logout
+
 logoutBtn.addEventListener('click',function(event){
     ipcRenderer.send('logout');
 });

@@ -1,6 +1,7 @@
-module.exports = function renderAppointmentsTable({appointmentList,apntmntMetaData}){
+module.exports = function renderAppointmentsTable({parentDOM,appointmentList,apntmntMetaData}){
 
-    const contentCenter = document.querySelector('.content-center');
+    const cardRow = document.createElement('div');
+    const cardCol = document.createElement('div');
     const table = document.createElement('div');
     const tableHeader = document.createElement('div');
     const tableBody = document.createElement('div');
@@ -10,11 +11,16 @@ module.exports = function renderAppointmentsTable({appointmentList,apntmntMetaDa
     const addDay = 1;
     const headerRow = document.createElement('div');
 
+    cardRow.classList+='row';
+    cardCol.classList+='col';
     table.className= 'apntmnt-table';
     tableHeader.className = 'apntmnt-header';
     headerRow.className = 'apntmnt-header-row';
     tableBody.className = 'apntmnt-table-body';
-    contentCenter.appendChild(table);
+    
+    parentDOM.appendChild(cardRow);
+    cardRow.appendChild(cardCol);
+    cardCol.appendChild(table);
     table.appendChild(tableHeader);
     table.appendChild(tableBody);
     tableHeader.appendChild(headerRow);
