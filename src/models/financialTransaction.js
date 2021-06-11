@@ -30,7 +30,7 @@ module.exports = function buildMakeFinancialTransaction(){
         return Object.freeze({
             getId:()=>id,
             getDescription:()=>description,
-            gateDate:()=>date,
+            getDate:()=>date,
             getAmount:()=>amount,
             getCashFlow:()=>cashFlow,
             getType:()=>type,

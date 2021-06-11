@@ -12,7 +12,7 @@ describe('financialTransaction model',()=>{
         expect(fakeFinanicalTransaction).toMatchObject({
             id:financialTransaction.getId(),
             description:financialTransaction.getDescription(),
-            date:financialTransaction.gateDate(),
+            date:financialTransaction.getDate(),
             amount:financialTransaction.getAmount(),
             cashFlow:financialTransaction.getCashFlow(),
             type:financialTransaction.getType(),
