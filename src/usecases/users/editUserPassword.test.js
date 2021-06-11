@@ -26,12 +26,13 @@ describe('edit user login',()=>{
         const fakeNewPassword = '12365487';
         const updatedLoginData = {id,oldPassword:password,password:fakeNewPassword};
         const edited = await editUserPassword(updatedLoginData);
-        const {hashedPassword} = edited;
-
+        const {hashedPassword,...editedUser} = edited;
         const passMatch = await argon2.verify(hashedPassword,password);
+        const newPassMatch = await argon2.verify(hashedPassword,fakeNewPassword);
 
         expect(edited.id).toBe(inserted.id);
         expect(passMatch).toBe(false);
+        expect(newPassMatch).toBe(true);
         
     });
     
