@@ -35,7 +35,12 @@ describe('list appointment by duration',()=>{
 
         const appointmentList = await listByDuration({startDate,endDate});
 
-        fakeAppointmentList.sort((el1,el2)=>{
+        const fakeAppointmentInDuration = fakeAppointmentList.filter(fakeAppointment=>{
+            if(fakeAppointment.date >= startDate.getTime() && fakeAppointment.date <= endDate.getTime())
+                return fakeAppointment;
+        });
+
+        fakeAppointmentInDuration.sort((el1,el2)=>{
             if(el1.date > el2.date)
                 return 1;
             if(el1.date < el2.date)
@@ -44,7 +49,8 @@ describe('list appointment by duration',()=>{
 
         for (let index = 0;index <3;index++){   
             
-            expect(fakeAppointmentList[index]).toMatchObject(appointmentList[index]);
+
+            expect(fakeAppointmentInDuration[index]).toMatchObject(appointmentList[index]);
         }
     });
 
