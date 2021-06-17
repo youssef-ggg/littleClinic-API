@@ -10,20 +10,20 @@ const makeFakeAppointment = require('../../__test__/fixtures/appointment');
 describe('list appointment by duration',()=>{
 
     let appointmentCollection,listByDuration;
-    beforeAll(()=>{
+    beforeEach(()=>{
         appointmentCollection = makeAppointmentCollection({makeDb,ObjectID});
         listByDuration = makeListByDuration({appointmentCollection});
     });
 
     it('get appointments by week',async ()=>{
-        
+      
         const fakeAppointmentList = [];
 
         for (let index=0;index<3;index++){
 
             const fakeAppointment = makeFakeAppointment({date:faker.date.soon(6).getTime()});
-            const insertedAppointment = await appointmentCollection.insert(fakeAppointment);
-            fakeAppointmentList.push(insertedAppointment);
+            const insertedAppointment = await appointmentCollection.insert({...fakeAppointment});
+            fakeAppointmentList.push({...insertedAppointment});
         }
 
         const weekDuration = 7;
@@ -46,16 +46,16 @@ describe('list appointment by duration',()=>{
             if(el1.date < el2.date)
                 return -1;
         });
-
+       
         for (let index = 0;index <3;index++){   
+            //contains bugs my fail fix in future
             
-
             expect(fakeAppointmentInDuration[index]).toMatchObject(appointmentList[index]);
         }
     });
 
 
-    afterAll(()=>{
+    afterEach(()=>{
         clearDb('appointments');
         closeDb();
     });
