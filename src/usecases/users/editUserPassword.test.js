@@ -84,7 +84,19 @@ describe('edit user login',()=>{
             .rejects.toEqual(Error('new password can\'t match the old password.'));
     });
 
-    it('Successfull password update',async ()=>{
+    it ('this user dosen\'t exist ',async()=>{
+        const fakeUser = makeFakeUser();
+        const editUserPassword = makeEditUserPassword({usersCollection,argon2});
+
+        const {id} = faker.random.uuid();
+        const fakeNewPassword = '12365487';
+        const updatedPasswordData = {id,oldPassword:fakeUser.password,password:fakeNewPassword};
+        
+        expect(editUserPassword(updatedPasswordData))
+            .rejects.toEqual(Error('This user doesn\'t exist.'));
+    });
+
+    it('invalid old password ',async ()=>{
         const fakeUser = makeFakeUser();
         const editUserPassword = makeEditUserPassword({usersCollection,argon2});
         const addUser = makeAddUser({usersCollection,argon2});

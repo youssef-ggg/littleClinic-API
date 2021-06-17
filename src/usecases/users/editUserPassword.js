@@ -22,6 +22,9 @@ module.exports = function makeEditUserPassword({usersCollection,argon2}){
         }
 
         const exists = await usersCollection.findById({id}); 
+        if(!exists){
+            throw new Error('This user doesn\'t exist.');
+        }
         const oldMatchNew = await argon2.verify(exists.hashedPassword,password);
         const passMatch = await argon2.verify(exists.hashedPassword,oldPassword);
         if(!passMatch){
