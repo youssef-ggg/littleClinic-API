@@ -9,6 +9,8 @@ const listAllFinancialTransaction = makeListAllFinancialTransaction({financialTr
 const listMonthlyFinancialTransaction = 
     makeListMonthlyFinancialTransaction({financialTransactionCollection});
 
-module.exports = {
+const financialTransactionServices =  Object.freeze({
     addFinancialTransaction,listAllFinancialTransaction,listMonthlyFinancialTransaction
-};
+});
+
+module.exports = financialTransactionServices;
