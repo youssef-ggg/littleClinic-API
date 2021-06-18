@@ -1,7 +1,7 @@
 
 module.exports = function makeCreateFinancialTransaction({addFinancialTransaction,jwtVerifyToken}){
 
-    return async function creatFinancialTransaction(httpRequest){
+    return async function createFinancialTransaction(httpRequest){
 
         const headers = {
             'Content-Type':'application/json'
@@ -19,8 +19,7 @@ module.exports = function makeCreateFinancialTransaction({addFinancialTransactio
             }
 
     
-            const {id} = httpRequest.params;
-            const transactionData = {id,...httpRequest.body};
+            const transactionData = {...httpRequest.body};
     
             const financialTransaction = await addFinancialTransaction(transactionData);
     

@@ -2,7 +2,7 @@ const faker = require('faker');
 const makeFakeFinancialTransaction = require('../../__test__/fixtures/financialTransaction');
 const makeCreateFinancialTransaction = require('./createFinancialTransaction');
 
-describe('creat financial transaction controller',()=>{
+describe('create financial transaction controller',()=>{
 
     it('transaction created successfully',async()=>{
 
@@ -10,9 +10,6 @@ describe('creat financial transaction controller',()=>{
         const request = {
             headers:{
                 'Content-Type':'application/json'
-            },
-            params:{
-                id:financialTransaction.id
             },
             body:{...financialTransaction}
         }
@@ -45,9 +42,7 @@ describe('creat financial transaction controller',()=>{
             headers:{
                 'Content-Type':'application/json'
             },
-            params:{
-                id:financialTransaction.id
-            },
+
             body:{...financialTransaction}
         }
 
