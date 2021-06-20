@@ -1,15 +1,19 @@
 const {jwtVerifyToken} = require('../../jwtAuthorization')
 
-const financialTransactionServices = require('../../usecases/financialTransaction/index');
+const financialTransactionServices = require('../../usecases/financialTransaction');
 
 const makeCreateFinancialTransaction = require('./createFinancialTransaction');
+const makeGetMonthlyTransactions = require('./getMonthlyTransactions');
 
-const {addFinancialTransaction} = financialTransactionServices;
+const {addFinancialTransaction,listMonthlyFinancialTransaction} = financialTransactionServices;
 
-const createFinancialTransaction = makeCreateFinancialTransaction({addFinancialTransaction,jwtVerifyToken});
+const createFinancialTransaction = 
+    makeCreateFinancialTransaction({addFinancialTransaction,jwtVerifyToken});
+const getMonthlyTransactions = 
+    makeGetMonthlyTransactions({listMonthlyFinancialTransaction,jwtVerifyToken});
 
 const  financialTransactionController = Object.freeze({
-    createFinancialTransaction 
+    createFinancialTransaction ,getMonthlyTransactions
 });
 
 module.exports = financialTransactionController;

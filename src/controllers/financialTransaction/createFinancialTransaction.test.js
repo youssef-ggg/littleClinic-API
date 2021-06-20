@@ -1,12 +1,12 @@
 const faker = require('faker');
-const makeFakeFinancialTransaction = require('../../__test__/fixtures/financialTransaction');
+const makeFakeTransaction = require('../../__test__/fixtures/financialTransaction');
 const makeCreateFinancialTransaction = require('./createFinancialTransaction');
 
 describe('create financial transaction controller',()=>{
 
     it('transaction created successfully',async()=>{
 
-        const financialTransaction = makeFakeFinancialTransaction();
+        const financialTransaction = makeFakeTransaction();
         const request = {
             headers:{
                 'Content-Type':'application/json'
@@ -37,7 +37,7 @@ describe('create financial transaction controller',()=>{
 
     it('verification problems',async()=>{
 
-        const financialTransaction = makeFakeFinancialTransaction();
+        const financialTransaction = makeFakeTransaction();
         const request = {
             headers:{
                 'Content-Type':'application/json'
@@ -72,7 +72,7 @@ describe('create financial transaction controller',()=>{
 
     it('reproting errors',async()=>{
 
-        const financialTransaction = makeFakeFinancialTransaction();
+        const financialTransaction = makeFakeTransaction();
         const request = {
             headers:{
                 'Content-Type':'application/json'
