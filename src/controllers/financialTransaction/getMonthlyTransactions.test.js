@@ -22,7 +22,7 @@ describe('get monthly transactions',()=>{
             }
         }
 
-        financialTransactionList = [];
+        const financialTransactionList = [];
         for(index=0;index<3;index++){
             financialTransactionList.push(makeFakeTransaction());
         }
