@@ -3,6 +3,7 @@ module.exports = function makeTransactionCollection({makeDb,ObjectID}){
     return Object.freeze({
         insert,
         findAll,
+        findById,
         findByMonth,
         update,
         removeById
@@ -30,6 +31,22 @@ module.exports = function makeTransactionCollection({makeDb,ObjectID}){
                 ...found
                 })
             );
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async function findById({id:_id}){
+        try {
+            const db = await makeDb();
+            const result = await db.collection('financialTransaction').find({_id:ObjectID(_id)});
+            const found = await result.toArray();
+            if(found.length === 0)
+                return null;
+            
+            const {_id:id,...info} = found[0];
+            return {id:id.toString(),...info};
+
         } catch (error) {
             return error;
         }

@@ -33,6 +33,16 @@ describe('financial transaction db',()=>{
 
     });
 
+    it('find transaction by id',async()=>{
+        const transaction = makeFakeTransaction();
+        const {id,...insertTransaction} = transaction;
+        const insertedTransaction = await financialTransactionCollection.insert({...insertTransaction});
+        insertTransaction.id = insertedTransaction.id;
+
+        const found = await financialTransactionCollection.findById(insertTransaction)
+        expect(found).toEqual(insertTransaction);
+    });
+
     it('list by month',async()=>{
         const nowDate = new Date();
         const thisMonth = nowDate.getMonth();
