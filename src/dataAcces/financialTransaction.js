@@ -3,7 +3,8 @@ module.exports = function makeTransactionCollection({makeDb,ObjectID}){
     return Object.freeze({
         insert,
         findAll,
-        findByMonth
+        findByMonth,
+        update
     });
 
     async function insert(financialTransaction){
@@ -50,5 +51,29 @@ module.exports = function makeTransactionCollection({makeDb,ObjectID}){
         } catch (error) {
             return error;
         }
+    }
+
+    async function update(financialTransactionData){
+
+        const {id,...setNewTransaction} = financialTransactionData;
+        const options =  {returnOriginal: false};
+        try {
+            const db = await makeDb();
+            const result = await db.collection('financialTransaction').findOneAndUpdate({_id:ObjectID(id)},
+            {
+                $set:{...setNewTransaction},
+                
+            },
+            options
+            );
+
+            const {value} = result;
+            const {_id,...rest} = value;
+            return {id:_id.toString(),...rest};
+            
+        } catch (error) {
+            return error;
+        }
+
     }
 }

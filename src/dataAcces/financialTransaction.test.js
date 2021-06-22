@@ -58,6 +58,22 @@ describe('financial transaction db',()=>{
         }
     });
 
+    it('update transaction',async()=>{
+        const transaction = makeFakeTransaction();
+        const {id,...insertTransaction} = transaction;
+        const result = await financialTransactionCollection.insert({...insertTransaction});
+        transaction.id = result.id;
+
+        const updateTransactionData = makeFakeTransaction({description:'changed description'});
+        updateTransactionData.id = result.id;
+
+        const updatedTransaction = await financialTransactionCollection.update({...updateTransactionData});
+
+        expect(updatedTransaction.id).toEqual(result.id);
+        expect(updatedTransaction.description).toEqual('changed description');
+        
+    });
+
     afterAll(()=>{
         clearDb('financialTransaction');
         closeDb();
