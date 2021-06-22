@@ -4,7 +4,8 @@ module.exports = function makeTransactionCollection({makeDb,ObjectID}){
         insert,
         findAll,
         findByMonth,
-        update
+        update,
+        removeById
     });
 
     async function insert(financialTransaction){
@@ -70,10 +71,21 @@ module.exports = function makeTransactionCollection({makeDb,ObjectID}){
             const {value} = result;
             const {_id,...rest} = value;
             return {id:_id.toString(),...rest};
-            
+
         } catch (error) {
             return error;
         }
+    }
 
+    async function removeById({id:_id}){
+        try {
+            const db = await makeDb();
+            const result =  await db.collection('financialTransaction').deleteOne({_id:ObjectID(_id)});
+
+            return result.deletedCount;
+
+        }catch(error){
+            return error;
+        }
     }
 }

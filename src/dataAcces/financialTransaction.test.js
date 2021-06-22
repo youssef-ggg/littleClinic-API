@@ -73,6 +73,15 @@ describe('financial transaction db',()=>{
         expect(updatedTransaction.description).toEqual('changed description');
         
     });
+    
+    it('remove single transaction',async()=>{
+        const transaction = makeFakeTransaction();
+        const {id,...insertTransaction} = transaction;
+        const insertedTransaction = await financialTransactionCollection.insert({...insertTransaction});
+        insertTransaction.id = insertedTransaction.id;
+
+        return expect(await financialTransactionCollection.removeById({id:insertedTransaction.id})).toBe(1);
+    });
 
     afterAll(()=>{
         clearDb('financialTransaction');
