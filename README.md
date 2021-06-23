@@ -13,3 +13,8 @@ To manage the littile clinic app.
 * Adding the book keeping module for revenue calculation.
 * Adding the functionality for Inventory module.
 * Adding custom modules as requested.
+
+## Need fixes.
+* fix bugs in edit user password usecase tests.
+* Add invalid id case in the models for mongo db ObjectID.
+* refactor frontend code.
