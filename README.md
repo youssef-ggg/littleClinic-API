@@ -15,6 +15,8 @@ To manage the littile clinic app.
 * Adding custom modules as requested.
 
 ## Need fixes.
-* fix bugs in edit user password usecase tests.
-* Add invalid id case in the models for mongo db ObjectID.
+* Fix bugs in edit user password usecase tests.
+* Add invalid id case in the model or usecase or dataaccess for mongo db using ObjectID.isValid.
+* Add a proper error logger.
+* Fix the contollers to use params and or query.
 * refactor frontend code.
