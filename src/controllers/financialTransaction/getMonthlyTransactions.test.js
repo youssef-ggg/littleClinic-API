@@ -4,7 +4,7 @@ const makeGetMonthlyTransactions = require('./getMonthlyTransactions');
 
 describe('get monthly transactions',()=>{
 
-    it('sucessfull request',async()=>{
+    it('successful request',async()=>{
         
         const nowDate = new Date();
         const thisMonth = nowDate.getMonth();
