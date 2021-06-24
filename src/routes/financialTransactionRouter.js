@@ -6,7 +6,8 @@ module.exports =
             getMonthlyTransactions,
             getAllFinancialTransaction,
             getFinancialTransactionById,
-            updateFinancialTransaction
+            updateFinancialTransaction,
+            deleteFinancialTransaction
 
         } = financialTransactionController;
 
@@ -16,6 +17,7 @@ module.exports =
         routes.get('/financialTransaction/listAll',makeCallBack(getAllFinancialTransaction));
         routes.get('/financialTransaction/:id',makeCallBack(getFinancialTransactionById));
         routes.patch('/financialTransaction/updateTransaction/:id',makeCallBack(updateFinancialTransaction));
+        routes.delete('/financialTransaction/deleteTransaction/:id',makeCallBack(deleteFinancialTransaction));
 
         return routes;
 }
