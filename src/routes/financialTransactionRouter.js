@@ -4,7 +4,9 @@ module.exports =
         const {
             createFinancialTransaction,
             getMonthlyTransactions,
-            getAllFinancialTransaction
+            getAllFinancialTransaction,
+            getFinancialTransactionById,
+            updateFinancialTransaction
 
         } = financialTransactionController;
 
@@ -12,6 +14,8 @@ module.exports =
         routes.post('/financialTransaction/addTransaction',makeCallBack(createFinancialTransaction));
         routes.get('/financialTransaction/listMonthly/:monthyear',makeCallBack(getMonthlyTransactions));
         routes.get('/financialTransaction/listAll',makeCallBack(getAllFinancialTransaction));
+        routes.get('/financialTransaction/:id',makeCallBack(getFinancialTransactionById));
+        routes.patch('/financialTransaction/updateTransaction/:id',makeCallBack(updateFinancialTransaction));
 
         return routes;
 }
