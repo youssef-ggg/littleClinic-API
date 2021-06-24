@@ -20,7 +20,7 @@ module.exports = function makeGetMonthlyTransactions({listMonthlyFinancialTransa
             return {
               headers,
               statusCode:200,
-              body:{monthlyTransactions}  
+              body:monthlyTransactions  
             }
         } catch (error) {
             //TODO:CREATE error logger

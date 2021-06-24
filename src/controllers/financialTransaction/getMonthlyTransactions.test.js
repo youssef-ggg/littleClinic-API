@@ -38,7 +38,7 @@ describe('get monthly transactions',()=>{
             },
             jwtVerifyToken:httpRequest=>{
                 return {
-                    statusCode:201
+                    statusCode:200
                 }
             }
         });
@@ -51,7 +51,7 @@ describe('get monthly transactions',()=>{
             body:{...financialTransactionFiltered}
         }
         const result = await getMonthlyTransactions(request);
-        expect(result).toMatchObject(result);
+        expect(expected).toMatchObject(result);
         
     });
 
