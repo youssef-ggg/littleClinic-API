@@ -2,7 +2,11 @@ const table = require("./table")
 
 module.exports = function financialTransactionTable({ parentDOM, modelList, modelMetaData }) {
 
-    const { tableActions, tableHeader } = modelMetaData
+    const { tableActions, dateData } = modelMetaData
+    const currentDate = new Date()
+    //currentMonth + 1 javascript month starts at 0
+    const currentMonth = dateData.month// + 1
+    const currentYear = dateData.year
 
     const cardRow = document.createElement('div')
     const cardCol = document.createElement('div')
@@ -21,6 +25,9 @@ module.exports = function financialTransactionTable({ parentDOM, modelList, mode
     const cardHeader = document.createElement('div')
     const cardContent = document.createElement('div')
     const tableTitle = document.createElement('h3')
+    const monthInputDiv = document.createElement('span')
+    const tableMonthInput = document.createElement('input')
+    const chooseMonthBtn = document.createElement('button')
     const tableActionsBtn = document.createElement('i')
     const dropDownMenu = document.createElement('ul')
     const dropDownMenuContent = document.createElement('div')
@@ -45,6 +52,10 @@ module.exports = function financialTransactionTable({ parentDOM, modelList, mode
         dropDownMenuLinkContent.appendChild(dropDownMenuLinkTitle)
     });
 
+    tableMonthInput.type = 'month'
+    tableMonthInput.id = 'monthInput'
+    chooseMonthBtn.id = 'monthChoice'
+
     tableActionsBtn.addEventListener('click', function (event) {
         if (dropDownMenu.classList.contains('display-none')) {
             dropDownMenu.classList.remove('display-none')
@@ -62,12 +73,20 @@ module.exports = function financialTransactionTable({ parentDOM, modelList, mode
     tableTitle.className = ''
     tableActionsBtn.classList += 'fas fa-ellipsis-h'
     tableActionsBtn.id = 'openTableActions'
+    monthInputDiv.className = 'date-input-box'
+    tableMonthInput.value = `${currentYear}-${currentMonth < 10 ? '0' + currentMonth : currentMonth}`
+    tableMonthInput.min = `${currentYear - 6}-1`
+    tableMonthInput.classList += 'date-input'
+    chooseMonthBtn.classList += 'date-btn fas fa-history'
 
     card.appendChild(cardHeader)
     card.appendChild(cardContent)
     cardHeader.appendChild(tableTitle)
+    cardHeader.appendChild(monthInputDiv)
     cardHeader.appendChild(tableActionsBtn)
     cardHeader.appendChild(dropDownMenu)
+    monthInputDiv.appendChild(tableMonthInput)
+    monthInputDiv.appendChild(chooseMonthBtn)
     dropDownMenu.appendChild(dropDownMenuContent)
 
     tableTitle.innerHTML = modelMetaData.tableHeader

@@ -1051,23 +1051,20 @@ bookKeepingBtn.addEventListener('click', async function (event) {
 
     toggleActiveSideButton('bookkeeping');
     const nowDate = new Date();
-    const month = 6 || nowDate.getMonth();
+    const month = nowDate.getMonth() + 1;
     const year = nowDate.getFullYear();
+
+    bookKeepingMonthlyTableView({ month, year });
+});
+
+const bookKeepingMonthlyTableView = async ({ month, year }) => {
 
     const response = await axiosAuth
         .get(`/financialTransaction/listMonthly/query?month=${month}&year=${year}`);
 
-    
-
-    bookKeepingMonthlyTableView({ monthylFinancialData: response.data });
-
-});
-
-
-const bookKeepingMonthlyTableView = async ({ monthylFinancialData }) => {
-
+    monthylFinancialData = response.data
     const { monthlyTransactions, monthlyBalance } =
-        monthlyFinancialTransaction({ monthylFinancialData});
+        monthlyFinancialTransaction({ monthylFinancialData });
 
     centerContent.innerHTML = '';
 
@@ -1076,10 +1073,20 @@ const bookKeepingMonthlyTableView = async ({ monthylFinancialData }) => {
         modelList: { monthlyTransactions, monthlyBalance },
         modelMetaData: {
             tableActions: [{ id: 'singleTransaction', name: 'Add Transaction', icon: 'fas fa-edit' }],
+            dateData: {
+                month,
+                year
+            },
             tableHeader: 'Cash Ledger'
         }
     });
 
+    const changeMonthBtn = document.querySelector('#monthChoice')
+    changeMonthBtn.addEventListener('click', function (event) {
+        const monthInput = document.querySelector('#monthInput').value
+        const monthInputArr = monthInput.split('-')
+        bookKeepingMonthlyTableView({ year: parseInt(monthInputArr[0]), month: parseInt(monthInputArr[1]) })
+    })
 }
 
 

@@ -407,3 +407,33 @@ table th {
 .display-none {
     display: none;
 }
+
+.date-input-box{
+    
+    display: flex;
+    padding-bottom: 1%;
+    
+}
+
+.date-input {
+  border: 2px  solid  var(--danger-color);
+  border-radius: 10px 0 0 10px;
+  background-color: var(--main-bg-color);
+  padding: 3px 5px;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+  /* font-size: x-large; */
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+    /* color: var(--danger-color); */
+    
+}
+
+.date-btn{
+    border: none;
+    border-radius: 0 10px 10px 0 ;
+    font-size: large;
+    padding: 0 10px 0 5px; 
+    background: var(--danger-color);
+    color: var(--main-bg-color);
+    cursor: pointer;
+}

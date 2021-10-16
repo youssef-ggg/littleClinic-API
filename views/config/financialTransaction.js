@@ -42,7 +42,6 @@ module.exports = {
             for (const type in types) {
                 if (cashIn.includes(type)) {
                     balance['Cash In'] += balance[type]
-                    console.log(balance['Cash In'])
                 } else if (cashOut.includes(type)) {
                     balance['Cash Out'] += balance[type]
                     balance[type] *= -1
