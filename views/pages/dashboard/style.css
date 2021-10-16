@@ -373,6 +373,11 @@ table th {
     text-align: left;
 }
 
+.transaction-table{
+    display: flex;
+    flex-direction: row;
+}
+
 .btn {
     background: var(--danger-color);
     color: var(--main-bg-color);

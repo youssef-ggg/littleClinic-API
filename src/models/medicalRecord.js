@@ -1,6 +1,7 @@
 module.exports = function buildMakeMedicalRecord(){
 
     return function makeMedicalRecord({
+        id,
         userID,
         basicInfo,
         currentMedication,
@@ -11,7 +12,12 @@ module.exports = function buildMakeMedicalRecord(){
         socialHistory
     }={}){
 
+        if(!userID){
+            throw new Error('medical record must have a patient id.');
+        }
+
         return Object.freeze({
+            getID:()=>id,
             getUserID:()=>userID,
             getBasicInfo:()=>basicInfo,
             getCurrentMedication:()=>currentMedication,

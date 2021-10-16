@@ -5,6 +5,7 @@ const makePatientsCollection = require('./patients');
 const makeDiagnosisCollection = require('./diagnosis');
 const makeAppointmentCollection = require('./appointment');
 const makeTransactionCollection = require('./financialTransaction');
+const makeBalanceTransactionCollection = require('./transactionBalance');
 
 const url = 'mongodb://localhost:27017';
 const dbName = 'LittleClinc';// fix typo
@@ -32,9 +33,10 @@ const patientsCollection = makePatientsCollection({makeDb,ObjectID});
 const diagnosisCollection = makeDiagnosisCollection({makeDb,ObjectID});
 const appointmentCollection = makeAppointmentCollection({makeDb,ObjectID});
 const financialTransactionCollection = makeTransactionCollection({makeDb,ObjectID});
+const balanceTransactionCollection  = makeBalanceTransactionCollection({makeDb,ObjectID});
 
 module.exports = {
     usersCollection,patientsCollection,diagnosisCollection,appointmentCollection,
-    financialTransactionCollection
+    financialTransactionCollection,balanceTransactionCollection
 }
 
