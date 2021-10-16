@@ -9,7 +9,7 @@ const {userRoutes,patientRoutes,diagnosisRoutes,appointmentRoutes,
 dotenv.config();
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use('/',userRoutes);
 app.use('/',patientRoutes);
 app.use('/',diagnosisRoutes);
