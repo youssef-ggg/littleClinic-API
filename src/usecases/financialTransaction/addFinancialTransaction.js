@@ -1,4 +1,4 @@
-const { makeFinancialTransaction, makeBalanceTransaction } = require('../../models');
+const { makeFinancialTransaction } = require('../../models');
 const makeAdjustFinancialBalance = require('./adjustFinancialBalance');
 
 module.exports =
@@ -6,22 +6,27 @@ module.exports =
 
         return async function addFinancialTransaction(financialTransactionInfo) {
 
-            const adjustFinancialBalance = makeBalanceTransaction({ balanceTransactionCollection })
-            const financialTransaction = makeFinancialTransaction(financialTransactionInfo)
+           try {
+                const adjustFinancialBalance = makeAdjustFinancialBalance({ balanceTransactionCollection })
+                const financialTransaction = makeFinancialTransaction(financialTransactionInfo)
 
-            const createdFinancialTransaction = await financialTransactionCollection.insert({
-                description: financialTransaction.getDescription(),
-                date: financialTransaction.getDate(),
-                amount: financialTransaction.getAmount(),
-                cashFlow: financialTransaction.getCashFlow(),
-                type: financialTransaction.getType(),
-                referenceNum: financialTransaction.getReferenceNum(),
-                createdOn: financialTransaction.getCreatedOn(),
-                modifiedOn: financialTransaction.getModifiedOn()
-            });
+                const createdFinancialTransaction = await financialTransactionCollection.insert({
+                    description: financialTransaction.getDescription(),
+                    date: financialTransaction.getDate(),
+                    amount: financialTransaction.getAmount(),
+                    cashFlow: financialTransaction.getCashFlow(),
+                    type: financialTransaction.getType(),
+                    referenceNum: financialTransaction.getReferenceNum(),
+                    createdOn: financialTransaction.getCreatedOn(),
+                    modifiedOn: financialTransaction.getModifiedOn()
+                });
 
-            const financialBalances = await adjustFinancialBalance(financialTransaction)
+                const financialBalances = await adjustFinancialBalance(financialTransaction)
 
-            return {createdFinancialTransaction,financialBalances}
+                return { createdFinancialTransaction, financialBalances }
+
+            }catch(error){
+                console.log(error)
+            }
         }
     }

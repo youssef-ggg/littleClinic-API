@@ -8,12 +8,6 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
         const monthOfTransaction = new Date(financialTransaction.getDate()).getMonth()
         const yearOfTransaction = new Date(financialTransaction.getDate()).getFullYear()
 
-        const openingClosingBalances = []
-        let startingBalance = makeBalanceTransaction({
-            id:0,
-            description: 'Opening Balance',
-            date: new Date(yearOfTransaction, monthOfTransaction, 1).getTime(),
-        })
         let closingBalance = {}
         const type = financialTransaction.getType()
 
@@ -25,19 +19,6 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
             if (lastBalanceDate.getMonth() == monthOfTransaction
                 && lastBalanceDate.getFullYear() == yearOfTransaction) {
 
-                if (lastBalances[1]) {
-                    startingBalance = makeBalanceTransaction({
-                        id:0,
-                        description: 'Opening Balance',
-                        date: new Date(yearOfTransaction, monthOfTransaction, 1).getTime(),
-                        investment: lastBalances[1].investment,
-                        revenue: lastBalances[1].revenue,
-                        other: lastBalances[1].other,
-                        wages: lastBalances[1].wages,
-                        equipment: lastBalances[1].equipment,
-                        marketing: lastBalances[1].marketing
-                    })
-                }
                 lastBalances[0][type] += financialTransaction.getAmount()
                 const updateBalance = makeBalanceTransaction({
                     ...lastBalances[0]
@@ -56,31 +37,9 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
                     modifiedOn: Date.now()
                 })
 
-                return [{
-                    id: startingBalance.getId(),
-                    description: startingBalance.getDescription(),
-                    date: startingBalance.getDate(),
-                    investment: startingBalance.getInvestment(),
-                    revenue: startingBalance.getRevenue(),
-                    other: startingBalance.getOther(),
-                    wages: startingBalance.getWages(),
-                    marketing: startingBalance.getMarketing(),
-                    equipment: startingBalance.getEquipment(),
-                }, updatedBalance]
+                return updatedBalance
             }
             else {
-
-                startingBalance = makeBalanceTransaction({
-                    id:0,
-                    description: 'Opening Balance',
-                    date: new Date(yearOfTransaction, monthOfTransaction, 1).getTime(),
-                    investment: lastBalances[0].investment,
-                    revenue: lastBalances[0].revenue,
-                    other: lastBalances[0].other,
-                    wages: lastBalances[0].wages,
-                    equipment: lastBalances[0].equipment,
-                    marketing: lastBalances[0].marketing
-                })
 
                 lastBalances[0][type] += financialTransaction.getAmount()
                 closingBalance = makeBalanceTransaction({
@@ -113,21 +72,11 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
             wages: closingBalance.getWages(),
             marketing: closingBalance.getMarketing(),
             equipment: closingBalance.getEquipment(),
-            createdOn:closingBalance.getCreatedOn(),
-            modifiedOn:closingBalance.getModifiedOn()
+            createdOn: closingBalance.getCreatedOn(),
+            modifiedOn: closingBalance.getModifiedOn()
         })
 
-        return [{
-            id: startingBalance.getId(),
-            description: startingBalance.getDescription(),
-            date: startingBalance.getDate(),
-            investment: startingBalance.getInvestment(),
-            revenue: startingBalance.getRevenue(),
-            other: startingBalance.getOther(),
-            wages: startingBalance.getWages(),
-            marketing: startingBalance.getMarketing(),
-            equipment: startingBalance.getEquipment()
-        }, insertedclosingBalance]
+        return insertedclosingBalance
 
     }
 

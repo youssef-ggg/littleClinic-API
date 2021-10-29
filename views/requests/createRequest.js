@@ -3,7 +3,6 @@ module.exports = async function createRequest(request){
 
     const {postData,moduleTitle,requestRoute,axiosAuth} = request;
     try {
-        
         const response = await axiosAuth.post(requestRoute,postData);
         if(response.status == 201)
         {

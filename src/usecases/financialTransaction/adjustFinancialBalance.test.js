@@ -5,6 +5,7 @@ const makeBalanceTransactionCollection = require('../../dataAcces/transactionBal
 const makeAdjustFinanialBalance = require('./adjustFinancialBalance')
 const makeFakeTransaction = require('../../__test__/fixtures/financialTransaction')
 const buildMakeFinancialTransaction = require('../../models/financialTransaction')
+const { typeEnum } = require('../../utils/enums')
 
 describe('adjust financial balance', () => {
 
@@ -13,7 +14,7 @@ describe('adjust financial balance', () => {
     const dayOfTransaction = new Date(currentMonthYearDate).getDate()
     const monthOfTransaction = new Date(currentMonthYearDate).getMonth()
     const yearOfTransaction = new Date(currentMonthYearDate).getFullYear()
-    const {typeEnum} = require('../../utils/enums')
+
 
     beforeAll(() => {
         makeFinancialTransaction = buildMakeFinancialTransaction({ typeEnum })
@@ -29,17 +30,6 @@ describe('adjust financial balance', () => {
         const insertedfinancialBalances =
             await adjustFinancialBalance(financialTransaction)
 
-        expect(insertedfinancialBalances[0]).toMatchObject({
-            description: 'Opening Balance',
-            date: new Date(yearOfTransaction, monthOfTransaction, 1).getTime(),
-            investment: 0,
-            revenue: 0,
-            other: 0,
-            wages: 0,
-            equipment: 0,
-            marketing: 0
-        })
-
         const amountValues = {
             investment: 0,
             revenue: 0,
@@ -49,12 +39,11 @@ describe('adjust financial balance', () => {
             marketing: 0
         }
         amountValues[fakeTransaction.type] = fakeTransaction.amount
-        expect(insertedfinancialBalances[1]).toMatchObject({
+        expect(insertedfinancialBalances).toMatchObject({
             description: 'Closing Balance',
             date: new Date(yearOfTransaction, monthOfTransaction + 1, 0).getTime(),
             ...amountValues
         })
-
     })
 
     it('adjust financial balance, one balance in collection', async () => {
@@ -70,23 +59,19 @@ describe('adjust financial balance', () => {
         const insertedfinancialBalances =
             await adjustFinancialBalance(financialTransaction)
 
-        const { id, description, date, ...lastMonthClosingBalance } = previousMonthTransaction
-        expect(insertedfinancialBalances[0]).toMatchObject({
-            id: 0,
-            description: 'Opening Balance',
-            date: new Date(yearOfTransaction, monthOfTransaction + 1, 1).getTime(),
-            ...lastMonthClosingBalance
-        })
+        const { id, description, date,
+            createdOn, modifiedOn, ...lastMonthClosingBalance } = previousMonthTransaction
+
         const amountValues = {
-            investment: insertedfinancialBalances[0].investment,
-            revenue: insertedfinancialBalances[0].revenue,
-            other: insertedfinancialBalances[0].other,
-            wages: insertedfinancialBalances[0].wages,
-            equipment: insertedfinancialBalances[0].equipment,
-            marketing: insertedfinancialBalances[0].marketing
+            investment: previousMonthTransaction.investment,
+            revenue: previousMonthTransaction.revenue,
+            other: previousMonthTransaction.other,
+            wages: previousMonthTransaction.wages,
+            equipment: previousMonthTransaction.equipment,
+            marketing: previousMonthTransaction.marketing
         }
         amountValues[fakeTransaction.type] += fakeTransaction.amount
-        expect(insertedfinancialBalances[1]).toMatchObject({
+        expect(insertedfinancialBalances).toMatchObject({
             description: 'Closing Balance',
             date: new Date(yearOfTransaction, monthOfTransaction + 2, 0).getTime(),
             ...amountValues
@@ -106,14 +91,8 @@ describe('adjust financial balance', () => {
         const insertedfinancialBalances =
             await adjustFinancialBalance(financialTransaction)
 
-        const { id, description, date, createOn, modifiedOn, ...previousMonthClosingBalance }
+        const { id, description, date, createdOn, modifiedOn, ...previousMonthClosingBalance }
             = previousBalanceTransactions[0]
-
-        expect(insertedfinancialBalances[0]).toMatchObject({
-            description: 'Opening Balance',
-            date: new Date(yearOfTransaction, monthOfTransaction + 1, 1).getTime(),
-            ...previousMonthClosingBalance
-        })
 
         const amountValues = {
             investment: previousBalanceTransactions[1].investment,
@@ -124,7 +103,7 @@ describe('adjust financial balance', () => {
             marketing: previousBalanceTransactions[1].marketing
         }
         amountValues[fakeTransaction.type] += fakeTransaction.amount
-        expect(insertedfinancialBalances[1]).toMatchObject({
+        expect(insertedfinancialBalances).toMatchObject({
             description: 'Closing Balance',
             date: new Date(yearOfTransaction, monthOfTransaction + 2, 0).getTime(),
             ...amountValues

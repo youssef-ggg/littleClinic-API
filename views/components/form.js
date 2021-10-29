@@ -1,4 +1,4 @@
-module.exports = function renderForm({parentDOM,eleName,elementKeys}){
+module.exports = function renderForm({ parentDOM, eleName, elementKeys }) {
 
     //fix to use card row and card col
     const form = document.createElement('form');
@@ -10,10 +10,10 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
 
     form.classList += 'form col-8';
     inputBox.className = 'form-input-box';
-    formTitle.className ='form-title';
+    formTitle.className = 'form-title';
     formTitle.innerHTML = `Create ${eleName}`;
     formFooter.className = 'form-footer';
-    submit.type='submit';
+    submit.type = 'submit';
     submit.id = 'save';
     submit.innerHTML = 'Save';
     submit.classList += 'btn form-btn';
@@ -41,20 +41,19 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
         inputBox.appendChild(formItem);
         formItem.appendChild(label);
 
-        if(element.type === 'radio')
-        {
+        if (element.type === 'radio') {
             const radioBox = document.createElement('div');
             radioBox.className = 'radio-box';
-            radioBox.id=element.id;
+            radioBox.id = element.id;
 
             formItem.appendChild(radioBox);
-            
-            element.choices.forEach(choice=>{
+
+            element.choices.forEach(choice => {
 
                 const choiceLabel = document.createElement('label');
                 const radioInput = document.createElement('input');
                 const checkmark = document.createElement('span');
-                
+
                 choiceLabel.className = 'radio-label';
                 choiceLabel.htmlFor = choice;
                 radioInput.id = choice;
@@ -66,21 +65,21 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
                 radioBox.appendChild(choiceLabel);
                 choiceLabel.appendChild(radioInput);
                 choiceLabel.appendChild(checkmark);
-                choiceLabel.appendChild(document.createTextNode(choice)); 
-                
-                
+                choiceLabel.appendChild(document.createTextNode(choice));
+
+
             });
-        }     
-        else if (element.type === 'list'){
-            const {options} = element;
+        }
+        else if (element.type === 'list') {
+            const { options } = element;
 
             const list = document.createElement('select');
-            
+
             formItem.appendChild(list);
-            list.id = `${element.id}list`;
+            list.id = element.id;
             list.className = 'form-input';
-            
-            for (const option in options){
+
+            for (const option in options) {
                 const htmlOption = document.createElement('option');
                 htmlOption.value = option;
                 htmlOption.label = options[option];
@@ -88,16 +87,15 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
             };
 
         }
-        else if(element.type === 'textarea') 
-        {
+        else if (element.type === 'textarea') {
             const textAreaInput = document.createElement('textarea');
             textAreaInput.className = 'form-input';
             formItem.appendChild(textAreaInput);
             textAreaInput.id = element.id;
         }
-        else if (element.type === 'textArray'){
-            
-            const inputElment  = document.createElement('input');
+        else if (element.type === 'textArray') {
+
+            const inputElment = document.createElement('input');
             const addToListBtn = document.createElement('button');
             const listInputBox = document.createElement('div');
 
@@ -108,13 +106,12 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
             listInputBox.className = 'form-input-list';
 
 
-            addToListBtn.addEventListener('click',function(event){
+            addToListBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                
-                if (inputElment.value.length != 0)
-                {
+
+                if (inputElment.value.length != 0) {
                     const listLine = document.createElement('div');
-                    const listItem  = document.createElement('span');
+                    const listItem = document.createElement('span');
                     const deleteItem = document.createElement('button');
 
                     listItem.className = 'list-item';
@@ -126,18 +123,18 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
                     listLine.appendChild(deleteItem);
                     formItem.appendChild(listLine);
 
-                    deleteItem.addEventListener('click',function(event){
+                    deleteItem.addEventListener('click', function (event) {
                         event.preventDefault();
                         formItem.removeChild(listLine);
                     });
-                    
+
                 }
             });
 
             formItem.appendChild(listInputBox);
             listInputBox.appendChild(inputElment);
             listInputBox.appendChild(addToListBtn);
-            
+
 
         }
         else {
@@ -145,11 +142,14 @@ module.exports = function renderForm({parentDOM,eleName,elementKeys}){
             input.id = element.id;
             input.name = element.id;
             input.type = element.type;
-
+            if (element.value){
+                input.value = element.value;
+            }
+                
             formItem.appendChild(input);
 
         }
-        formItem.appendChild(inputError);      
+        formItem.appendChild(inputError);
     });
 
     //----form footer

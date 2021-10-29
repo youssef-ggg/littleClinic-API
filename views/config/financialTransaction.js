@@ -53,5 +53,44 @@ module.exports = {
 
         return { monthlyTransactions, monthlyBalance }
 
+    },
+    financialTransactionForm: () => {
+        const date = new Date()
+        const dayofMonth = date.getDate() >= 10 ? date.getDate() : `0${date.getDate()}`
+        const monthofYear = (date.getMonth() + 1) >= 10 ? (date.getMonth() + 1) : `0${date.getMonth() + 1}`
+
+        return [
+            {
+                label: 'Description',
+                id: 'description',
+                type: 'text'
+            },
+            {
+                label: 'Date',
+                id: 'date',
+                type: 'date',
+                value: `${date.getFullYear()}-${monthofYear}-${dayofMonth}`
+            },
+            {
+                label: 'Amount',
+                id: 'amount',
+                type: 'number'
+            },
+            {
+                label: 'Cash Flow',
+                type: 'radio',
+                id: 'cashFlow',
+                choices: ['Cash In', 'Cash Out'],
+            },
+            {
+                label: 'Type',
+                id: 'type',
+                options: [
+                    'investment', 'revenue', 'other',
+                    'wages', 'equipment', 'marketing'
+                ],
+                type: 'list'
+            }
+        ]
     }
 }

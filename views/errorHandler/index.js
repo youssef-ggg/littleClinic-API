@@ -7,6 +7,7 @@ const makeErrorTnputHandler = require('./checkUserInput');
 const checkPatientInput = require('./checkPatientInput');
 const diagnosisErrorHandler = require('./checkDiangosisInput');
 const appointmentErrorHandler = require('./checkAppointmentInput');
+const financialTransactionErrorHandler = require('./checkFinancialTransaction');
 
 const {
     createPatientErrorHandler,updatePatientErrorHandler
@@ -25,10 +26,15 @@ const {
     createAppointmentErrorHandler,updateAppointmentErrorHandler
 } = appointmentErrorHandler({commonInputError,renderFormError});
 
+const {
+    createTransactionErrorHandler
+} = financialTransactionErrorHandler({commonInputError,renderFormError});
+
 module.exports = {
     passMisMatchHandle,userFormErrorHandler,userFormPassErrorHandle,
     createUserErrorHandler,updateUserDataErrorHandle,updateUserPasswordErrorHandle,
     createPatientErrorHandler,updatePatientErrorHandler,createDiagnosisErrorHandler,
-    updateDiagnosisErrorHandler,createAppointmentErrorHandler,updateAppointmentErrorHandler
+    updateDiagnosisErrorHandler,createAppointmentErrorHandler,updateAppointmentErrorHandler,
+    createTransactionErrorHandler
 }
 

@@ -30,7 +30,7 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
     appointmentSingleSideNav, patientsAppointmentSingleSideNav } = require('../../config/appointment');
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
-const { monthlyFinancialTransaction } = require('../../config/financialTransaction');
+const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
 const modal = require('../../utilites/modal');
@@ -1048,7 +1048,6 @@ const appointmentListByPatient = ({ patientData, appointmentList }) => {
 };
 
 bookKeepingBtn.addEventListener('click', async function (event) {
-
     toggleActiveSideButton('bookkeeping');
     const nowDate = new Date();
     const month = nowDate.getMonth() + 1;
@@ -1087,6 +1086,55 @@ const bookKeepingMonthlyTableView = async ({ month, year }) => {
         const monthInputArr = monthInput.split('-')
         bookKeepingMonthlyTableView({ year: parseInt(monthInputArr[0]), month: parseInt(monthInputArr[1]) })
     })
+
+    const addTransationBtn = document.querySelector('#singleTransaction')
+    addTransationBtn.addEventListener('click', () => {
+        createTransactionView()
+    })
+}
+
+const createTransactionView = () => {
+    centerContent.innerHTML = '';
+    renderForm({ parentDOM: centerContent, eleName: 'Transaction', elementKeys: financialTransactionForm() });
+
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
+
+    saveBtn.addEventListener('click', async function (event) {
+        event.preventDefault();
+
+        const transaction = dashboardFormInputReader(financialTransactionForm());
+
+        const { createTransactionErrorHandler } = errorHandlerService;
+
+        if (!createTransactionErrorHandler(transaction)) {
+            const responseData = await createRequest({
+                postData: transaction,
+                moduleTitle: 'FinancialTransaction',
+                requestRoute: '/financialTransaction/addTransaction',
+                axiosAuth
+            });
+            console.log(transaction)
+            // console.log(responseData)
+            toggleActiveSideButton('bookkeeping');
+            const nowDate = new Date();
+            const month = nowDate.getMonth() + 1;
+            const year = nowDate.getFullYear();
+
+            bookKeepingMonthlyTableView({ month, year });
+
+        }
+    });
+
+    cancelBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        toggleActiveSideButton('bookkeeping');
+        const nowDate = new Date();
+        const month = nowDate.getMonth() + 1;
+        const year = nowDate.getFullYear();
+
+        bookKeepingMonthlyTableView({ month, year });
+    });
 }
 
 

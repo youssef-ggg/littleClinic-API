@@ -23,6 +23,7 @@ module.exports = function makeGetMonthlyTransactions({listMonthlyFinancialTransa
               body:monthlyTransactions  
             }
         } catch (error) {
+            console.log(error)
             //TODO:CREATE error logger
             return {
                 headers,
