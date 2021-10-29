@@ -51,7 +51,7 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     modifiedOn: openingBalance.getModifiedOn()
                 },
                 {
-                    ...monthlyBalance[0]
+                    ...monthlyBalance[0], date: endOfMonth
                 }
             ]
 

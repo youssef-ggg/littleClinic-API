@@ -10,7 +10,7 @@ To manage the littile clinic app.
 
 ## TODO list.
 * Adding access rights mangement for staff memebers according to their status in the clinic.
-* Adding the book keeping module for revenue calculation.
+* Adjust book keeping module for revenue calculation.
 * Adding the functionality for Inventory module.
 * Adding custom modules as requested.
 
