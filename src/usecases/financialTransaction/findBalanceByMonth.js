@@ -8,17 +8,33 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
         const startOfMonth = new Date(year, month - 1, 1).getTime()
         const endOfMonth = new Date(year, month, 0).getTime()
         if (monthlyBalance.length == 2) {
-            const openingBalance = makeBalanceTransaction({
-                id: 0,
-                description: 'Opening Balance',
-                date: new Date(year, month - 1, 1).getTime(),
-                investment: monthlyBalance[1].investment,
-                revenue: monthlyBalance[1].revenue,
-                other: monthlyBalance[1].other,
-                wages: monthlyBalance[1].wages,
-                marketing: monthlyBalance[1].marketing,
-                equipment: monthlyBalance[1].equipment,
-            })
+            const monthlyBalanceDate = new Date(monthlyBalance[0].date)
+            let openingBalance = {}
+            if (monthlyBalanceDate.getFullYear() <= year && monthlyBalanceDate.getMonth() + 1 < month) {
+                openingBalance = makeBalanceTransaction({
+                    id: 0,
+                    description: 'Opening Balance',
+                    date: startOfMonth,
+                    investment: monthlyBalance[0].investment,
+                    revenue: monthlyBalance[0].revenue,
+                    other: monthlyBalance[0].other,
+                    wages: monthlyBalance[0].wages,
+                    marketing: monthlyBalance[0].marketing,
+                    equipment: monthlyBalance[0].equipment,
+                })
+            } else {
+                openingBalance = makeBalanceTransaction({
+                    id: 0,
+                    description: 'Opening Balance',
+                    date: startOfMonth,
+                    investment: monthlyBalance[1].investment,
+                    revenue: monthlyBalance[1].revenue,
+                    other: monthlyBalance[1].other,
+                    wages: monthlyBalance[1].wages,
+                    marketing: monthlyBalance[1].marketing,
+                    equipment: monthlyBalance[1].equipment,
+                })
+            }
 
             return [
                 {
@@ -35,7 +51,7 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     modifiedOn: openingBalance.getModifiedOn()
                 },
                 {
-                    ...monthlyBalance[0], date: endOfMonth
+                    ...monthlyBalance[0]
                 }
             ]
 
@@ -85,13 +101,13 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
             const openingBalance = makeBalanceTransaction({
                 id: 0,
                 description: 'Opening Balance',
-                date: new Date(year, month - 1, 1).getTime(),
+                date: startOfMonth,
             })
 
             const closingBalance = makeBalanceTransaction({
                 id: 0,
                 description: 'Closing Balance',
-                date: new Date(year, month + 1, 0).getTime(),
+                date: startOfMonth,
             })
             return [
                 {

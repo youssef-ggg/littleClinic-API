@@ -1097,9 +1097,11 @@ const createTransactionView = () => {
     centerContent.innerHTML = '';
     renderForm({ parentDOM: centerContent, eleName: 'Transaction', elementKeys: financialTransactionForm() });
 
+    const dateInput = document.querySelector('#date'); 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
 
+    dateInput.readOnly = true;
     saveBtn.addEventListener('click', async function (event) {
         event.preventDefault();
 
@@ -1114,8 +1116,6 @@ const createTransactionView = () => {
                 requestRoute: '/financialTransaction/addTransaction',
                 axiosAuth
             });
-            console.log(transaction)
-            // console.log(responseData)
             toggleActiveSideButton('bookkeeping');
             const nowDate = new Date();
             const month = nowDate.getMonth() + 1;
