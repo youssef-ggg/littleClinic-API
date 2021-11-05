@@ -31,6 +31,7 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
 const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
+const { inventoryTableFormat } = require('../../config/inventoryItem')
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
 const modal = require('../../utilites/modal');
@@ -57,6 +58,7 @@ const userBtn = document.querySelector('#users');
 const patientBtn = document.querySelector('#patients');
 const apntmntBtn = document.querySelector('#appointments');
 const bookKeepingBtn = document.querySelector('#bookkeeping');
+const inventoryBtn = document.querySelector('#inventory');
 const logoutBtn = document.querySelector('#logout');
 
 // const PAGEINDEX = 1;
@@ -1097,7 +1099,7 @@ const createTransactionView = () => {
     centerContent.innerHTML = '';
     renderForm({ parentDOM: centerContent, eleName: 'Transaction', elementKeys: financialTransactionForm() });
 
-    const dateInput = document.querySelector('#date'); 
+    const dateInput = document.querySelector('#date');
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
 
@@ -1137,6 +1139,31 @@ const createTransactionView = () => {
     });
 }
 
+inventoryBtn.addEventListener('click', function (event) {
+    toggleActiveSideButton('inventory');
+    inventoryTableView()
+
+});
+
+const inventoryTableView = async () => {
+    const response = await axiosAuth
+        .get('/inventory');
+
+    const inventoryItems = response.data
+    centerContent.innerHTML = '';
+
+    const inventoryItemsData = inventoryTableFormat(inventoryItems);
+    
+    renderTable({ parentDOM: centerContent, modelList: inventoryItemsData, modelMetaData:{
+        tableActions: [{ id: 'addInventoryItem', name: 'Add Inventory Item', icon: 'fas fa-edit' }],
+        title: 'Inventory List',
+        unitView:{
+            unitRenderer:{},
+            axiosAuth,
+            url:''
+        }
+    } });
+}
 
 logoutBtn.addEventListener('click', function (event) {
     ipcRenderer.send('logout');

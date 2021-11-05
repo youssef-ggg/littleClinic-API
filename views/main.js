@@ -20,6 +20,7 @@ function createWindow(){
         }
     });
 
+    // window.removeMenu();
     window.loadFile('./pages/login/login.html');
 }
 

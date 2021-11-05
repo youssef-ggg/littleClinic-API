@@ -1,4 +1,5 @@
 const {MongoClient,ObjectID} = require('mongodb');
+const dotenv = require('dotenv');
 
 const makeUsersCollection = require('./users');
 const makePatientsCollection = require('./patients');
@@ -6,15 +7,18 @@ const makeDiagnosisCollection = require('./diagnosis');
 const makeAppointmentCollection = require('./appointment');
 const makeTransactionCollection = require('./financialTransaction');
 const makeBalanceTransactionCollection = require('./transactionBalance');
+const makeInventoryCollection = require('./inventory');
 
-const url = 'mongodb://localhost:27017';
-const dbName = 'LittleClinc';// fix typo
+dotenv.config()
+
+const dbUrl = process.env.DB_URL;
+const dbName = process.env.MONGO_DB;
 
 const mongoOptions = {
     useNewUrlParser:true,
     useUnifiedTopology: true
 };
-const client = new MongoClient(url,mongoOptions);
+const client = new MongoClient(dbUrl,mongoOptions);
 
 async function makeDb(){
     if(!client.isConnected()){
@@ -25,7 +29,7 @@ async function makeDb(){
             return error;
         }
     }
-    return client.db(dbName);
+    return client.db('LittleClinc');
 }
 
 const usersCollection = makeUsersCollection({makeDb,ObjectID});
@@ -34,9 +38,10 @@ const diagnosisCollection = makeDiagnosisCollection({makeDb,ObjectID});
 const appointmentCollection = makeAppointmentCollection({makeDb,ObjectID});
 const financialTransactionCollection = makeTransactionCollection({makeDb,ObjectID});
 const balanceTransactionCollection  = makeBalanceTransactionCollection({makeDb,ObjectID});
+const inventoryCollection = makeInventoryCollection({makeDb,ObjectID});
 
 module.exports = {
     usersCollection,patientsCollection,diagnosisCollection,appointmentCollection,
-    financialTransactionCollection,balanceTransactionCollection
+    financialTransactionCollection,balanceTransactionCollection,inventoryCollection
 }
 
