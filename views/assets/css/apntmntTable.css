@@ -13,8 +13,8 @@
     padding:10px;
     display: flex;
     flex-direction: row;
-    color: #000030;
-    border-bottom: 2px solid #000030;
+    /* color: var(--primary-color); */
+    /* border-bottom: 2px solid var(--primary-color); */
 }
 
 .apntmnt-header-col{
@@ -41,7 +41,7 @@
 }
 
 .apntmnt-body-col{
-    border: 2px solid grey;
+    border: 2px solid;
 }
 
 .apntmnt-card{
@@ -51,7 +51,7 @@
     border-radius: 5%;
     padding: 3%;
     margin: 2%;
-    color: #000030;
+    /* color: #000030; */
     font-weight: 400;
     background-color:lightsteelblue;
     
@@ -90,14 +90,15 @@
 }
 
 .apntmnt-input {
-  border: 2px  solid  #000030;
+  border: 2px  solid  var(--danger-color);
   border-radius: 10px 0 0 10px;
   background-color: #fff;
   padding: 3px 5px;
   box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
-  font-size: x-large;
-  font-weight: bold;
-  color: #000030;
+  font-family: 'Roboto', sans-serif;
+  /* font-size: large; */
+  /* font-weight: bold; */
+  /* color: var(--danger-color); */
     
 }
 
@@ -105,9 +106,9 @@
     border: none;
     border-radius: 0 10px 10px 0 ;
     color:white;
-    font-size: large;
-    padding: 0 10px 0 5px; 
-    background-color: #000030;
+    font-size: "large";
+    padding: 0 8px 0 5px; 
+    background-color: var(--danger-color);
     cursor: pointer;
 }
 
