@@ -1,23 +1,50 @@
+@import "../node_modules/font-roboto/dist/styles/roboto.min.css";
+
+:root{
+    --primary-color: #4834d4;
+    --success-color: #6ab04c;
+    --warning-color: #f0932b;
+    --danger-color: #eb4d4b;
+
+    --light-color: #212529;
+    --light-second-color: #727475;
+    --light-background: #ffffff;
+    --light-second-background: #f1f1f1;
+
+    --dark-color: #909090;
+    --dark-second-color: #f5f6fa;
+    --dark-background: #23242D;
+    --dark-second-background: #181818;
+
+    --main-bg-color: var(--light-background);
+    --second-bg-color: var(--light-second-background);
+    --main-color: var(--light-color);
+    --second-color: var(--light-second-color);
+}
+    
 body{
     margin:0;
     padding:0;
-    font-family: Helvetica;
-    background: url(../assets/images/login.jpg) no-repeat;
+    font-family: 'Roboto', sans-serif;
+    background: #d53369;  
+    /* background: -webkit-linear-gradient(to right, #cbad6d, #d53369); 
+    background: linear-gradient(to right, #cbad6d, #d53369);  */
+    /* background: url(../assets/images/login.jpg) no-repeat; */
     
-    background-color: slategray;
     background-size: cover;
 }
 
 .login-box{
     width: 320px;
-    background: black;
+    background: var(--light-background);
     position: absolute;
+    border-radius: 2.5%;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    color:white;
+    color:var(--danger-color);
     box-sizing: border-box;
-    padding:50px 30px;
+    padding:40px 30px;
 }
 
 .login-box h1 {
@@ -39,47 +66,50 @@ body{
 
 .login-box input[type="text"],input[type="password"]{
     border:none;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--main-color);
     background: transparent;
     outline: none;
     height: 40px;
-    color: white;
+    color: var(--main-color);
     font-size: 16px;
 }
 
 .input-container[data-error] input{
-    border-bottom: 1px solid red;
-    color:red;
+    border-bottom: 1px solid var(--danger-color);
+    color:var(--danger-color);
 }
 
 .input-container[data-error]::after{
     content: attr(data-error);
     padding-bottom: 10px;
-    color:red;
+    color:var(--danger-color);
     font-size: 0.85em;
 }
 
 .avatar{
-    width: 100px;
+    width: 200;
     height: 100px;
-    border-radius: 50%;
-    position: absolute;
-    top:-10%;
-    left:35%;
+    background-color: var(--light-background);
+    position: relative;
+    padding-inline: 5px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+    left:12%;
+    /* padding: 10px; */
 }
 
 .btn{
     
     border:none;
     height: 40px;
-    background: #003399;
+    background: var(--danger-color);
     color: white;
     font-size: 18px;
     border-radius: 20px;
 }
 
 .btn:hover{
-    background-color: darkorange;
+    background-color: var(--warning-color);
     
 }
 
@@ -87,7 +117,7 @@ body{
     text-decoration: none;
     font-size: 12px;
     line-height: 20px;
-    color: darkgrey;
+    color: var(--light-second-background);
 }
 
 .login-box a:hover{
