@@ -31,7 +31,7 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
 const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
-const { inventoryTableFormat } = require('../../config/inventoryItem')
+const { inventoryTableFormat, inventoryFormFormat } = require('../../config/inventoryItem')
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
 const modal = require('../../utilites/modal');
@@ -1153,16 +1153,57 @@ const inventoryTableView = async () => {
     centerContent.innerHTML = '';
 
     const inventoryItemsData = inventoryTableFormat(inventoryItems);
-    
-    renderTable({ parentDOM: centerContent, modelList: inventoryItemsData, modelMetaData:{
-        tableActions: [{ id: 'addInventoryItem', name: 'Add Inventory Item', icon: 'fas fa-edit' }],
-        title: 'Inventory List',
-        unitView:{
-            unitRenderer:{},
-            axiosAuth,
-            url:''
+
+    renderTable({
+        parentDOM: centerContent, modelList: inventoryItemsData, modelMetaData: {
+            tableActions: [{ id: 'addInventoryItem', name: 'Add Inventory Item', icon: 'fas fa-edit' }],
+            title: 'Inventory List',
+            unitView: {
+                unitRenderer: {},
+                axiosAuth,
+                url: ''
+            }
         }
-    } });
+    });
+
+    const addItemBtn = document.querySelector('#addInventoryItem');
+
+    addItemBtn.addEventListener('click', function (event) {
+        createInventoryItem();
+    });
+}
+
+const createInventoryItem = () => {
+    centerContent.innerHTML = '';
+    renderForm({ parentDOM: centerContent, eleName: 'Invetory Item', elementKeys: inventoryFormFormat() });
+
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
+
+    saveBtn.addEventListener('click', async function (event) {
+        event.preventDefault();
+
+        const inventoryItemData = dashboardFormInputReader(inventoryFormFormat());
+        const { createInventoryItemErrorHandler } = errorHandlerService;
+
+        if (!createInventoryItemErrorHandler(inventoryItemData)) {
+            const responseData = await createRequest({
+                postData: inventoryItemData,
+                moduleTitle: 'Inventory Item',
+                requestRoute: '/inventory/addItem', axiosAuth
+            })
+            console.log(responseData)
+        }
+
+        //     const { createdPatient } = responseData;
+        //     patientSingleView(createdPatient);
+        // }
+    });
+
+    cancelBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        inventoryTableView();
+    });
 }
 
 logoutBtn.addEventListener('click', function (event) {

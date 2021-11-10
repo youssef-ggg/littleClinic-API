@@ -16,13 +16,15 @@ module.exports = function buildMakeInventoryItem() {
         if (!name) {
             throw new Error('Inventory Item must have a name')
         }
-
-        if (typeof (unitCost) != 'number') {
+        if (isNaN(unitCost)) {
             throw new Error('unitCost must be a number!')
+        } else if (unitCost <= 0) {
+            throw new Error('unit Cost cannot be less than zero!')
         }
-
-        if (typeof (quantity) != 'number') {
-            throw new Error('quantity must be a number!')
+        if (!Number.isInteger(quantity)) {
+            throw new Error('quantity must be an Integer!')
+        } else if (quantity < 0) {
+            throw new Error('quantity cannot be negative!')
         }
 
         if (typeof (reorderQuantity) != 'number') {
@@ -35,7 +37,7 @@ module.exports = function buildMakeInventoryItem() {
             getDescription: () => description,
             getUnitCost: () => unitCost,
             getQuantity: () => quantity,
-            getReorderQuantity: ()=>reorderQuantity,
+            getReorderQuantity: () => reorderQuantity,
             getCreatedOn: () => createdOn,
             getModifiedOn: () => modifiedOn
         })

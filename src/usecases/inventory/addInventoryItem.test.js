@@ -4,7 +4,6 @@ const makeAddInventoryItem = require('./addInventoryItem')
 const { makeDb, clearDb, closeDb } = require('../../__test__/fixtures/db')
 const makeInventoryCollection = require('../../dataAcces/inventory')
 const makeFakeInventoryItem = require('../../__test__/fixtures/inventoryItem')
-const { fake } = require('faker')
 
 describe("Add Inventory Item", () => {
 
@@ -36,6 +35,8 @@ describe("Add Inventory Item", () => {
 
 
     afterAll(() => {
+        clearDb('financialTransaction')
+        clearDb('balance')
         clearDb('inventory')
         closeDb()
     })

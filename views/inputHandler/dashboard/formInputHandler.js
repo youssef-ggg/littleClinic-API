@@ -50,6 +50,8 @@ module.exports = function dashboardFormInputReader(inputFormat) {
 
             const selection = document.querySelector(`#${input.id}`);
             userInput[input.id] = input.options[selection.selectedIndex];
+        } else if (input.type == 'checkbox') {
+            userInput[input.id] = document.querySelector(`#${input.id}`).checked;
         }
     });
 

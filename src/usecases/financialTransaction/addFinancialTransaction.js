@@ -26,6 +26,7 @@ module.exports =
                 return { createdFinancialTransaction, financialBalances }
 
             }catch(error){
+                //future error logger
                 console.log(error)
             }
         }

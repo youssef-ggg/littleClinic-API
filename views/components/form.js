@@ -70,6 +70,18 @@ module.exports = function renderForm({ parentDOM, eleName, elementKeys }) {
 
             });
         }
+        else if (element.type == 'checkbox') {
+            const checkbox = document.createElement('label');
+            label.removeAttribute('for');
+            checkbox.className = 'switch';
+            checkbox.htmlFor = element.id;
+            formItem.classList += ' checkbox-item';
+            input.id = element.id;
+            input.name = element.id;
+            input.type = element.type;
+            formItem.appendChild(input);
+            formItem.appendChild(checkbox);
+        }
         else if (element.type === 'list') {
             const { options } = element;
 
@@ -142,10 +154,10 @@ module.exports = function renderForm({ parentDOM, eleName, elementKeys }) {
             input.id = element.id;
             input.name = element.id;
             input.type = element.type;
-            if (element.value){
+            if (element.value) {
                 input.value = element.value;
             }
-                
+
             formItem.appendChild(input);
 
         }

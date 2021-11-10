@@ -20,5 +20,37 @@ module.exports = Object.freeze({
         })
 
         return inventoryItemsTable
-    }
+    },
+    inventoryFormFormat: () => [
+        {
+            label: 'Name',
+            id: 'name',
+            type: 'text'
+        },
+        {
+            label: "Description",
+            id: 'description',
+            type: 'text'
+        },
+        {
+            label:'Unit Cost',
+            id:'unitCost',
+            type:'number'
+        },
+        {
+            label:'Quantity',
+            id:'quantity',
+            type:'number'
+        },
+        {
+            label:'Reorder Quantity',
+            id:'reorderQuantity',
+            type:'number'
+        },
+        {
+            label:'Add To Cash Ledger',
+            id:'makeTransaction',
+            type:'checkbox'
+        }
+    ]
 })
