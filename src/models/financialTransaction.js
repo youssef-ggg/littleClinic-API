@@ -1,6 +1,12 @@
 
-module.exports = function buildMakeFinancialTransaction({typeEnum}) {
+module.exports = function buildMakeFinancialTransaction({ typeEnum }) {
 
+    function generateRefNumber() {
+        const date = new Date()
+        return date.getSeconds() + date.getMinutes() + date.getHours() +
+            date.getDate() + date.getMonth() + date.getYear()
+    }
+    
     return function makeFinancialTransaction(
         {
             id,
@@ -9,7 +15,7 @@ module.exports = function buildMakeFinancialTransaction({typeEnum}) {
             amount,
             cashFlow,
             type,
-            referenceNum,
+            referenceNum = generateRefNumber(),
             createdOn = Date.now(),
             modifiedOn = Date.now(),
         } = {}) {
@@ -27,13 +33,12 @@ module.exports = function buildMakeFinancialTransaction({typeEnum}) {
             throw new Error('Transaction cash flow must have a value')
         }
 
-        if(!type){
+        if (!type) {
             throw new Error('Transaction must have a type')
         }
 
-        if(!typeEnum.includes(type)){
+        if (!typeEnum.includes(type)) {
             throw new Error('Transaction type has invalid value')
-            
         }
 
         return Object.freeze({
