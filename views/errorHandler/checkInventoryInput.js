@@ -6,8 +6,6 @@ module.exports = function inventoryErrorHandler({ commonInputError, renderFormEr
 
         const { name, unitCost, quantity, reorderQuantity } = itemData
 
-        console.log(itemData)
-        console.log(reorderQuantity)
         if (invalidEmptyInputHandler({ name })) {
             hasError = true
         }

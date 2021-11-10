@@ -31,7 +31,7 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
 const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
-const { inventoryTableFormat, inventoryFormFormat } = require('../../config/inventoryItem')
+const { inventoryTableFormat, inventoryFormFormat, inventorySingleViewFormat } = require('../../config/inventoryItem')
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
 const modal = require('../../utilites/modal');
@@ -1159,9 +1159,9 @@ const inventoryTableView = async () => {
             tableActions: [{ id: 'addInventoryItem', name: 'Add Inventory Item', icon: 'fas fa-edit' }],
             title: 'Inventory List',
             unitView: {
-                unitRenderer: {},
+                unitRenderer: inventoryItemSingleView,
                 axiosAuth,
-                url: ''
+                url: '/inventory/query?id='
             }
         }
     });
@@ -1192,18 +1192,55 @@ const createInventoryItem = () => {
                 moduleTitle: 'Inventory Item',
                 requestRoute: '/inventory/addItem', axiosAuth
             })
-            console.log(responseData)
+            inventoryItemSingleView(responseData);
         }
 
-        //     const { createdPatient } = responseData;
-        //     patientSingleView(createdPatient);
-        // }
     });
 
     cancelBtn.addEventListener('click', function (event) {
         event.preventDefault();
         inventoryTableView();
     });
+}
+
+const inventoryItemSingleView = (inventoryItem) => {
+
+    const formatedItem = inventorySingleViewFormat(inventoryItem);
+    const { tabs } = singleNavView;
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';
+    centerContent.appendChild(cardRow);
+    cardRow.classList += 'row';
+
+    renderUnitView({ parentDOM: cardRow, modelName: 'Inventory Item', model: formatedItem });
+    // tabs({ patentDOM: cardRow, navItems: userUnitLeftNav });
+
+    const edit = document.querySelector('#edit');
+    const remove = document.querySelector('#delete');
+
+    edit.addEventListener('click', function (event) {
+        //    updateUserView(userData);
+    });
+
+    remove.addEventListener('click', function (event) {
+
+            modal(dashboardContent, deleteModal({ title: 'Inventory Item' }));
+        //     const confirmDelete = document.querySelector('#confirm');
+
+        //     confirmDelete.addEventListener('click', async function (event) {
+        //         const overlay = document.querySelector('.modal-overlay');
+        //         overlay.parentNode.removeChild(overlay);
+        //         const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
+        //         // make response handle diffrent errors 
+        //         toastNotify('Staff member removed successfully.', 'success-warn');
+        //         usersTableView();
+
+        //     });
+    });
+    // editPassBtn.addEventListener('click', function (event) {
+    //     updateUserPassword(userData);
+    // });
 }
 
 logoutBtn.addEventListener('click', function (event) {

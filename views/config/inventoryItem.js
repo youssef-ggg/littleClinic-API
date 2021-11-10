@@ -33,24 +33,53 @@ module.exports = Object.freeze({
             type: 'text'
         },
         {
-            label:'Unit Cost',
-            id:'unitCost',
-            type:'number'
+            label: 'Unit Cost',
+            id: 'unitCost',
+            type: 'number'
         },
         {
-            label:'Quantity',
-            id:'quantity',
-            type:'number'
+            label: 'Quantity',
+            id: 'quantity',
+            type: 'number'
         },
         {
-            label:'Reorder Quantity',
-            id:'reorderQuantity',
-            type:'number'
+            label: 'Reorder Quantity',
+            id: 'reorderQuantity',
+            type: 'number'
         },
         {
-            label:'Add To Cash Ledger',
-            id:'makeTransaction',
-            type:'checkbox'
+            label: 'Add To Cash Ledger',
+            id: 'makeTransaction',
+            type: 'checkbox'
         }
-    ]
+    ],
+    inventorySingleViewFormat: (inventoryItem) => {
+        const { name, description, unitCost, quantity,
+            reorderQuantity, createdOn, modifiedOn } = inventoryItem
+
+        const dateFormatCreate = new Date(createdOn);
+        const dateFormatmodified = new Date(modifiedOn);
+
+        const dateOptions = {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        }
+
+        const itemModel = {
+            Name: name,
+            Description: description,
+            'Unit Cost': unitCost,
+            Quantity: quantity,
+            'Total Value': unitCost * quantity,
+            'Reorder Quantity': reorderQuantity,
+            'Reorder Value': unitCost * reorderQuantity,
+            'Created Date': dateFormatCreate.toLocaleDateString('en-EN', dateOptions),
+            'Modified Date': dateFormatmodified.toLocaleDateString('en-EN', dateOptions),
+           
+        }
+
+        return itemModel
+    }
 })

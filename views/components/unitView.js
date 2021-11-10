@@ -4,7 +4,7 @@ module.exports = function renderUnitView({parentDOM,modelName,model}){
     const cardCol = document.createElement('div');
     const card = document.createElement('div');
 
-    cardCol.classList.add('col-5');
+    cardCol.classList.add('col-6');
     card.classList.add('card');
   
     parentDOM.appendChild(cardCol);

@@ -2,11 +2,13 @@ module.exports = function makeInventoryRouter({ routes, makeCallBack, inventoryC
 
     const {
         createInventoryItem,
-        getAllInventoryItems
+        getAllInventoryItems,
+        getInventoryItem
     } = inventoryController
 
-    routes.post('/inventory/addItem',makeCallBack(createInventoryItem))
-    routes.get('/inventory/',makeCallBack(getAllInventoryItems))
-
+    routes.post('/inventory/addItem', makeCallBack(createInventoryItem))
+    routes.get('/inventory/', makeCallBack(getAllInventoryItems))
+    routes.get('/inventory/:id', makeCallBack(getInventoryItem))
+    
     return routes
 }
