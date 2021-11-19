@@ -238,6 +238,13 @@ padding: 10px;
     width: 100%;
 }
 
+.nav-item {
+    display: flex;
+    align-content: flex-start;
+    flex-direction: row;
+    padding-right: 15px;
+}
+
 .sidebar-nav-link {
     display: flex;
 	align-items: center;
