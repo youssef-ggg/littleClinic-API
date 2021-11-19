@@ -17,6 +17,7 @@ To manage the littile clinic app.
 ## Need fixes.
 * Fix bugs in edit user password usecase tests.
 * Add invalid id case in the model or usecase or dataaccess for mongo db using ObjectID.isValid.
+* fix typos like db name littleclinic and dataacess folder name
 * Add a proper error logger.
 * Fix the contollers to use params and or query.
 * refactor frontend code.

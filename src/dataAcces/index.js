@@ -1,4 +1,4 @@
-const {MongoClient,ObjectID} = require('mongodb');
+const { MongoClient, ObjectID } = require('mongodb');
 const dotenv = require('dotenv');
 
 const makeUsersCollection = require('./users');
@@ -8,40 +8,43 @@ const makeAppointmentCollection = require('./appointment');
 const makeTransactionCollection = require('./financialTransaction');
 const makeBalanceTransactionCollection = require('./transactionBalance');
 const makeInventoryCollection = require('./inventory');
+const makeAccessRightsCollection = require('./accessRights');
 
 dotenv.config()
 
-const dbUrl = process.env.DB_URL;
+const dbUrl = 'mongodb://localhost:27017';//process.env.DB_URL;
 const dbName = process.env.MONGO_DB;
 
 const mongoOptions = {
-    useNewUrlParser:true,
+    useNewUrlParser: true,
     useUnifiedTopology: true
 };
-const client = new MongoClient(dbUrl,mongoOptions);
+const client = new MongoClient(dbUrl, mongoOptions);
 
-async function makeDb(){
-    if(!client.isConnected()){
-        try{
-        await client.connect();
+async function makeDb() {
+    if (!client.isConnected()) {
+        try {
+            await client.connect();
         }
-        catch(error){
+        catch (error) {
             return error;
         }
     }
     return client.db('LittleClinc');
 }
 
-const usersCollection = makeUsersCollection({makeDb,ObjectID});
-const patientsCollection = makePatientsCollection({makeDb,ObjectID});
-const diagnosisCollection = makeDiagnosisCollection({makeDb,ObjectID});
-const appointmentCollection = makeAppointmentCollection({makeDb,ObjectID});
-const financialTransactionCollection = makeTransactionCollection({makeDb,ObjectID});
-const balanceTransactionCollection  = makeBalanceTransactionCollection({makeDb,ObjectID});
-const inventoryCollection = makeInventoryCollection({makeDb,ObjectID});
+const usersCollection = makeUsersCollection({ makeDb, ObjectID });
+const patientsCollection = makePatientsCollection({ makeDb, ObjectID });
+const diagnosisCollection = makeDiagnosisCollection({ makeDb, ObjectID });
+const appointmentCollection = makeAppointmentCollection({ makeDb, ObjectID });
+const financialTransactionCollection = makeTransactionCollection({ makeDb, ObjectID });
+const balanceTransactionCollection = makeBalanceTransactionCollection({ makeDb, ObjectID });
+const inventoryCollection = makeInventoryCollection({ makeDb, ObjectID });
+const accessRightsCollection = makeAccessRightsCollection({ makeDb, ObjectID });
 
 module.exports = {
-    usersCollection,patientsCollection,diagnosisCollection,appointmentCollection,
-    financialTransactionCollection,balanceTransactionCollection,inventoryCollection
+    usersCollection, patientsCollection, diagnosisCollection, appointmentCollection,
+    financialTransactionCollection, balanceTransactionCollection, inventoryCollection,
+    accessRightsCollection
 }
 

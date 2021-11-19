@@ -1,5 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+// const cors = require('cors');
 const dotenv = require('dotenv');
 
 
@@ -8,6 +8,9 @@ const {userRoutes,patientRoutes,diagnosisRoutes,appointmentRoutes,
 
 dotenv.config();
 const app = express();
+// app.use(cors({
+//     origin:'*'
+// }));
 
 app.use(express.json());
 app.use('/',userRoutes);
