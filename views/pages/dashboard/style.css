@@ -9,6 +9,7 @@
  @import "../../assets/css/form.css";
  @import "../../assets//css/modal.css";
  @import "../../assets/css/apntmntTable.css";
+ @import "../../assets/css//tabs.css";
 
 :root{
 --primary-color: #4834d4;
@@ -242,7 +243,14 @@ padding: 10px;
     display: flex;
     align-content: flex-start;
     flex-direction: row;
-    padding-right: 15px;
+    padding-right: 10px;
+}
+
+.nav-item p {
+    color:var(--dark-second-background);
+    display: flex;
+    align-content: center;
+    font-size: 1.2rem;
 }
 
 .sidebar-nav-link {

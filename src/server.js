@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 
 
 const {userRoutes,patientRoutes,diagnosisRoutes,appointmentRoutes,
-    financialTransactionRouter} = require('./routes');
+    financialTransactionRouter,accessRightsRouter} = require('./routes');
 
 dotenv.config();
 const app = express();
@@ -18,6 +18,7 @@ app.use('/',patientRoutes);
 app.use('/',diagnosisRoutes);
 app.use('/',appointmentRoutes);
 app.use('/',financialTransactionRouter);
+app.use('/',accessRightsRouter);
 
 app.listen(process.env.SERVER_PORT,()=>{
     console.log(`Server is listening on port ${process.env.SERVER_PORT}...`);

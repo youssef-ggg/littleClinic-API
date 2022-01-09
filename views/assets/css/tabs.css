@@ -1,0 +1,142 @@
+
+.tab-header {
+    background-color: var(--main-bg-color);
+    box-shadow: rgba(0,0,0,0.12) 0px 1px 4px 1px;
+    width: 90%;
+}
+
+.tab-header ul{
+    padding:0;
+    margin:0;
+}
+
+.tab-container{
+    display:flex;
+    flex-direction: column;
+}
+
+.tab-input  {
+    display: none;
+    clear:both;
+}
+
+.tab-label {
+    font-weight: 600;
+    font-size: 18px;
+    display: block;
+    float: left;
+    width: 20%;
+    padding: 1.2em;
+    color:var(--light-second-color);
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    background: var(--main-bg-color);
+}
+
+
+.tab-container .tab-header div.active {
+    color: var(--danger-color);
+    box-shadow: inset 0 3px var(--danger-color);
+}
+
+.tab-body {
+    box-shadow: rgba(0,0,0,0.12) 0px 1px 4px 1px;
+    width: 90%;
+    background-color: var(--main-bg-color);
+}
+.tab-label .fas {
+    display: block;
+    font-size: 1.3em;
+    margin: 0 0.4em 0 0;
+}
+
+.tab-container .tab-body div {
+    position: absolute;
+    opacity: 0;
+    top:-200%;
+    margin-top: 5px;
+    transition: opacity 500ms ease-in-out 0ms;
+    transform: 500ms ease-in-out 0ms;
+}
+
+.tab-container .tab-body div.active {
+    position: relative;
+    top:0px;
+    opacity: 1;
+    transform: scale(1);
+    margin-top: 0px;
+    left: 3.2%; 
+    width: 90%;
+    padding: 10px;
+}
+
+.settings-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    row-gap: 30px;
+    align-items: center;
+    padding-top: 5%;
+}
+
+.settings-header *{
+    margin-left: 5px;
+}
+.settings-title {
+    padding: 10px;
+    color:var(--danger-color)
+}
+
+.settings-list-input{
+    padding :10px;
+    font-family: "Roboto";
+    background: var(--second-bg-color);
+    margin: 10px;
+    width: 30%;
+    border: none;
+    outline: none;  
+    color:var(--main-color);
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.settings-checkbox{
+    visibility: visible !important;
+    width: auto !important;
+    height: auto !important;   
+}
+
+input[type="checkbox"][readonly] {
+    pointer-events: none;
+  }
+
+section.empty-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+section.empty-table .empty-table-header{
+    padding: 5px;
+    padding-top: 100px;
+    font-weight: bold;
+    size: 2em;
+    color: var(--danger-color);
+}
+
+section.empty-table .empty-table-body{
+    padding: 5px;
+    padding-bottom: 100px;
+}
+
+.table-actions{
+    display: flex;
+    flex-direction: row ;
+}
+
+.table-actions * {
+margin-right: 5px;
+}
+
+

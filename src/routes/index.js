@@ -6,6 +6,7 @@ const diagnosisController = require('../controllers/diagnosis');
 const appointmentController = require('../controllers/appointment');
 const financialTransactionController = require('../controllers/financialTransaction');
 const inventoryController = require('../controllers/inventory');
+const accessRightsController = require('../controllers/accessRights');
 
 const makeCallBack = require('../expressCallback');
 
@@ -15,6 +16,7 @@ const makeDiagnosisRouter = require('./diagnosisRouter');
 const makeAppointmentRouter = require('./appointmentRouter.js');
 const makeFinancialTransactionRouter = require('./financialTransactionRouter.js');
 const makeInventoryRouter = require('./inventoryRouter');
+const makeAccessRightsRouter = require('./accessRightsRouter');
 
 const routes = express.Router();
 
@@ -25,10 +27,11 @@ const appointmentRoutes = makeAppointmentRouter({ routes, makeCallBack, appointm
 const financialTransactionRouter =
     makeFinancialTransactionRouter({ routes, makeCallBack, financialTransactionController });
 const inventoryRouter = makeInventoryRouter({ routes, makeCallBack, inventoryController });
+const accessRightsRouter = makeAccessRightsRouter({routes,makeCallBack,accessRightsController});
 
 const routesService = Object.freeze({
     userRoutes, patientRoutes, diagnosisRoutes, appointmentRoutes, financialTransactionRouter,
-    inventoryRouter
+    inventoryRouter,accessRightsRouter
 });
 
 module.exports = routesService;

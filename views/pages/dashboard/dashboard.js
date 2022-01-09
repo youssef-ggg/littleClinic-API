@@ -1,6 +1,7 @@
 const { ipcRenderer } = require('electron');
 const axios = require('axios');
 
+const renderNavItem = require('../../components/navItem')
 const renderTable = require('../../components/table');
 const renderTableBody = require('../../components/tableBody');
 const { renderActions, rendertableAction, renderApntmntTableActions } = require('../../components/actions');
@@ -11,6 +12,7 @@ const renderAppointmentsTable = require('../../components/appointmentTable');
 const { tabs, clearLeftNav, cards } = require('../../components/leftNav');
 const cardActions = require('../../components/cardActions');
 const singleNavView = require('../../components/singleViewNav');
+const renderSettingsTabs = require('../../components/settingsTabs');
 const errorHandlerService = require('../../errorHandler');
 const dashboardFormInputReader = require('../../inputHandler/dashboard/formInputHandler');
 const financialTransactionTable = require('../../components/financialTransactionTable');
@@ -32,6 +34,7 @@ const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormF
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
 const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
 const { inventoryTableFormat, inventoryFormFormat, inventorySingleViewFormat } = require('../../config/inventoryItem')
+const { settingsTabs } = require('../../config/settings')
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
 const modal = require('../../utilites/modal');
@@ -39,11 +42,13 @@ const toastNotify = require('../../utilites/toastNotify');
 const dashboardUtitltyFunctions = require('./utility');
 const renderFormError = require('../../errorHandler/renderFormError');
 const table = require('../../components/table');
+const { createNavItem } = require('../../components/navItem');
 
 
 const API_URL = 'http://localhost:5000';//remove from here, use .env file.
 const currentuser = JSON.parse(sessionStorage.getItem('currentUser'));//using session storage of html5 http://diveintohtml5.info/storage.html
 const loginToken = JSON.parse(sessionStorage.getItem('loginToken'));//change to something more secure.
+const userAccess = JSON.parse(sessionStorage.getItem('userAccess'));//change to something more secure.
 
 const axiosAuth = axios.create({
     baseURL: API_URL,
@@ -53,21 +58,16 @@ const axiosAuth = axios.create({
 });
 
 const toggleSideBar = document.querySelector('#toggleSideBar');
-const userNameHeader = document.querySelector('.username');
-const userBtn = document.querySelector('#users');
-const patientBtn = document.querySelector('#patients');
-const apntmntBtn = document.querySelector('#appointments');
-const bookKeepingBtn = document.querySelector('#bookkeeping');
-const inventoryBtn = document.querySelector('#inventory');
-const logoutBtn = document.querySelector('#logout');
+const userNameHeader = document.querySelector('#username');
+const sidebarNav = document.querySelector('.sidebar-nav');
+
 
 // const PAGEINDEX = 1;
 // const PAGESIZE = 10;
 
 const dashboardContent = document.querySelector('.container');
 const centerContent = document.querySelector('.wrapper');
-// userNameHeader.innerHTML = currentuser.username;
-
+userNameHeader.innerHTML = currentuser.username;
 
 //toggle side Menu 
 toggleSideBar.addEventListener('click', function (event) {
@@ -102,12 +102,22 @@ const toggleActiveSideButton = (activeBtnID) => {
     });
 }
 
-
 //users nav tab
-userBtn.addEventListener('click', function (event) {
-    toggleActiveSideButton('users');
-    usersTableView();
-});
+if (userAccess['USERS'].read) {
+    renderNavItem.createNavItem({
+        parentDOM: sidebarNav,
+        itemId: 'users',
+        itemTitle: 'Users',
+        itemIcon: 'fas fa-user-md'
+    })
+
+    const userBtn = document.querySelector('#users');
+    userBtn.addEventListener('click', function (event) {
+        toggleActiveSideButton('users');
+        usersTableView();
+    });
+}
+
 
 const usersTableView = async () => {
     //remove from here and ad to request. 
@@ -318,10 +328,19 @@ const updateUserPassword = userData => {
 };
 
 //patient menu item
-patientBtn.addEventListener('click', function (event) {
-    toggleActiveSideButton('patients');
-    patientTableView();
-});
+if (userAccess['PATIENTS'].read) {
+    renderNavItem.createNavItem({
+        parentDOM: sidebarNav,
+        itemId: 'patients',
+        itemTitle: 'Patients',
+        itemIcon: 'fas fa-user-plus'
+    })
+    const patientBtn = document.querySelector('#patients')
+    patientBtn.addEventListener('click', function (event) {
+        toggleActiveSideButton('patients');
+        patientTableView();
+    });
+}
 
 //patient table view
 const patientTableView = async () => {
@@ -683,23 +702,36 @@ const diagnosisTableView = ({ patientData, diagnosisList }) => {
     });
 }
 
-apntmntBtn.addEventListener('click', async function (event) {
-    toggleActiveSideButton('appointments');
-    const startDate = new Date();
-    startDate.setHours(0, 0, 0);
-    const weekDuration = 6;
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + weekDuration);
-    endDate.setHours(23, 59, 59);
+if (userAccess['APPOINTMENTS'].read) {
 
-    const response =
-        await axiosAuth.get(`/appointment/appointmentsDuration/query?startDate=${startDate.getTime()
-            }&endDate=${endDate.getTime()
-            }`);
+    renderNavItem.createNavItem({
+        parentDOM: sidebarNav,
+        itemId: 'appointments',
+        itemTitle: 'Appointments',
+        itemIcon: 'fas fa-user-clock'
+    })
 
-    appointmentScheduleView({ startDate, endDate, appointmentList: response.data });
+    const apntmntBtn = document.querySelector('#appointments')
+    apntmntBtn.addEventListener('click', async function (event) {
+        toggleActiveSideButton('appointments')
 
-});
+        const startDate = new Date();
+        startDate.setHours(0, 0, 0);
+        const weekDuration = 6;
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + weekDuration);
+        endDate.setHours(23, 59, 59);
+
+        const response =
+            await axiosAuth.get(`/appointment/appointmentsDuration/query?startDate=${startDate.getTime()
+                }&endDate=${endDate.getTime()
+                }`)
+
+        appointmentScheduleView({ startDate, endDate, appointmentList: response.data })
+
+    });
+}
+
 
 //create appointment view
 const createAppointmentView = (singlePatient) => {
@@ -1049,14 +1081,28 @@ const appointmentListByPatient = ({ patientData, appointmentList }) => {
     });
 };
 
-bookKeepingBtn.addEventListener('click', async function (event) {
-    toggleActiveSideButton('bookkeeping');
-    const nowDate = new Date();
-    const month = nowDate.getMonth() + 1;
-    const year = nowDate.getFullYear();
+if (userAccess['FINANCIALTRANSACTION'].read) {
+    renderNavItem.createNavItem({
+        parentDOM: sidebarNav,
+        itemId: 'bookkeeping',
+        itemTitle: 'Bookkeeping',
+        itemIcon: 'fas fa-paste'
+    });
+    const bookKeepingBtn = document.querySelector('#bookkeeping');
 
-    bookKeepingMonthlyTableView({ month, year });
-});
+    bookKeepingBtn.addEventListener('click', async function (event) {
+        toggleActiveSideButton('bookkeeping');
+        const nowDate = new Date();
+        const month = nowDate.getMonth() + 1;
+        const year = nowDate.getFullYear();
+
+        bookKeepingMonthlyTableView({ month, year });
+    });
+
+
+}
+
+
 
 const bookKeepingMonthlyTableView = async ({ month, year }) => {
 
@@ -1139,11 +1185,21 @@ const createTransactionView = () => {
     });
 }
 
-inventoryBtn.addEventListener('click', function (event) {
-    toggleActiveSideButton('inventory');
-    inventoryTableView()
+if (userAccess['INVENTORY'].read) {
+    renderNavItem.createNavItem({
+        parentDOM: sidebarNav,
+        itemId: 'inventory',
+        itemTitle: 'Inventory',
+        itemIcon: 'fas fa-box-open'
+    })
 
-});
+    const inventoryBtn = document.querySelector('#inventory')
+    inventoryBtn.addEventListener('click', function (event) {
+        toggleActiveSideButton('inventory');
+        inventoryTableView()
+
+    })
+}
 
 const inventoryTableView = async () => {
     const response = await axiosAuth
@@ -1225,7 +1281,7 @@ const inventoryItemSingleView = (inventoryItem) => {
 
     remove.addEventListener('click', function (event) {
 
-            modal(dashboardContent, deleteModal({ title: 'Inventory Item' }));
+        modal(dashboardContent, deleteModal({ title: 'Inventory Item' }));
         //     const confirmDelete = document.querySelector('#confirm');
 
         //     confirmDelete.addEventListener('click', async function (event) {
@@ -1243,9 +1299,39 @@ const inventoryItemSingleView = (inventoryItem) => {
     // });
 }
 
+if (userAccess['SETTINGS'].read) {
+    renderNavItem.createNavItem({
+        parentDOM: sidebarNav,
+        itemId: 'settings',
+        itemTitle: 'Settings',
+        itemIcon: 'fas fa-cog'
+    })
+
+    const settingsBtn = document.querySelector('#settings')
+    settingsBtn.addEventListener('click', function (event) {
+        toggleActiveSideButton('settings');
+        settingsTableView()
+    });
+}
+
+const settingsTableView = () => {
+    centerContent.innerHTML = ''
+    renderSettingsTabs({ parentDOM: centerContent, tabs: settingsTabs(), axiosAuth })
+}
+
+renderNavItem.createNavItem({
+    parentDOM: sidebarNav,
+    itemId: 'logout',
+    itemTitle: 'logout',
+    itemIcon: 'fas fa-sign-out-alt'
+})
+
+const logoutBtn = document.querySelector('#logout')
+
 logoutBtn.addEventListener('click', function (event) {
-    ipcRenderer.send('logout');
-});
+    toggleActiveSideButton('logout')
+    ipcRenderer.send('logout')
+})
 
 //toast notifications
 ipcRenderer.on('updateSuccess', function (event, toastData) {
