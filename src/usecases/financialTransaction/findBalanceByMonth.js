@@ -10,7 +10,20 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
         if (monthlyBalance.length == 2) {
             const monthlyBalanceDate = new Date(monthlyBalance[0].date)
             let openingBalance = {}
-            if (monthlyBalanceDate.getFullYear() <= year && monthlyBalanceDate.getMonth() + 1 < month) {
+            if (monthlyBalanceDate.getFullYear() < year) {
+                openingBalance = makeBalanceTransaction({
+                    id: 0,
+                    description: 'Opening Balance',
+                    date: startOfMonth,
+                    investment: monthlyBalance[0].investment,
+                    revenue: monthlyBalance[0].revenue,
+                    other: monthlyBalance[0].other,
+                    wages: monthlyBalance[0].wages,
+                    marketing: monthlyBalance[0].marketing,
+                    equipment: monthlyBalance[0].equipment,
+                })
+            }
+            else if (monthlyBalanceDate.getFullYear() <= year && monthlyBalanceDate.getMonth() + 1 < month) {
                 openingBalance = makeBalanceTransaction({
                     id: 0,
                     description: 'Opening Balance',
