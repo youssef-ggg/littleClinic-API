@@ -3,6 +3,7 @@ const axios = require('axios');
 
 const renderNavItem = require('../../components/navItem')
 const renderTable = require('../../components/table');
+const renderPaginatedTable = require('../../components/paginatedTable');
 const renderTableBody = require('../../components/tableBody');
 const { renderActions, rendertableAction, renderApntmntTableActions } = require('../../components/actions');
 const renderForm = require('../../components/form');
@@ -63,7 +64,7 @@ const sidebarNav = document.querySelector('.sidebar-nav');
 
 
 // const PAGEINDEX = 1;
-// const PAGESIZE = 10;
+const PAGESIZE = 10;
 
 const dashboardContent = document.querySelector('.container');
 const centerContent = document.querySelector('.wrapper');
@@ -346,6 +347,7 @@ if (userAccess['PATIENTS'].read) {
 const patientTableView = async () => {
     const response = await axiosAuth.get(`/patients/listAll`);
     const { data } = response;
+
     const patientMetaData = {
         unitView: {
             unitRenderer: patientSingleView,
@@ -353,12 +355,17 @@ const patientTableView = async () => {
             url: 'patients/patient?id='
         },
         title: 'Patients',
+        pageSize: PAGESIZE,
         tableActions: patientTableNavTabs
     };
     centerContent.innerHTML = '';
 
     const patientTableData = patientTableFormat(data);
-    renderTable({ parentDOM: centerContent, modelList: patientTableData, modelMetaData: patientMetaData });
+    renderPaginatedTable({
+        modelList: patientTableData,
+        modelMetaData: patientMetaData,
+        parentDOM: centerContent
+    });
 
     const addPatientBtn = document.querySelector('#createModel');
 
@@ -1209,19 +1216,22 @@ const inventoryTableView = async () => {
     centerContent.innerHTML = '';
 
     const inventoryItemsData = inventoryTableFormat(inventoryItems);
-
-    renderTable({
-        parentDOM: centerContent, modelList: inventoryItemsData, modelMetaData: {
+    
+    renderPaginatedTable({
+        modelList: inventoryItemsData,
+        modelMetaData: {
             tableActions: [{ id: 'addInventoryItem', name: 'Add Inventory Item', icon: 'fas fa-edit' }],
             title: 'Inventory List',
             unitView: {
                 unitRenderer: inventoryItemSingleView,
                 axiosAuth,
                 url: '/inventory/query?id='
-            }
-        }
+            },
+            pageSize: PAGESIZE
+        },
+        parentDOM: centerContent
     });
-
+    
     const addItemBtn = document.querySelector('#addInventoryItem');
 
     addItemBtn.addEventListener('click', function (event) {

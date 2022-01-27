@@ -458,3 +458,98 @@ table th {
     color: var(--main-bg-color);
     cursor: pointer;
 }
+
+.action-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.pagination-text {
+    width: 70px;
+    font-weight: bolder;
+    overflow: hidden;
+    white-space: nowrap;
+    color:var(--light-color);
+}
+
+.pagination-box{
+    display: flex;
+    justify-content: center;
+}
+
+.pagination-btn{
+    color: var(--light-color);
+    background-color: var(--light-background);
+    font-size: large;
+    padding: 1%;
+    margin-left: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.search-bar{
+    display: flex;
+    align-items:center;
+}
+
+.search-input {
+    border: 2px  solid  var(--main-color);
+    border-radius: 10px 0 0 10px;
+    background-color: var(--main-bg-color);
+    padding: 3px 5px;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
+    font-family: 'Roboto', sans-serif;      
+  }
+  
+  .search-btn{
+      border: 1px  solid  var(--main-color);
+      border-radius: 0 10px 10px 0 ;
+      font-size: large;
+      padding: 3px 5px;
+      background: var(--main-color);
+      color: var(--main-bg-color);
+      cursor: pointer;
+  }
+
+  .disabled-btn{
+      cursor: not-allowed;
+      color: var(--light-second-color);
+  }
+
+  .empty-table {
+    background-color: var(--second-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+  }
+
+  div.empty-table .empty-table-header{
+    padding-top: 100px;
+    font-weight: bold;
+    font-size: 1.5em;
+    color: var(--danger-color);
+    
+}
+
+div.empty-table .empty-table-body{
+    font-size: 1.1em;
+}
+
+.round-btn {
+    background: var(--danger-color);
+    color: var(--main-bg-color);
+    border: none;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 8%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    display: flex;
+    align-items: column;
+}

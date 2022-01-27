@@ -2,7 +2,6 @@ module.exports = function renderTable({ parentDOM, modelList, modelMetaData }) {
 
     const { unitView, tableActions } = modelMetaData;
 
-
     const cardRow = document.createElement('div');
     const cardCol = document.createElement('div');
     const card = document.createElement('div');
@@ -15,23 +14,7 @@ module.exports = function renderTable({ parentDOM, modelList, modelMetaData }) {
     cardRow.appendChild(cardCol);
     cardCol.appendChild(card);
 
-    if (modelList.length == 0 || !modelList) {
-        const emptyTable = document.createElement('div');
-        const emptyHeader = document.createElement('span');
-        const emptyBody = document.createElement('span');
-
-        emptyHeader.innerHTML = 'Empty table';
-        emptyBody.innerHTML = 'your entities appear hear.';
-
-        card.appendChild(emptyTable);
-        emptyTable.appendChild(emptyHeader);
-        emptyTable.appendChild(emptyBody);
-
-        emptyTable.className = 'empty-table';
-        emptyHeader.className = 'empty-table-header';
-        emptyBody.className = 'empty-table-body';
-    }
-    else {
+    if (modelList) {
         const cardHeader = document.createElement('div');
         const cardContent = document.createElement('div');
         const tableTitle = document.createElement('h3');
@@ -127,8 +110,23 @@ module.exports = function renderTable({ parentDOM, modelList, modelMetaData }) {
                 const response = await axiosAuth.get(`${url}${id}`);
                 unitRenderer(response.data);
             });
-
         });
+    }
+    else {
+        const emptyTable = document.createElement('div');
+        const emptyHeader = document.createElement('span');
+        const emptyBody = document.createElement('span');
+
+        emptyHeader.innerHTML = 'Empty table';
+        emptyBody.innerHTML = 'your entities appear hear.';
+
+        card.appendChild(emptyTable);
+        emptyTable.appendChild(emptyHeader);
+        emptyTable.appendChild(emptyBody);
+
+        emptyTable.className = 'empty-table';
+        emptyHeader.className = 'empty-table-header';
+        emptyBody.className = 'empty-table-body';
     }
 
 }
