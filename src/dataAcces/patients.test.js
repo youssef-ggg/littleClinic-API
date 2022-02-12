@@ -26,7 +26,6 @@ describe('patient db', () => {
         const namesWithM = ['Mohammed', 'mahamoud', 'karim']
         const found = await patientCollection.findByField({ fieldName, fieldRegex })
         found.forEach(patient => {
-            console.log()
             expect(namesWithM.includes(patient.name)).toBe(true)
         })
 
