@@ -131,9 +131,9 @@ module.exports = function renderPaginatedTable({ modelList, modelMetaData, paren
             event.preventDefault()
             parentDOM.innerHTML = ''
             const { axiosAuth } = modelMetaData.unitView
-            const { searchUrlModule, tableFormat } = modelMetaData
+            const { searchUrlModule, tableFormat,searchField } = modelMetaData.searchView
             const searchResponse =
-                await axiosAuth.get(`/${searchUrlModule}/search/byfield?fieldName=name&fieldRegex=.*${searchInput.value
+                await axiosAuth.get(`/${searchUrlModule}/search/byfield?fieldName=${searchField}&fieldRegex=.*${searchInput.value
                     }.*&caseSensitive=false`)
             const searchedTableData = tableFormat(searchResponse.data);
             renderPaginatedTable({ modelList: searchedTableData, modelMetaData, parentDOM })

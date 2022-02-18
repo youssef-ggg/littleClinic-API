@@ -355,8 +355,11 @@ const patientTableView = async () => {
             url: 'patients/patient?id='
         },
         title: 'Patients',
-        searchUrlModule: 'patients',
-        tableFormat: patientTableFormat,
+        searchView: {
+            searchField: 'name',
+            searchUrlModule: 'patients',
+            tableFormat: patientTableFormat,
+        },
         pageSize: PAGESIZE,
         tableActions: patientTableNavTabs
     };
@@ -1218,7 +1221,7 @@ const inventoryTableView = async () => {
     centerContent.innerHTML = '';
 
     const inventoryItemsData = inventoryTableFormat(inventoryItems);
-    
+
     renderPaginatedTable({
         modelList: inventoryItemsData,
         modelMetaData: {
@@ -1229,13 +1232,16 @@ const inventoryTableView = async () => {
                 axiosAuth,
                 url: '/inventory/query?id='
             },
-            searchUrlModule: 'inventory',
-            tableFormat: inventoryTableFormat,
+            searchView: {
+                searchField: 'name',
+                searchUrlModule: 'inventory',
+                tableFormat: inventoryTableFormat,
+            },
             pageSize: PAGESIZE
         },
         parentDOM: centerContent
     });
-    
+
     const addItemBtn = document.querySelector('#addInventoryItem');
 
     addItemBtn.addEventListener('click', function (event) {

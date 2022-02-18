@@ -4,6 +4,7 @@ module.exports = function makeInventoryCollection({ makeDb, ObjectID }) {
         insert,
         findById,
         findAll,
+        findByField
     })
 
     async function insert(inventoryItem) {
@@ -36,5 +37,20 @@ module.exports = function makeInventoryCollection({ makeDb, ObjectID }) {
             id: id.toString(),
             ...found
         }))
+    }
+
+    async function findByField({ fieldName, fieldRegex }) {
+        const db = await makeDb()
+        const findLikeFieldName = {}
+        findLikeFieldName[fieldName] = fieldRegex
+        const result = await db.collection('inventory').find({
+           ...findLikeFieldName
+        })
+
+        return (await result.toArray()).map(({ _id: id, ...found }) => ({
+            id: id.toString(),
+            ...found
+        })
+        )
     }
 }
