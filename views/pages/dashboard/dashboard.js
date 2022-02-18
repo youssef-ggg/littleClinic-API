@@ -355,6 +355,8 @@ const patientTableView = async () => {
             url: 'patients/patient?id='
         },
         title: 'Patients',
+        searchUrlModule: 'patients',
+        tableFormat: patientTableFormat,
         pageSize: PAGESIZE,
         tableActions: patientTableNavTabs
     };
@@ -1227,6 +1229,8 @@ const inventoryTableView = async () => {
                 axiosAuth,
                 url: '/inventory/query?id='
             },
+            searchUrlModule: 'inventory',
+            tableFormat: inventoryTableFormat,
             pageSize: PAGESIZE
         },
         parentDOM: centerContent

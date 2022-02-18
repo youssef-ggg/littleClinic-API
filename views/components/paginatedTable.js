@@ -66,6 +66,7 @@ module.exports = function renderPaginatedTable({ modelList, modelMetaData, paren
                 }
             })
         })
+
         cardHeader.className = 'card-header'
         dropDownMenu.classList = 'dropdown-menu display-none'
         dropDownMenuContent.className = 'dropdown-menu-content'
@@ -124,6 +125,18 @@ module.exports = function renderPaginatedTable({ modelList, modelMetaData, paren
             cardContent = document.querySelector(".card-content")
             card.removeChild(cardContent)
             renderTableBody({ parentDOM: card, modelList: page, modelMetaData: tableMetaData })
+        })
+
+        searchBtn.addEventListener('click', async function (event) {
+            event.preventDefault()
+            parentDOM.innerHTML = ''
+            const { axiosAuth } = modelMetaData.unitView
+            const { searchUrlModule, tableFormat } = modelMetaData
+            const searchResponse =
+                await axiosAuth.get(`/${searchUrlModule}/search/byfield?fieldName=name&fieldRegex=.*${searchInput.value
+                    }.*&caseSensitive=false`)
+            const searchedTableData = tableFormat(searchResponse.data);
+            renderPaginatedTable({ modelList: searchedTableData, modelMetaData, parentDOM })
         })
 
     } else if (cache && cache.length !== 0) {
