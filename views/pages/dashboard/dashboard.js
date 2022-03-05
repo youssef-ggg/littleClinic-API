@@ -25,7 +25,7 @@ const getByQueryRequest = require('../../requests/getByQueryRequest');
 // const {userFormErrorHandler,createUserErrorHandler} = require('../../errorHandler/index');
 
 const { patientTableFormat, patientFormFormat, patientTableNavTabs,
-    patientViewFormat, patientUpdateFormat, patientViewSideNav } = require('../../config/patients');
+    patientViewFormat, patientUpdateFormat, patientViewSideNav, patientBillingForm } = require('../../config/patients');
 const { diagnosisFormFormat, diagnosisUnitView, diagnosisFormSideNav, diagnosisTableLeftNav
     , diagnosisTableFormat } = require('../../config/diagnosis');
 const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
@@ -372,11 +372,16 @@ const patientTableView = async () => {
         parentDOM: centerContent
     });
 
-    const addPatientBtn = document.querySelector('#createModel');
+    if (userAccess['PATIENTS'].create) {
+        const addPatientBtn = document.querySelector('#createModel');
 
-    addPatientBtn.addEventListener('click', function (event) {
-        createPatientView();
-    });
+        addPatientBtn.addEventListener('click', function (event) {
+            createPatientView();
+        });
+    } else {
+        const openTableActionsBtn = document.querySelector("#openTableActions");
+        openTableActionsBtn.remove();
+    }
 }
 
 const patientSingleView = (patientData) => {
@@ -396,23 +401,26 @@ const patientSingleView = (patientData) => {
     // tabs('patient',patientViewSideNav({medicalId:123}));
 
     const editBtn = document.querySelector('#edit');
+    const deleteBtn = document.querySelector('#delete');
     const newDiagnosisBtn = document.querySelector('#createDiagnosis');
     const newAppointmentBtn = document.querySelector('#createAppointment');
+
     const diagnosticLogBtn = document.querySelector('#diagnosticLog');
     const appointmentLog = document.querySelector('#appointmentLog');
 
-    editBtn.addEventListener('click', function (event) {
-        udpatePatientForm(patientData);
-    });
+    if (userAccess['PATIENTS'].write) {
+        editBtn.addEventListener('click', function (event) {
+            udpatePatientForm(patientData);
+        });
+    } else {
+        editBtn.remove();
+    }
 
-    newDiagnosisBtn.addEventListener('click', function (event) {
-        createDiagnosisView(patientData);
-    });
-
-    newAppointmentBtn.addEventListener('click', function (event) {
-        createAppointmentView(patientData);
-    });
-
+    if (userAccess['PATIENTS'].delete) {
+        //TODO:: make delete patients
+    } else {
+        deleteBtn.remove();
+    }
     diagnosticLogBtn.addEventListener('click', async function (event) {
 
         const diagnosisList = await getByQueryRequest({
@@ -434,6 +442,35 @@ const patientSingleView = (patientData) => {
 
         appointmentListByPatient({ patientData, appointmentList: response })
     });
+
+    if (userAccess['PATIENTS'].create) {
+        newDiagnosisBtn.addEventListener('click', function (event) {
+            createDiagnosisView(patientData);
+        });
+
+    } else {
+        const newDiagnosis = btn.parentElement;
+        newDiagnosis.remove();
+    }
+
+    if (userAccess['APPOINTMENTS']) {
+        newAppointmentBtn.addEventListener('click', function (event) {
+            createAppointmentView(patientData);
+        });
+    } else {
+        const hideAppointmentBtn = newAppointmentBtn.parentElement;
+        hideAppointmentBtn.remove()
+    }
+
+    const billingBtn = document.querySelector('#billing');
+    if (userAccess['FINANCIALTRANSACTION'].create && userAccess['PATIENTS'].write) {
+        billingBtn.addEventListener('click', function (event) {
+            createBillView(patientData);
+        });
+    } else {
+        const hideBillingBtn = billingBtn.parentElement;
+        hideBillingBtn.remove();
+    }
 }
 
 const createPatientView = () => {
@@ -520,6 +557,48 @@ const udpatePatientForm = patientData => {
     });
 
 };
+const createBillView = (patientData) => {
+
+    centerContent.innerHTML = '';
+    renderForm({ parentDOM: centerContent, eleName: 'Billing', elementKeys: patientBillingForm() });
+
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
+
+    saveBtn.addEventListener('click', async function (event) {
+        event.preventDefault();
+
+        const billData = dashboardFormInputReader(patientBillingForm());
+        const { createBillErrorHandler } = errorHandlerService;
+        if (!createBillErrorHandler(billData)) {
+            if (isNaN(patientData.numberOfVisits)) {
+                patientData.numberOfVisits = 1
+            } else {
+                patientData.numberOfVisits++;
+            }
+            const responseDataList = Promise.all([
+                await createRequest({
+                    postData: billData,
+                    moduleTitle: 'FinancialTransaction',
+                    requestRoute: '/financialTransaction/addTransaction',
+                    axiosAuth
+                }),
+                await updateRequest({
+                    patchData: patientData,
+                    moudleTitle: 'Patient',
+                    requestRoute: `/patients/edit/${patientData.id}`, axiosAuth
+                })]);
+
+            //TODO in the future change this
+            patientSingleView(patientData);
+        }
+    });
+    cancelBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        patientSingleView(patientData);
+    });
+}
+
 const createDiagnosisView = (patientData) => {
 
     centerContent.innerHTML = '';
@@ -625,7 +704,6 @@ const diagnosisSingleView = (diagnosisData) => {
             diagnosisTableView({ patientData, diagnosisList });
         });
     });
-
 }
 
 const updateDiagnosisView = (diagnosisData) => {
@@ -1114,8 +1192,6 @@ if (userAccess['FINANCIALTRANSACTION'].read) {
 
 }
 
-
-
 const bookKeepingMonthlyTableView = async ({ month, year }) => {
 
     const response = await axiosAuth
@@ -1161,7 +1237,7 @@ const createTransactionView = () => {
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
 
-    dateInput.readOnly = true;
+    // dateInput.readOnly = true;
     saveBtn.addEventListener('click', async function (event) {
         event.preventDefault();
 

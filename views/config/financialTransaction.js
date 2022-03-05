@@ -69,7 +69,8 @@ module.exports = {
                 label: 'Date',
                 id: 'date',
                 type: 'date',
-                value: `${date.getFullYear()}-${monthofYear}-${dayofMonth}`
+                value: `${date.getFullYear()}-${monthofYear}-${dayofMonth}`,
+                readOnly: true
             },
             {
                 label: 'Amount',

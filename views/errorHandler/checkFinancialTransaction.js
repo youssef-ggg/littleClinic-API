@@ -43,7 +43,28 @@ module.exports = function financialTransactionErrorHandler({ commonInputError, r
         return hasError
     }
 
+    function createBillErrorHandler(transactionData){
+
+        let hasError = false
+        const  {invalidEmptyInputHandler} = commonInputError()
+        const { description, amount} = transactionData
+        
+        if(isNaN(amount)){
+            renderFormError({
+                inputTitle: 'amount',
+                message: 'Amount must be a number.',
+                inputType: 'text'
+            })
+            hasError = true
+        }
+        if (invalidEmptyInputHandler({ description, amount })) {
+            hasError = true
+        }
+
+        return hasError
+    }
+
     return {
-        createTransactionErrorHandler
+        createTransactionErrorHandler,createBillErrorHandler
     }
 }

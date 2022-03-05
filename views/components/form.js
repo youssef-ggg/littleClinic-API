@@ -161,6 +161,9 @@ module.exports = function renderForm({ parentDOM, eleName, elementKeys }) {
             formItem.appendChild(input);
 
         }
+        if (element.readOnly == true) {
+            input.readOnly = true;
+        }
         formItem.appendChild(inputError);
     });
 
