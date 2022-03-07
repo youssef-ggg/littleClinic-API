@@ -148,15 +148,16 @@ module.exports = Object.freeze({
     },
     patientsAppointmentSingleSideNav:[
         {
-            name:'Back to Appointment Table',
-            id:'backToSchedule',
-            icon:'fas fa-arrow-circle-left' 
-        },
-        {
             name:'Back To Appointment Log',
             id:'back',
             icon:'fas fa-history'
+        },
+        {
+            name:'Back to Appointment Table',
+            id:'backToSchedule',
+            icon:'fas fa-arrow-circle-left' 
         }
+        
     ],
     appointmentSingleSideNav:[
         {

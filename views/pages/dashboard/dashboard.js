@@ -734,7 +734,7 @@ const diagnosisSingleView = (diagnosisData) => {
                 diagnosisTableView({ patientData, diagnosisList });
             });
         });
-    }else {
+    } else {
         deleteDiagnosis.remove()
     }
 
@@ -943,9 +943,6 @@ const appointmentSingleView = (appointmentData) => {
     else {
         tabs({ patentDOM: cardRow, navItems: appointmentSingleSideNav });
     }
-
-    const updateAppointment = document.querySelector('#edit');
-    const deleteAppointment = document.querySelector('#delete');
     const backToAppointments = document.querySelector('#backToSchedule');
     const container = document.querySelector('.container');
 
@@ -967,42 +964,54 @@ const appointmentSingleView = (appointmentData) => {
         appointmentScheduleView({ startDate, endDate, appointmentList: response.data });
     });
 
-    updateAppointment.addEventListener('click', function (event) {
-        updateAppointmentView(appointmentData);
-    });
-
-    deleteAppointment.addEventListener('click', function (event) {
-
-        const entityData = { title: 'Appointment' }
-        modal(container, deleteModal(entityData));
-        const confirmDelete = document.querySelector('#confirm');
-
-        confirmDelete.addEventListener('click', async function (event) {
-
-            const overlay = document.querySelector('.modal-overlay');
-            overlay.parentNode.removeChild(overlay);
-            const response = await axiosAuth.delete(`/appointment/delete/${appointmentData.id}`);
-            // make response handle diffrent errors 
-            toastNotify('Appointment removed successfully.', 'success-warn');
-
-            //decrease calls to server in the future
-            const appointmentList = await getByQueryRequest({
-                getData: { patientId: singlePatient.id },
-                requestRoute: '/appointment/patient',
-                query: 'patientId',
-                axiosAuth
-            });
-
-            //decrease calls to server in the future
-            const patientData = await getByQueryRequest({
-                getData: { id: singlePatient.id },
-                requestRoute: '/patients',
-                query: 'id',
-                axiosAuth
-            });
-            appointmentListByPatient({ patientData, appointmentList });
+    const updateAppointment = document.querySelector('#edit');
+    if (userAccess['APPOINTMENTS'].write) {
+        updateAppointment.addEventListener('click', function (event) {
+            updateAppointmentView(appointmentData);
         });
-    });
+
+    } else {
+        updateAppointment.remove();
+    }
+    const deleteAppointment = document.querySelector('#delete');
+
+    if (userAccess['APPOINTMENTS'].remove) {
+        deleteAppointment.addEventListener('click', function (event) {
+
+            const entityData = { title: 'Appointment' }
+            modal(container, deleteModal(entityData));
+            const confirmDelete = document.querySelector('#confirm');
+
+            confirmDelete.addEventListener('click', async function (event) {
+
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const response = await axiosAuth.delete(`/appointment/delete/${appointmentData.id}`);
+                // make response handle diffrent errors 
+                toastNotify('Appointment removed successfully.', 'success-warn');
+
+                //decrease calls to server in the future
+                const appointmentList = await getByQueryRequest({
+                    getData: { patientId: singlePatient.id },
+                    requestRoute: '/appointment/patient',
+                    query: 'patientId',
+                    axiosAuth
+                });
+
+                //decrease calls to server in the future
+                const patientData = await getByQueryRequest({
+                    getData: { id: singlePatient.id },
+                    requestRoute: '/patients',
+                    query: 'id',
+                    axiosAuth
+                });
+                appointmentListByPatient({ patientData, appointmentList });
+            });
+        });
+    } else {
+        deleteAppointment.remove()
+    }
+
 }
 
 //Update appointments
