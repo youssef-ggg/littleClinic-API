@@ -64,6 +64,7 @@ const sidebarNav = document.querySelector('.sidebar-nav');
 
 
 // const PAGEINDEX = 1;
+const MAXUSERS = 10;
 const PAGESIZE = 10;
 
 const dashboardContent = document.querySelector('.container');
@@ -140,9 +141,22 @@ const usersTableView = async () => {
 
     const addUserBtn = document.querySelector('#createModel');
 
-    addUserBtn.addEventListener('click', function (event) {
-        createUser();
-    });
+    if (userAccess['USERS'].create && usersTableData.length <= MAXUSERS) {
+        const addPatientBtn = document.querySelector('#createModel');
+
+        addPatientBtn.addEventListener('click', function (event) {
+            createPatientView();
+        });
+
+        addUserBtn.addEventListener('click', function (event) {
+            createUser();
+        });
+    } else {
+        const openTableActionsBtn = document.querySelector("#openTableActions");
+        openTableActionsBtn.remove();
+    }
+
+
 }
 
 const userSingleView = (userData) => {
@@ -156,35 +170,47 @@ const userSingleView = (userData) => {
     cardRow.classList += 'row';
 
     renderUnitView({ parentDOM: cardRow, modelName: 'Staff Member', model: formatedUser });
-    tabs({ patentDOM: cardRow, navItems: userUnitLeftNav });
+    tabs({ patentDOM: cardRow, navItems: userUnitLeftNav, tabTitle: 'Staff Navigation' });
 
     const edit = document.querySelector('#edit');
+    if (userAccess['USERS'].write) {
+        edit.addEventListener('click', function (event) {
+            updateUserView(userData);
+        });
+    } else {
+        edit.remove();
+    }
     const remove = document.querySelector('#delete');
     const editPassBtn = document.querySelector('#changeUsrpass');
+    if (userAccess['USERS'].remove) {
+        remove.addEventListener('click', function (event) {
 
-    edit.addEventListener('click', function (event) {
-        updateUserView(userData);
-    });
+            modal(dashboardContent, deleteModal({ title: 'Staff member' }));
+            const confirmDelete = document.querySelector('#confirm');
 
-    remove.addEventListener('click', function (event) {
+            confirmDelete.addEventListener('click', async function (event) {
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
+                // make response handle diffrent errors 
+                toastNotify('Staff member removed successfully.', 'success-warn');
+                usersTableView();
 
-
-        modal(dashboardContent, deleteModal({ title: 'Staff member' }));
-        const confirmDelete = document.querySelector('#confirm');
-
-        confirmDelete.addEventListener('click', async function (event) {
-            const overlay = document.querySelector('.modal-overlay');
-            overlay.parentNode.removeChild(overlay);
-            const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
-            // make response handle diffrent errors 
-            toastNotify('Staff member removed successfully.', 'success-warn');
-            usersTableView();
-
+            });
         });
-    });
-    editPassBtn.addEventListener('click', function (event) {
-        updateUserPassword(userData);
-    });
+    } else {
+        remove.remove();
+    }
+
+
+    if (userAccess['USERS'].write || userData.id == currentuser.id) {
+        editPassBtn.addEventListener('click', function (event) {
+            updateUserPassword(userData);
+        });
+    } else {
+        const tabNav = document.querySelector('.tabs');
+        tabNav.remove();
+    }
 }
 
 const createUser = () => {
@@ -449,11 +475,11 @@ const patientSingleView = (patientData) => {
         });
 
     } else {
-        const newDiagnosis = btn.parentElement;
-        newDiagnosis.remove();
+        const newDiagnosisRemoveBtn = newDiagnosisBtn.parentElement;
+        newDiagnosisRemoveBtn.remove();
     }
 
-    if (userAccess['APPOINTMENTS']) {
+    if (userAccess['APPOINTMENTS'].create) {
         newAppointmentBtn.addEventListener('click', function (event) {
             createAppointmentView(patientData);
         });
@@ -544,9 +570,7 @@ const udpatePatientForm = patientData => {
                     moudleTitle: 'Patient',
                     requestRoute: `/patients/edit/${patientData.id}`, axiosAuth
                 });
-
                 patientSingleView(responseData);
-
             });
         }
     });
@@ -645,9 +669,8 @@ const diagnosisSingleView = (diagnosisData) => {
     renderUnitView({ parentDOM: cardRow, modelName: 'Diagnosis Information', model: diagnosisPretty });
     tabs({ patentDOM: cardRow, navItems: diagnosisFormSideNav });
 
-    const updateDiagnosis = document.querySelector('#edit');
+
     const backToDiagLog = document.querySelector('#back');
-    const deleteDiagnosis = document.querySelector('#delete');
     const container = document.querySelector('.container');
 
     backToDiagLog.addEventListener('click', async function (event) {
@@ -669,41 +692,52 @@ const diagnosisSingleView = (diagnosisData) => {
         diagnosisTableView({ patientData, diagnosisList });
     });
 
-    updateDiagnosis.addEventListener('click', function (event) {
-        updateDiagnosisView(diagnosisData)
-    });
-
-
-    deleteDiagnosis.addEventListener('click', function (event) {
-
-        modal(container, deleteModal({ title: 'Diagnosis' }));
-        const confirmDelete = document.querySelector('#confirm');
-
-        confirmDelete.addEventListener('click', async function (event) {
-            const overlay = document.querySelector('.modal-overlay');
-            overlay.parentNode.removeChild(overlay);
-            const response = await axiosAuth.delete(`/patients/diagnosis/delete/${diagnosisData.id}`);
-            // make response handle diffrent errors 
-            toastNotify('Staff member removed successfully.', 'success-warn');
-
-            //decrease server and db calls ? if needed
-            const diagnosisList = await getByQueryRequest({
-                getData: { patientId: diagnosisData.patientId },
-                requestRoute: 'patients/diangosis',
-                query: 'patientId',
-                axiosAuth
-            });
-
-            const patientData = await getByQueryRequest({
-                getData: { id: diagnosisData.patientId },
-                requestRoute: '/patients',
-                query: 'id',
-                axiosAuth
-            });
-
-            diagnosisTableView({ patientData, diagnosisList });
+    const updateDiagnosis = document.querySelector('#edit');
+    if (userAccess['PATIENTS'].write) // maybe add diagnosis  for more granular control
+    {
+        updateDiagnosis.addEventListener('click', function (event) {
+            updateDiagnosisView(diagnosisData)
         });
-    });
+    } else {
+        updateDiagnosis.remove()
+    }
+
+    const deleteDiagnosis = document.querySelector('#delete');
+    if (userAccess['PATIENTS'].remove) {
+        deleteDiagnosis.addEventListener('click', function (event) {
+
+            modal(container, deleteModal({ title: 'Diagnosis' }));
+            const confirmDelete = document.querySelector('#confirm');
+
+            confirmDelete.addEventListener('click', async function (event) {
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const response = await axiosAuth.delete(`/patients/diagnosis/delete/${diagnosisData.id}`);
+                // make response handle diffrent errors 
+                toastNotify('Staff member removed successfully.', 'success-warn');
+
+                //decrease server and db calls ? if needed
+                const diagnosisList = await getByQueryRequest({
+                    getData: { patientId: diagnosisData.patientId },
+                    requestRoute: 'patients/diangosis',
+                    query: 'patientId',
+                    axiosAuth
+                });
+
+                const patientData = await getByQueryRequest({
+                    getData: { id: diagnosisData.patientId },
+                    requestRoute: '/patients',
+                    query: 'id',
+                    axiosAuth
+                });
+
+                diagnosisTableView({ patientData, diagnosisList });
+            });
+        });
+    }else {
+        deleteDiagnosis.remove()
+    }
+
 }
 
 const updateDiagnosisView = (diagnosisData) => {
