@@ -8,7 +8,9 @@ module.exports = function makeAccessRightsCollection({ makeDb, ObjectID }) {
         findUserRole,
         checkAccessRight,
         findAllAccessRights,
-        findByUserRole
+        findByUserRole,
+        findAccessRightById,
+        updateAccessRight
     })
 
     async function insert(accessRight) {
@@ -87,5 +89,35 @@ module.exports = function makeAccessRightsCollection({ makeDb, ObjectID }) {
             userAccessModules.push({ id: _id.toString(), ...insertedInfo })
         })
         return userAccessModules
+    }
+
+    async function findAccessRightById({ id: _id }) {
+
+        const db = await makeDb()
+        const result = await db.collection('accessRights').find({ _id: ObjectID(_id) })
+        const found = await result.toArray()
+        if (found.length === 0)
+            return null
+
+        const { _id: id, ...info } = found[0]
+        return { id: id.toString(), ...info }
+    }
+
+    async function updateAccessRight(accessRightData) {
+
+        const { id, ...updateAccessRightData } = accessRightData
+        const options = { returnOriginal: false }
+        const db = await makeDb()
+        const result = await db.collection('accessRights').findOneAndUpdate({ _id: ObjectID(id) },
+            {
+                $set: { ...updateAccessRightData }
+            },
+            options
+        )
+
+        const { value } = result
+        const { _id, ...rest } = value
+        return { id: _id.toString(), ...rest }
+
     }
 }

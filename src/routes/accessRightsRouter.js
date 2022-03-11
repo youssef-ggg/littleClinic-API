@@ -3,11 +3,14 @@ module.exports = function makeAccessRightsRouter({ routes, makeCallBack, accessR
     const {
         createUserAccessRight,
         getAllRoles,
-        getAllUsersAccessRights
+        getAllUsersAccessRights,
+        updateAccessRight
     } = accessRightsController
 
-    routes.post('/access/addRole',makeCallBack(createUserAccessRight));
+    routes.post('/access/addRole',makeCallBack(createUserAccessRight))
     routes.get('/access/roles', makeCallBack(getAllRoles))
     routes.get('/access/usersRights', makeCallBack(getAllUsersAccessRights))
+    routes.put('/access/updateRole/:id',makeCallBack(updateAccessRight))
+
     return routes
 }
