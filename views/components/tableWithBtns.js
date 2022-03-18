@@ -130,8 +130,7 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                                 submitBtn.addEventListener('click', function (event) {
                                     const accessRightInput = dashboardFormInputReader(elementKeys)
                                     if (!updateAccessRightsErrorHandler(accessRightInput)) {
-                                        console.log(accessRightInput)
-
+                                        
                                         modal(dashboardContent, updateModalSuccess)
                                         const confirmUpdate = document.querySelector('#apply')
 
