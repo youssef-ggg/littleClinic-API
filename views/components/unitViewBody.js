@@ -1,26 +1,17 @@
-module.exports = function renderUnitView({ parentDOM, modelName, model }) {
+module.exports = function renderUnitBodyView({ parentDOM, modelName, model }) {
 
-    const cardCol = document.createElement('div');
-    const card = document.createElement('div');
-
-    cardCol.classList.add('col-6');
-    card.classList.add('card');
-
-    parentDOM.appendChild(cardCol);
-    cardCol.appendChild(card);
-
-    const formView = document.createElement('div');
-    const formHeader = document.createElement('div');
-    const formBody = document.createElement('div');
+    const formView = document.createElement('section');
+    const formHeader = document.createElement('section');
+    const formBody = document.createElement('section');
     // const formFooter = document.createElement('div');
-    const formTitle = document.createElement('div');
-    const formHeaderAction = document.createElement('div');
+    const formTitle = document.createElement('section');
+    const formHeaderAction = document.createElement('section');
     const editBtn = document.createElement('button');
     const editIcon = document.createElement('span');
     const deleteBtn = document.createElement('button');
     const deleteIcon = document.createElement('span');
 
-    formView.className = 'form-view';
+    // formView.className = 'form-view';
     formHeader.className = 'form-view-header';
     formBody.className = 'form-view-body';
     formTitle.innerHTML = modelName;
@@ -32,7 +23,7 @@ module.exports = function renderUnitView({ parentDOM, modelName, model }) {
     deleteBtn.id = 'delete';
     formHeaderAction.className = 'header-action';
 
-    card.appendChild(formView);
+    parentDOM.appendChild(formView);
     formView.appendChild(formHeader);
     formView.appendChild(formBody);
     // formView.appendChild(formFooter);
@@ -47,9 +38,9 @@ module.exports = function renderUnitView({ parentDOM, modelName, model }) {
 
 
     for (const [key, value] of Object.entries(model)) {
-        const elementBox = document.createElement('div');
-        const elementTitle = document.createElement('div');
-        const elementValue = document.createElement('div');
+        const elementBox = document.createElement('section');
+        const elementTitle = document.createElement('section');
+        const elementValue = document.createElement('section');
 
         elementBox.className = 'view-element-box';
         elementTitle.className = 'view-element-title';
@@ -65,4 +56,3 @@ module.exports = function renderUnitView({ parentDOM, modelName, model }) {
     }
 
 }
-

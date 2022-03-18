@@ -29,7 +29,7 @@ const {
 } = appointmentErrorHandler({ commonInputError, renderFormError });
 
 const {
-    createTransactionErrorHandler,createBillErrorHandler
+    createTransactionErrorHandler, createBillErrorHandler
 } = financialTransactionErrorHandler({ commonInputError, renderFormError });
 
 const {
@@ -37,8 +37,8 @@ const {
 } = inventoryErrorHandler({ commonInputError, renderFormError })
 
 const {
-    createAccessRightsErrorHandler
-} = accessRightsErrorHandler({renderFormError});
+    createAccessRightsErrorHandler, updateAccessRightsErrorHandler
+} = accessRightsErrorHandler({ renderFormError });
 
 module.exports = {
     passMisMatchHandle, userFormErrorHandler, userFormPassErrorHandle,
@@ -46,6 +46,6 @@ module.exports = {
     createPatientErrorHandler, updatePatientErrorHandler, createDiagnosisErrorHandler,
     updateDiagnosisErrorHandler, createAppointmentErrorHandler, updateAppointmentErrorHandler,
     createTransactionErrorHandler, createInventoryItemErrorHandler,
-    createAccessRightsErrorHandler, createBillErrorHandler
+    createAccessRightsErrorHandler, updateAccessRightsErrorHandler, createBillErrorHandler
 }
 

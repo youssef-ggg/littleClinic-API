@@ -1,10 +1,14 @@
 const formBody = require('./formBody')
-const { accessRightsFormFormat } = require('../config/settings')
+const { accessRightsUpdateFormFormat } = require('../config/settings')
+const updateViewBody = require('./updateViewBody')
+const renderUnitBodyView = require('./unitViewBody')
+const { accessRightsFormFormat, userAccessUnitViewFormat } = require('../config/settings')
 const dashboardFormInputReader = require('../inputHandler/dashboard/formInputHandler')
-const { createAccessRightsErrorHandler } = require('../errorHandler')
+const { createAccessRightsErrorHandler, updateAccessRightsErrorHandler } = require('../errorHandler')
 const createRequest = require('../requests/createRequest')
+const updateRequest = require('..//requests/updateRequest')
 
-module.exports = async function renderBtnsTable({ parentDOM, axiosAuth }) {
+module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAccess }) {
 
     const card = document.createElement('section')
     card.classList.add('settings-card')
@@ -101,6 +105,65 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth }) {
                             col.appendChild(document.createTextNode(value))
                         }
                     })
+                    tableRow.addEventListener('click', function () {
+                        cardContent.innerHTML = ''
+                        const accessViewFormat = userAccessUnitViewFormat(element)
+                        renderUnitBodyView({
+                            parentDOM: cardContent,
+                            modelName: 'User Access',
+                            model: accessViewFormat
+                        })
+                        const editBtn = document.querySelector('#edit')
+                        if (userAccess['SETTINGS'].write) {
+                            editBtn.addEventListener('click', function (event) {
+                                cardContent.innerHTML = ''
+                                updateViewBody({
+                                    parentDOM: cardContent,
+                                    eleName: 'User Access',
+                                    elementsMetaData: accessRightsUpdateFormFormat({ usersRoles: usersRolesList }),
+                                    elementsValues: rowData
+                                })
+                                const submitBtn = document.querySelector('#save')
+                                const cancelBtn = document.querySelector('#cancel')
+                                const elementKeys = accessRightsFormFormat({ usersRoles: usersRolesList })
+
+                                submitBtn.addEventListener('click', function (event) {
+                                    const accessRightInput = dashboardFormInputReader(elementKeys)
+                                    if (!updateAccessRightsErrorHandler(accessRightInput)) {
+                                        console.log(accessRightInput)
+
+                                        modal(dashboardContent, updateModalSuccess)
+                                        const confirmUpdate = document.querySelector('#apply')
+
+                                        confirmUpdate.addEventListener('click', async function (event) {
+                                            const overlay = document.querySelector('.modal-overlay')
+                                            overlay.parentNode.removeChild(overlay)
+                                            const responseData = await updateRequest({
+                                                patchData: accessRightInput,
+                                                moudleTitle: 'User Access',
+                                                requestRoute: `/access/updateRole/${element.id}`, 
+                                                axiosAuth
+                                            })
+                                            location.reload()
+                                        })
+                                    }
+                                })
+
+                                cancelBtn.addEventListener('click', function (event) {
+                                    parentDOM.innerHTML = ''
+                                    renderBtnsTable({ parentDOM, axiosAuth, userAccess })
+                                })
+                            })
+                        } else {
+                            editBtn.remove()
+                        }
+                        const deleteBtn = document.querySelector('#delete')
+                        if (userAccess['SETTINGS'].remove) {
+
+                        } else {
+                            deleteBtn.remove()
+                        }
+                    })
                 })
             } else {
                 const emptyTable = document.createElement('section')
@@ -123,27 +186,31 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth }) {
 
         })
 
-        addAccess.addEventListener('click', () => {
-            const eleName = 'Access Right'
-            card.appendChild(cardContent)
-            cardContent.innerHTML = ''
+        if (userAccess['SETTINGS'].create) {
+            addAccess.addEventListener('click', () => {
+                const eleName = 'Access Right'
+                card.appendChild(cardContent)
+                cardContent.innerHTML = ''
 
-            const elementKeys = accessRightsFormFormat({ usersRoles: usersRolesList })
-            formBody({ parentDOM: cardContent, eleName, elementKeys })
+                const elementKeys = accessRightsFormFormat({ usersRoles: usersRolesList })
+                formBody({ parentDOM: cardContent, eleName, elementKeys })
 
-            const saveBtn = document.querySelector('#save')
-            saveBtn.addEventListener('click',async function (event) {
-                const accessRightInput = dashboardFormInputReader(elementKeys)
+                const saveBtn = document.querySelector('#save')
+                saveBtn.addEventListener('click', async function (event) {
+                    const accessRightInput = dashboardFormInputReader(elementKeys)
 
-                if (!createAccessRightsErrorHandler({ accessRightsList: data, accessRightInput })) {
-                    const responseData = await createRequest({
-                        postData: accessRightInput,
-                        moduleTitle: 'Access Rights',
-                        requestRoute: '/access/addRole', axiosAuth
-                    })
-                }
+                    if (!createAccessRightsErrorHandler({ accessRightsList: data, accessRightInput })) {
+                        const responseData = await createRequest({
+                            postData: accessRightInput,
+                            moduleTitle: 'Access Rights',
+                            requestRoute: '/access/addRole', axiosAuth
+                        })
+                    }
+                })
             })
+        } else {
+            addAccess.remove()
+        }
 
-        })
     }
 }

@@ -1455,7 +1455,7 @@ if (userAccess['SETTINGS'].read) {
 
 const settingsTableView = () => {
     centerContent.innerHTML = ''
-    renderSettingsTabs({ parentDOM: centerContent, tabs: settingsTabs(), axiosAuth })
+    renderSettingsTabs({ parentDOM: centerContent, tabs: settingsTabs(), axiosAuth, userAccess })
 }
 
 renderNavItem.createNavItem({

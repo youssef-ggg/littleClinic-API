@@ -7,9 +7,10 @@
  @import "../../node_modules/font-roboto/dist/styles/roboto.min.css"; 
  @import "../../assets/css/formView.css";
  @import "../../assets/css/form.css";
- @import "../../assets//css/modal.css";
+ @import "../../assets/css/modal.css";
  @import "../../assets/css/apntmntTable.css";
- @import "../../assets/css//tabs.css";
+ @import "../../assets/css/tabs.css";
+@import  "../../assets/css/settingsform.css";
 
 :root{
 --primary-color: #4834d4;

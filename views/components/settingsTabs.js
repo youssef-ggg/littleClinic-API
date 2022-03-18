@@ -1,6 +1,6 @@
 const tableWithBtns = require('./tableWithBtns')
 
-module.exports = function renderTabs({ parentDOM, tabs, axiosAuth }) {
+module.exports = function renderTabs({ parentDOM, tabs, axiosAuth, userAccess }) {
 
     const tabContianer = document.createElement('div')
     const tabHeader = document.createElement('div')
@@ -38,7 +38,7 @@ module.exports = function renderTabs({ parentDOM, tabs, axiosAuth }) {
         const tabSection = document.createElement('div')
         tabBody.appendChild(tabSection)
         if (tab.id == 'accessRights') {
-            tableWithBtns({ parentDOM: tabSection, axiosAuth })
+            tableWithBtns({ parentDOM: tabSection, axiosAuth, userAccess })
         } else {
             tabSection.innerHTML = `still needs work ${index}`
         }

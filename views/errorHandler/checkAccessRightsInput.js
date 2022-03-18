@@ -28,7 +28,20 @@ module.exports = function AccessRightErrorHandler({ renderFormError }) {
         return hasError
     }
 
+    function updateAccessRightsErrorHandler(accessRightsData) {
+        let hasError = false;        
+        if(!accessRightsData.read){
+            hasError=true
+            renderFormError({
+                inputTitle: 'read',
+                message: 'User must at least have read access to a module.',
+                inputType: 'checkbox'
+            })
+        }
+        return hasError
+    }
+
     return {
-        createAccessRightsErrorHandler
+        createAccessRightsErrorHandler,updateAccessRightsErrorHandler
     }
 }
