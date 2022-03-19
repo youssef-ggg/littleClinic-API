@@ -10,7 +10,8 @@ module.exports = function makeAccessRightsCollection({ makeDb, ObjectID }) {
         findAllAccessRights,
         findByUserRole,
         findAccessRightById,
-        updateAccessRight
+        updateAccessRight,
+        removeAccessRightById
     })
 
     async function insert(accessRight) {
@@ -119,5 +120,14 @@ module.exports = function makeAccessRightsCollection({ makeDb, ObjectID }) {
         const { _id, ...rest } = value
         return { id: _id.toString(), ...rest }
 
+    }
+
+    async function removeAccessRightById(accessRightsInfo) {
+        const { id } = accessRightsInfo;
+
+        const db = await makeDb();
+        const result = await db.collection('accessRights').deleteOne({ _id: ObjectID(id) });
+
+        return result
     }
 }

@@ -23,7 +23,6 @@ submit.addEventListener('click', async function (event) {
         const response = await axios.post(`${API_URL}/users/login`, { ...userLogin });
 
         const { user, token, userAccess } = response.data;
-        console.log(response.data)
         if (user && token) {
             sessionStorage.setItem('currentUser', JSON.stringify(user));
             sessionStorage.setItem('loginToken', JSON.stringify(token));

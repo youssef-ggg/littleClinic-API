@@ -6,10 +6,13 @@ const { accessRightsFormFormat, userAccessUnitViewFormat } = require('../config/
 const dashboardFormInputReader = require('../inputHandler/dashboard/formInputHandler')
 const { createAccessRightsErrorHandler, updateAccessRightsErrorHandler } = require('../errorHandler')
 const createRequest = require('../requests/createRequest')
-const updateRequest = require('..//requests/updateRequest')
+const updateRequest = require('../requests/updateRequest')
+const { updateModalSuccess, deleteModal } = require('../config/common')
+
 
 module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAccess }) {
 
+    const dashboardContent = document.querySelector('.container');
     const card = document.createElement('section')
     card.classList.add('settings-card')
     parentDOM.appendChild(card)
@@ -130,7 +133,7 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                                 submitBtn.addEventListener('click', function (event) {
                                     const accessRightInput = dashboardFormInputReader(elementKeys)
                                     if (!updateAccessRightsErrorHandler(accessRightInput)) {
-                                        
+
                                         modal(dashboardContent, updateModalSuccess)
                                         const confirmUpdate = document.querySelector('#apply')
 
@@ -140,7 +143,7 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                                             const responseData = await updateRequest({
                                                 patchData: accessRightInput,
                                                 moudleTitle: 'User Access',
-                                                requestRoute: `/access/updateRole/${element.id}`, 
+                                                requestRoute: `/access/updateRole/${element.id}`,
                                                 axiosAuth
                                             })
                                             location.reload()
@@ -158,7 +161,19 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                         }
                         const deleteBtn = document.querySelector('#delete')
                         if (userAccess['SETTINGS'].remove) {
+                            deleteBtn.addEventListener('click', function (event) {
+                                modal(dashboardContent, deleteModal({ title: 'User Access' }))
+                                const confirmDelete = document.querySelector('#confirm')
 
+                                confirmDelete.addEventListener('click', async function (event) {
+                                    const overlay = document.querySelector('.modal-overlay')
+                                    overlay.parentNode.removeChild(overlay)
+                                    const response =
+                                        await axiosAuth.delete(`/access/removeRight/${element.id}`)
+
+                                    location.reload()
+                                })
+                            })
                         } else {
                             deleteBtn.remove()
                         }

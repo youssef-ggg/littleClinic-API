@@ -5,7 +5,8 @@ module.exports = function makeAccessRightsRouter({ routes, makeCallBack, accessR
         getAllRoles,
         getAllUsersAccessRights,
         updateAccessRight,
-        getUserAccessRightById
+        getUserAccessRightById,
+        deleteAccessRightById
     } = accessRightsController
 
     routes.post('/access/addRole', makeCallBack(createUserAccessRight))
@@ -13,6 +14,7 @@ module.exports = function makeAccessRightsRouter({ routes, makeCallBack, accessR
     routes.get('/access/usersRights', makeCallBack(getAllUsersAccessRights))
     routes.patch('/access/updateRole/:id', makeCallBack(updateAccessRight))
     routes.get('/access/usersRight/:id', makeCallBack(getUserAccessRightById))
+    routes.delete('/access/removeRight/:id', makeCallBack(deleteAccessRightById))
 
     return routes
 }

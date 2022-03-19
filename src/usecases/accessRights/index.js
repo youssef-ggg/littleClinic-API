@@ -9,6 +9,7 @@ const makeFindAllUsersAccessRights = require('./findAllUsersAccessRights')
 const makeFindAllRoles = require('./findAllRoles')
 const makeEditAccessRight = require('./editAccessRight')
 const makeFindAccessRightById = require('./findAccessRightById')
+const makeRemoveAccessRightById = require('./removeAccessRightById')
 
 const addUserRole = makeAddUserRole({ accessRightsCollection })
 const addAccessRight = makeAddAccessRight({ accessRightsCollection })
@@ -18,10 +19,11 @@ const findAllUsersAccessRights = makeFindAllUsersAccessRights({ accessRightsColl
 const findAllRoles = makeFindAllRoles({ accessRightsCollection })
 const editAccessRight = makeEditAccessRight({ accessRightsCollection })
 const findAccessRightById = makeFindAccessRightById({ accessRightsCollection })
+const removeAccessRightById = makeRemoveAccessRightById({ accessRightsCollection })
 
 const accessRightServices = Object.freeze({
     addUserRole, addAccessRight, findAccessRight, findUserAccessRights, findAllUsersAccessRights,
-    findAllRoles, editAccessRight, findAccessRightById
+    findAllRoles, editAccessRight, findAccessRightById, removeAccessRightById
 })
 
 module.exports = accessRightServices
