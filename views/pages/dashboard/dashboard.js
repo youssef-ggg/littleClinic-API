@@ -432,7 +432,6 @@ const patientSingleView = (patientData) => {
     const newAppointmentBtn = document.querySelector('#createAppointment');
 
     const diagnosticLogBtn = document.querySelector('#diagnosticLog');
-    const appointmentLog = document.querySelector('#appointmentLog');
 
     if (userAccess['PATIENTS'].write) {
         editBtn.addEventListener('click', function (event) {
@@ -458,16 +457,23 @@ const patientSingleView = (patientData) => {
         diagnosisTableView({ patientData, diagnosisList });
     });
 
-    appointmentLog.addEventListener('click', async function (event) {
-        const response = await getByQueryRequest({
-            getData: { patientId: patientData.id },
-            requestRoute: '/appointment/patient',
-            query: 'patientId',
-            axiosAuth
-        });
+    const appointmentLog = document.querySelector('#appointmentLog');
 
-        appointmentListByPatient({ patientData, appointmentList: response })
-    });
+    if (userAccess['APPOINTMENTS'].read) {
+        appointmentLog.addEventListener('click', async function (event) {
+            const response = await getByQueryRequest({
+                getData: { patientId: patientData.id },
+                requestRoute: '/appointment/patient',
+                query: 'patientId',
+                axiosAuth
+            });
+
+            appointmentListByPatient({ patientData, appointmentList: response })
+        });
+    } else {
+        appointmentLog.parentElement.remove()
+    }
+
 
     if (userAccess['PATIENTS'].create) {
         newDiagnosisBtn.addEventListener('click', function (event) {
@@ -1266,10 +1272,16 @@ const bookKeepingMonthlyTableView = async ({ month, year }) => {
         bookKeepingMonthlyTableView({ year: parseInt(monthInputArr[0]), month: parseInt(monthInputArr[1]) })
     })
 
-    const addTransationBtn = document.querySelector('#singleTransaction')
-    addTransationBtn.addEventListener('click', () => {
-        createTransactionView()
-    })
+    const addTransactionBtn = document.querySelector('#singleTransaction')
+    if (userAccess['FINANCIALTRANSACTION'].create) {
+        addTransactionBtn.addEventListener('click', () => {
+            createTransactionView();
+        });
+    } else {
+        const openTableActionsBtn = document.querySelector("#openTableActions");
+        openTableActionsBtn.remove();
+    }
+
 }
 
 const createTransactionView = () => {
@@ -1363,9 +1375,15 @@ const inventoryTableView = async () => {
 
     const addItemBtn = document.querySelector('#addInventoryItem');
 
-    addItemBtn.addEventListener('click', function (event) {
-        createInventoryItem();
-    });
+    if (userAccess['INVENTORY'].create) {
+        addItemBtn.addEventListener('click', function (event) {
+            createInventoryItem();
+        });
+    } else {
+        const openTableActionsBtn = document.querySelector("#openTableActions");
+        openTableActionsBtn.remove();
+    }
+
 }
 
 const createInventoryItem = () => {
@@ -1412,27 +1430,37 @@ const inventoryItemSingleView = (inventoryItem) => {
     // tabs({ patentDOM: cardRow, navItems: userUnitLeftNav });
 
     const edit = document.querySelector('#edit');
-    const remove = document.querySelector('#delete');
 
-    edit.addEventListener('click', function (event) {
-        //    updateUserView(userData);
-    });
+    if (userAccess['INVENTORY'].write) {
+        edit.addEventListener('click', function (event) {
+            //    updateUserView(userData);
+        });
+    } else {
+        edit.remove()
+    }
 
-    remove.addEventListener('click', function (event) {
+    const removeBtn = document.querySelector('#delete');
 
-        modal(dashboardContent, deleteModal({ title: 'Inventory Item' }));
-        //     const confirmDelete = document.querySelector('#confirm');
+    if (userAccess['INVENTORY'].remove) {
+        removeBtn.addEventListener('click', function (event) {
 
-        //     confirmDelete.addEventListener('click', async function (event) {
-        //         const overlay = document.querySelector('.modal-overlay');
-        //         overlay.parentNode.removeChild(overlay);
-        //         const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
-        //         // make response handle diffrent errors 
-        //         toastNotify('Staff member removed successfully.', 'success-warn');
-        //         usersTableView();
+            modal(dashboardContent, deleteModal({ title: 'Inventory Item' }));
+            //     const confirmDelete = document.querySelector('#confirm');
 
-        //     });
-    });
+            //     confirmDelete.addEventListener('click', async function (event) {
+            //         const overlay = document.querySelector('.modal-overlay');
+            //         overlay.parentNode.removeChild(overlay);
+            //         const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
+            //         // make response handle diffrent errors 
+            //         toastNotify('Staff member removed successfully.', 'success-warn');
+            //         usersTableView();
+
+            //     });
+        });
+    } else {
+        removeBtn.remove()
+    }
+
     // editPassBtn.addEventListener('click', function (event) {
     //     updateUserPassword(userData);
     // });

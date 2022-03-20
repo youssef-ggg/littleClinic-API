@@ -9,6 +9,9 @@ const createRequest = require('../requests/createRequest')
 const updateRequest = require('../requests/updateRequest')
 const { updateModalSuccess, deleteModal } = require('../config/common')
 
+const currentuser = JSON.parse(sessionStorage.getItem('currentUser'))//using session storage of html5 http://diveintohtml5.info/storage.html
+const userAccess = JSON.parse(sessionStorage.getItem('userAccess'))//change to something more secure.
+
 
 module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAccess }) {
 
@@ -146,6 +149,12 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                                                 requestRoute: `/access/updateRole/${element.id}`,
                                                 axiosAuth
                                             })
+                                            if (currentuser.accessRights.includes(accessRightInput.userRole)) {
+                                                const { module, ...Accessdata } = responseData
+                                                userAccess[module] = { ...Accessdata }
+                                                sessionStorage.setItem('userAccess', JSON.stringify(userAccess))
+
+                                            }
                                             location.reload()
                                         })
                                     }
@@ -170,9 +179,11 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                                     overlay.parentNode.removeChild(overlay)
                                     const response =
                                         await axiosAuth.delete(`/access/removeRight/${element.id}`)
-
-                                    location.reload()
                                 })
+                                delete userAccess[element.module]
+                                sessionStorage.setItem('userAccess', JSON.stringify(userAccess))
+
+
                             })
                         } else {
                             deleteBtn.remove()
@@ -219,7 +230,16 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                             moduleTitle: 'Access Rights',
                             requestRoute: '/access/addRole', axiosAuth
                         })
+
+                        if (currentuser.accessRights.includes(accessRightInput.userRole)) {
+                            const { module, ...Accessdata } = responseData
+                            userAccess[module] = { ...Accessdata }
+                            sessionStorage.setItem('userAccess', JSON.stringify(userAccess))
+
+                        }
+                        location.reload()
                     }
+
                 })
             })
         } else {
