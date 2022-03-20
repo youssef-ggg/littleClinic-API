@@ -1,4 +1,5 @@
 const tableWithBtns = require('./tableWithBtns')
+const renderUserRolesTable = require('./usersSettingsTable')
 
 module.exports = function renderTabs({ parentDOM, tabs, axiosAuth, userAccess }) {
 
@@ -39,6 +40,8 @@ module.exports = function renderTabs({ parentDOM, tabs, axiosAuth, userAccess })
         tabBody.appendChild(tabSection)
         if (tab.id == 'accessRights') {
             tableWithBtns({ parentDOM: tabSection, axiosAuth, userAccess })
+        } else if (tab.id == 'usersSettings') {
+            renderUserRolesTable({ parentDOM: tabSection, axiosAuth, userAccess })
         } else {
             tabSection.innerHTML = `still needs work ${index}`
         }

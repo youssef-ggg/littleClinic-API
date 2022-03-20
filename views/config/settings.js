@@ -126,5 +126,32 @@ module.exports = Object.freeze({
 
         return formatedUser;
     },
+    userRolesTableFormat: (userRolesData) => {
+        let RolesDataTable = []
+
+        const dateOptions = {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        }
+        
+        userRolesData.forEach(userRole => {
+
+            const { id, role, createdOn, modifiedOn } = userRole
+
+            const createdOnFormat = new Date(createdOn)
+            const modifiedOnFormat = new Date(modifiedOn)
+
+            RolesDataTable.push({
+                id,
+                Role: role,
+                'Created On': createdOnFormat.toLocaleDateString('en-EN', dateOptions),
+                'Modified On': modifiedOnFormat.toLocaleDateString('en-EN', dateOptions),
+            })
+        })
+
+        return RolesDataTable
+    },
 
 })
