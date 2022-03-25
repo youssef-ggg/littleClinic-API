@@ -1,6 +1,5 @@
 module.exports = function settingsTable({ parentDOM, data }) {
     
-
     if (data && data.length > 0) {
         const table = document.createElement('table')
         const thead = document.createElement('thead')
@@ -48,7 +47,7 @@ module.exports = function settingsTable({ parentDOM, data }) {
     }
     else {
 
-        const emptyTable = document.createElement('div')
+        const emptyTable = document.createElement('section')
         const emptyHeader = document.createElement('span')
         const emptyBody = document.createElement('span')
 
@@ -59,7 +58,7 @@ module.exports = function settingsTable({ parentDOM, data }) {
         emptyTable.appendChild(emptyHeader)
         emptyTable.appendChild(emptyBody)
 
-        emptyTable.className = 'empty-table'
+        emptyTable.className = 'empty-table-settings'
         emptyHeader.className = 'empty-table-header'
         emptyBody.className = 'empty-table-body'
 

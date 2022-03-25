@@ -203,7 +203,7 @@ module.exports = async function renderBtnsTable({ parentDOM, axiosAuth, userAcce
                 emptyTable.appendChild(emptyBody)
 
                 emptyTable.className = 'active'
-                emptyTable.classList.add('empty-table')
+                emptyTable.classList.add('empty-table-settings')
 
                 emptyHeader.className = 'empty-table-header'
                 emptyBody.className = 'empty-table-body'
