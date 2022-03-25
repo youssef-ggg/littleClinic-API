@@ -1,4 +1,9 @@
-const { userRolesTableFormat } = require('../config/settings')
+const { userRolesTableFormat, userRoleFormFormat } = require('../config/settings')
+const settingsTable = require('./settingsTable')
+const formBody = require('./formBody')
+const { createUserRoleErrorHandler } = require('../errorHandler')
+
+const createRequest = require('../requests/createRequest')
 
 module.exports = async function renderUserRolesTable({ parentDOM, axiosAuth, userAccess }) {
 
@@ -9,90 +14,62 @@ module.exports = async function renderUserRolesTable({ parentDOM, axiosAuth, use
     const cardHeader = document.createElement('section')
     const cardContent = document.createElement('section')
     const cardTitle = document.createElement('h3')
+    const viewRoles = document.createElement('button')
+
     cardTitle.className = 'settings-title'
     cardTitle.innerHTML = 'Access Roles'
     cardHeader.className = 'settings-header'
-
-    const addRole = document.createElement('button')
-    addRole.innerHTML = 'Add Role'
-    addRole.classList += 'btn'
-    addRole.id = 'addAccess'
+    viewRoles.className = 'btn'
+    viewRoles.id = 'viewRoles'
+    viewRoles.innerHTML = 'View Roles'
 
     cardHeader.appendChild(cardTitle)
-    cardHeader.appendChild(addRole)
     card.appendChild(cardHeader)
+    cardHeader.appendChild(viewRoles)
     card.appendChild(cardContent)
 
     const systemUsersList = await axiosAuth.get('/access/roles')
+    const data = systemUsersList ? systemUsersList.data : []
+    if (userAccess['SETTINGS'].create) {
+        const addRole = document.createElement('button')
+        addRole.innerHTML = 'Add Role'
+        addRole.classList += 'btn'
+        addRole.id = 'addAccess'
+        cardHeader.appendChild(addRole)
 
-    if (systemUsersList) {
-        const { data } = systemUsersList
+        addRole.addEventListener('click', function (event) {
+            cardContent.innerHTML = ''
+            const eleName = 'User Role'
+            formBody({ parentDOM: cardContent, eleName, elementKeys: userRoleFormFormat() })
 
+            const saveBtn = document.querySelector('#save')
+            saveBtn.addEventListener('click', async function (event) {
+                const accessRightInput = dashboardFormInputReader(userRoleFormFormat())
+                if (!createUserRoleErrorHandler({
+                    userRoleData: accessRightInput, userRoleList: systemUsersList.data
+                })) {
+                    const responseData = await createRequest({
+                        postData: accessRightInput,
+                        moduleTitle: 'Access Rights',
+                        requestRoute: '/access/addUserRole', axiosAuth
+                    })
+                    data.push(responseData)
+                }
+            })
+        })
+    }
+
+
+    if (data && data.length > 0) {
         const usersRolesList = userRolesTableFormat(data)
 
-        if (usersRolesList && usersRolesList.length > 0) {
-            const table = document.createElement('table')
-            const thead = document.createElement('thead')
-            const tbody = document.createElement('tbody')
-            let tableRow = document.createElement('tr')
+        settingsTable({ parentDOM: cardContent, data: usersRolesList })
 
-            table.className = 'table-content'
-            cardContent.className = 'card-content'
+        viewRoles.addEventListener('click', function (event) {
+            cardContent.innerHTML = ''
+            settingsTable({ parentDOM: cardContent, data: userRolesTableFormat(data) })
 
-            cardContent.appendChild(table)
-            table.appendChild(thead)
-            table.appendChild(tbody)
-            thead.appendChild(tableRow)
-
-            const { id, ...getModelKeys } = usersRolesList[0]
-            const modelKeys = Object.keys(getModelKeys)
-            let colTitle = document.createElement('th')
-
-            modelKeys.forEach((key) => {
-                colTitle = document.createElement('th')
-                tableRow.appendChild(colTitle)
-                colTitle.appendChild(document.createTextNode(key))
-            })
-
-            usersRolesList.forEach((element) => {
-                const { id, ...rowData } = element
-                tableRow = document.createElement('tr')
-                tableRow.className = 'table-row'
-
-                tbody.appendChild(tableRow);
-                let values = Object.values(rowData)
-
-                values.forEach((value) => {
-                    const col = document.createElement('td')
-                    tableRow.appendChild(col)
-                    col.appendChild(document.createTextNode(value))
-
-                })
-                tableRow.addEventListener('click', async function () {
-                    //fix here transfere query string some where else
-                    // const response = await axiosAuth.get(`${url}${id}`);
-                    // unitRenderer(response.data);
-                })
-            })
-        }
-        else {
-
-            const emptyTable = document.createElement('div')
-            const emptyHeader = document.createElement('span')
-            const emptyBody = document.createElement('span')
-
-            emptyHeader.innerHTML = 'Empty table'
-            emptyBody.innerHTML = 'your entities appear hear.'
-
-            parentDOM.appendChild(emptyTable)
-            emptyTable.appendChild(emptyHeader)
-            emptyTable.appendChild(emptyBody)
-
-            emptyTable.className = 'empty-table'
-            emptyHeader.className = 'empty-table-header'
-            emptyBody.className = 'empty-table-body'
-
-        }
+        })
 
     }
 }

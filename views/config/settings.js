@@ -25,6 +25,13 @@ module.exports = Object.freeze({
             icon: 'fas fa-sliders-h',
         }
     ],
+    userRoleFormFormat: () => [
+        {
+            label: 'Role',
+            id: 'role',
+            type: 'text'
+        }
+    ],
     accessRightsFormFormat: ({ usersRoles }) => {
 
         return [
@@ -135,7 +142,7 @@ module.exports = Object.freeze({
             day: 'numeric',
             year: 'numeric',
         }
-        
+
         userRolesData.forEach(userRole => {
 
             const { id, role, createdOn, modifiedOn } = userRole
