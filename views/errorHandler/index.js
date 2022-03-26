@@ -33,7 +33,7 @@ const {
 } = financialTransactionErrorHandler({ commonInputError, renderFormError });
 
 const {
-    createInventoryItemErrorHandler
+    createInventoryItemErrorHandler, updateInventoryItemErrorHandler
 } = inventoryErrorHandler({ commonInputError, renderFormError })
 
 const {
@@ -45,7 +45,7 @@ module.exports = {
     createUserErrorHandler, updateUserDataErrorHandle, updateUserPasswordErrorHandle,
     createPatientErrorHandler, updatePatientErrorHandler, createDiagnosisErrorHandler,
     updateDiagnosisErrorHandler, createAppointmentErrorHandler, updateAppointmentErrorHandler,
-    createTransactionErrorHandler, createInventoryItemErrorHandler,
+    createTransactionErrorHandler, createInventoryItemErrorHandler, updateInventoryItemErrorHandler,
     createAccessRightsErrorHandler, updateAccessRightsErrorHandler, createBillErrorHandler,
     createUserRoleErrorHandler
 }

@@ -77,9 +77,36 @@ module.exports = Object.freeze({
             'Reorder Value': unitCost * reorderQuantity,
             'Created Date': dateFormatCreate.toLocaleDateString('en-EN', dateOptions),
             'Modified Date': dateFormatmodified.toLocaleDateString('en-EN', dateOptions),
-           
+
         }
 
         return itemModel
-    }
+    },
+    inventroryUpdateFormat: [
+        {
+            label: 'Name',
+            id: 'name',
+            type: 'text'
+        },
+        {
+            label: "Description",
+            id: 'description',
+            type: 'text'
+        },
+        {
+            label: 'Unit Cost',
+            id: 'unitCost',
+            type: 'number'
+        },
+        {
+            label: 'Quantity',
+            id: 'quantity',
+            type: 'number'
+        },
+        {
+            label: 'Reorder Quantity',
+            id: 'reorderQuantity',
+            type: 'number'
+        }
+    ]
 })

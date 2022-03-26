@@ -1,17 +1,16 @@
-# Littile Clinc Api
+# Easy Clinc Api
 
-To manage the littile clinic app.
+To manage the Easy clinic app.
 
 ## Features.
 * Patients managment module including an appointments log and a diagnosis history.
 * A staff managment module.
 * A basic book keeping module to calculate monthly revenue.
-* An optional Inventory module to manage medical equipment inventories.
+* An Inventory module to manage medical equipment inventories.
+* Access rights mangement for staff memebers according to their status in the clinic.
 
 ## TODO list.
-* Adding access rights mangement for staff memebers according to their status in the clinic.
 * Adjust book keeping module for revenue calculation.
-* Adding the functionality for Inventory module.
 * Adding custom modules as requested.
 
 ## Need fixes.

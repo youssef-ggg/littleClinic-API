@@ -34,7 +34,8 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
 const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
-const { inventoryTableFormat, inventoryFormFormat, inventorySingleViewFormat } = require('../../config/inventoryItem')
+const { inventoryTableFormat, inventoryFormFormat, inventorySingleViewFormat,
+inventroryUpdateFormat } = require('../../config/inventoryItem')
 const { settingsTabs } = require('../../config/settings')
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
@@ -1433,7 +1434,7 @@ const inventoryItemSingleView = (inventoryItem) => {
 
     if (userAccess['INVENTORY'].write) {
         edit.addEventListener('click', function (event) {
-            //    updateUserView(userData);
+            updateInventoryItemView(inventoryItem);
         });
     } else {
         edit.remove()
@@ -1445,25 +1446,74 @@ const inventoryItemSingleView = (inventoryItem) => {
         removeBtn.addEventListener('click', function (event) {
 
             modal(dashboardContent, deleteModal({ title: 'Inventory Item' }));
-            //     const confirmDelete = document.querySelector('#confirm');
+            const confirmDelete = document.querySelector('#confirm');
 
-            //     confirmDelete.addEventListener('click', async function (event) {
-            //         const overlay = document.querySelector('.modal-overlay');
-            //         overlay.parentNode.removeChild(overlay);
-            //         const response = await axiosAuth.delete(`/users/delete/${userData.id}`);
-            //         // make response handle diffrent errors 
-            //         toastNotify('Staff member removed successfully.', 'success-warn');
-            //         usersTableView();
+            confirmDelete.addEventListener('click', async function (event) {
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const response = await axiosAuth.delete(`/inventory/deleteItem/${inventoryItem.id}`);
+                // make response handle diffrent errors 
+                toastNotify('Inventory item removed successfully.', 'success-warn');
+                inventoryTableView();
 
-            //     });
+            });
         });
     } else {
         removeBtn.remove()
     }
 
-    // editPassBtn.addEventListener('click', function (event) {
-    //     updateUserPassword(userData);
-    // });
+}
+
+const updateInventoryItemView = (inventoryItemData) => {
+    const cardRow = document.createElement('div');
+
+    centerContent.innerHTML = '';
+    centerContent.appendChild(cardRow);
+    cardRow.classList += 'row';
+
+    renderUpdateForm({
+        parentDOM: cardRow,
+        eleName: 'Inventory Item',
+        elementsMetaData: inventroryUpdateFormat,
+        elementsValues: inventoryItemData
+    });
+
+    const saveBtn = document.querySelector('#save');
+    const cancelBtn = document.querySelector('#cancel');
+
+    saveBtn.addEventListener('click', async function (event) {
+        event.preventDefault();
+
+        const { updateEqualityCheck } = dashboardUtitltyFunctions();
+
+        const inventoryUpdatedData = dashboardFormInputReader(inventroryUpdateFormat);
+        const { updateInventoryItemErrorHandler } = errorHandlerService;
+
+        if (updateEqualityCheck(inventoryUpdatedData, inventoryItemData)) {
+            modal(centerContent, updateModalMatchOld);
+        }
+        else if (!updateInventoryItemErrorHandler(inventoryUpdatedData)) {
+            modal(dashboardContent, updateModalSuccess);
+            const confirmUpdate = document.querySelector('#apply');
+
+            confirmUpdate.addEventListener('click', async function (event) {
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const responseData = await updateRequest({
+                    patchData: inventoryUpdatedData,
+                    moudleTitle: 'Inventory Item',
+                    requestRoute: `inventory/updateItem/${inventoryItemData.id}`, axiosAuth
+                });
+
+                inventoryItemSingleView(responseData);
+
+            });
+        }
+    });
+    cancelBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        inventoryItemSingleView(inventoryItemData);
+    });
 }
 
 if (userAccess['SETTINGS'].read) {
