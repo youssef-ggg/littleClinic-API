@@ -12,7 +12,7 @@ describe('get by id finacnial transaction',()=>{
             headers:{
                 'Content-Type':'application/json'
             },
-            query:{
+            params:{
                 id:fakeTransaction.id
             },
         }
@@ -49,7 +49,7 @@ describe('get by id finacnial transaction',()=>{
             headers:{
                 'Content-Type':'application/json'
             },
-            query:{
+            params:{
                 id:fakeTransaction.id
             },
         }
@@ -85,7 +85,7 @@ describe('get by id finacnial transaction',()=>{
             headers:{
                 'Content-Type':'application/json'
             },
-            query:{
+            params:{
                 id:fakeTransaction.id
             },
         }

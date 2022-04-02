@@ -7,14 +7,14 @@ module.exports = function makeLoginUser({ userByUsername, argon2, jwtSignToken, 
         const { username, password } = httpRequest.body;
         try {
             const userInfo = await userByUsername({ username });
-            //change that to something better
-            const userAccess = await findUserAccessRights({ userRole: userInfo.accessRights[0] })
-
 
             if (userInfo) {
                 const { hashedPassword, ...user } = userInfo;
+                //-----------------------------------change to promise all--------------------------
                 const passMatch = await argon2.verify(hashedPassword, password);
-
+                //change that to something better
+                const userAccess = await findUserAccessRights({ userRole: userInfo.accessRights[0] })
+                //----------------------------------------------------------------------------------
                 if (passMatch) {
 
                     const token = jwtSignToken({ user });

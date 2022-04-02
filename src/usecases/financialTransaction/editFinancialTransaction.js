@@ -22,7 +22,6 @@ module.exports = function makeEditFinancialTransaction({financialTransactionColl
             cashFlow:financialTransaction.getCashFlow(),
             type:financialTransaction.getType(),
             referenceNum:financialTransaction.getReferenceNum(),
-            createdOn:financialTransaction.getCreatedOn(),
             modifiedOn:financialTransaction.getModifiedOn()
         });
     }

@@ -2,7 +2,7 @@ const table = require("./table")
 
 module.exports = function financialTransactionTable({ parentDOM, modelList, modelMetaData }) {
 
-    const { tableActions, dateData } = modelMetaData
+    const { tableActions, dateData, axiosAuth, unitRenderer } = modelMetaData
     const currentDate = new Date()
     //currentMonth + 1 javascript month starts at 0
     const currentMonth = dateData.month// + 1
@@ -163,6 +163,12 @@ module.exports = function financialTransactionTable({ parentDOM, modelList, mode
         const tableRow = document.createElement('tr')
         tableRow.className = 'table-row'
         body.appendChild(tableRow)
+        const { id } = value
+        tableRow.addEventListener('click', async function (event) {
+            const response = await axiosAuth.get(`/financialTransaction/${id}`);
+            unitRenderer(response.data.financialTransaction);
+
+        })
         colTitles.forEach(key => {
             const tableCol = document.createElement('td')
 

@@ -173,6 +173,9 @@ module.exports = function renderUpdateForm({parentDOM,eleName,elementsMetaData,e
             formItem.appendChild(input);
 
         }
+        if (element.readOnly == true) {
+            input.readOnly = true;
+        }
         formItem.appendChild(inputError);      
     });
 

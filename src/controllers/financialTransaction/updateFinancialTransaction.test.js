@@ -33,7 +33,7 @@ describe('update transaction contoller',()=>{
             headers:{
                 'Content-Type':'application/json'
             },           
-            statusCode:200,
+            statusCode:201,
             body:{
                 id,
                 ...updatedTransaction

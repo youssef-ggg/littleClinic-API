@@ -22,7 +22,7 @@ module.exports = function makeUpdateFinancialTransaction({editFinancialTransacti
 
             return {
                 headers,
-                statusCode:200,
+                statusCode:201,
                 body:updatedTransaction
             }
 

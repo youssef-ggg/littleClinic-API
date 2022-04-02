@@ -33,9 +33,10 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
     appointmentSingleSideNav, patientsAppointmentSingleSideNav } = require('../../config/appointment');
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
-const { monthlyFinancialTransaction, financialTransactionForm } = require('../../config/financialTransaction');
+const { monthlyFinancialTransaction, financialTransactionForm,
+    financialTransactionSingleView, transactionUpdateFormat } = require('../../config/financialTransaction');
 const { inventoryTableFormat, inventoryFormFormat, inventorySingleViewFormat,
-inventroryUpdateFormat } = require('../../config/inventoryItem')
+    inventroryUpdateFormat } = require('../../config/inventoryItem')
 const { settingsTabs } = require('../../config/settings')
 const { updateModalSuccess, deleteModal, updateModalMatchOld } = require('../../config/common');
 
@@ -1262,7 +1263,9 @@ const bookKeepingMonthlyTableView = async ({ month, year }) => {
                 month,
                 year
             },
-            tableHeader: 'Cash Ledger'
+            tableHeader: 'Cash Ledger',
+            axiosAuth,
+            unitRenderer: singleFinancialTransactionView
         }
     });
 
@@ -1327,6 +1330,101 @@ const createTransactionView = () => {
 
         bookKeepingMonthlyTableView({ month, year });
     });
+}
+
+const singleFinancialTransactionView = (financialTransactionData) => {
+
+    const cardRow = document.createElement('div')
+
+    centerContent.innerHTML = ''
+    centerContent.appendChild(cardRow)
+    const financialTransactionformat = financialTransactionSingleView(financialTransactionData)
+    cardRow.classList += 'row'
+
+    renderUnitView({
+        parentDOM: centerContent,
+        modelName: 'Financial transaction',
+        model: financialTransactionformat
+    })
+
+    const editBtn = document.querySelector('#edit')
+    if (userAccess['FINANCIALTRANSACTION'].write) {
+        editBtn.addEventListener('click', function (event) {
+            financialTransactionUpdateView(financialTransactionData)
+
+        })
+    } else {
+        editBtn.remove()
+    }
+
+    const deleteBtn = document.querySelector('#delete')
+    if (userAccess['FINANCIALTRANSACTION'].remove) {
+        //change delete button icon to undo
+        const icon = document.createElement('span')
+        icon.className = 'fas fa-trash-restore-alt'
+
+        deleteBtn.innerHTML = '';
+        deleteBtn.appendChild(icon)
+        deleteBtn.appendChild(document.createTextNode('Undo'))
+        //-------------------
+
+    } else {
+        deleteBtn.remove()
+    }
+}
+
+const financialTransactionUpdateView = (financialTransactionData) => {
+    const cardRow = document.createElement('div')
+
+    centerContent.innerHTML = ''
+    centerContent.appendChild(cardRow)
+    cardRow.classList += 'row'
+
+    renderUpdateForm({
+        parentDOM: cardRow,
+        eleName: 'Financial Transaction',
+        elementsMetaData: transactionUpdateFormat(financialTransactionData),
+        elementsValues: financialTransactionData
+    })
+    const saveBtn = document.querySelector('#save')
+    const cancelBtn = document.querySelector('#cancel')
+
+    saveBtn.addEventListener('click', async function (event) {
+        event.preventDefault();
+
+        const { updateEqualityCheck } = dashboardUtitltyFunctions()
+
+        const transactionUpdatedData =
+            dashboardFormInputReader(transactionUpdateFormat(financialTransactionData))
+        const { createTransactionErrorHandler } = errorHandlerService
+
+        if (updateEqualityCheck(transactionUpdatedData, financialTransactionData)) {
+            modal(centerContent, updateModalMatchOld)
+        }
+        else if (!createTransactionErrorHandler(transactionUpdatedData)) {
+            modal(dashboardContent, updateModalSuccess)
+            const confirmUpdate = document.querySelector('#apply')
+
+            confirmUpdate.addEventListener('click', async function (event) {
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay);
+                const responseData = await updateRequest({
+                    patchData: transactionUpdatedData,
+                    moudleTitle: 'Financial Transaction',
+                    requestRoute: `financialTransaction/updateTransaction/${financialTransactionData.id}`,
+                    axiosAuth
+                })
+                
+                singleFinancialTransactionView(responseData)
+
+            })
+        }
+    })
+    cancelBtn.addEventListener('click', function (event) {
+        event.preventDefault()
+        singleFinancialTransactionView(financialTransactionData)
+    })
+
 }
 
 if (userAccess['INVENTORY'].read) {
@@ -1502,7 +1600,7 @@ const updateInventoryItemView = (inventoryItemData) => {
                 const responseData = await updateRequest({
                     patchData: inventoryUpdatedData,
                     moudleTitle: 'Inventory Item',
-                    requestRoute: `inventory/updateItem/${inventoryItemData.id}`, axiosAuth
+                    requestRoute: `/inventory/updateItem/${inventoryItemData.id}`, axiosAuth
                 });
 
                 inventoryItemSingleView(responseData);

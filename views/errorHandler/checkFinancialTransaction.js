@@ -3,14 +3,23 @@ module.exports = function financialTransactionErrorHandler({ commonInputError, r
     function createTransactionErrorHandler(transactionData) {
 
         let hasError = false
-        const  {invalidEmptyInputHandler} = commonInputError()
+        const { invalidEmptyInputHandler } = commonInputError()
         const { description, amount, type, date, cashFlow } = transactionData
         const cashIn = ['investment', 'revenue', 'other']
         const cashOut = ['wages', 'equipment', 'marketing']
 
 
-        
+
         if (invalidEmptyInputHandler({ description, amount })) {
+            hasError = true;
+        }
+
+        if (isNaN(amount) || amount <= 0) {
+            renderFormError({
+                inputTitle: 'amount',
+                message: 'Invalid Amount value.',
+                inputType: 'text'
+            })
             hasError = true;
         }
 
@@ -43,13 +52,13 @@ module.exports = function financialTransactionErrorHandler({ commonInputError, r
         return hasError
     }
 
-    function createBillErrorHandler(transactionData){
+    function createBillErrorHandler(transactionData) {
 
         let hasError = false
-        const  {invalidEmptyInputHandler} = commonInputError()
-        const { description, amount} = transactionData
-        
-        if(isNaN(amount)){
+        const { invalidEmptyInputHandler } = commonInputError()
+        const { description, amount } = transactionData
+
+        if (isNaN(amount)) {
             renderFormError({
                 inputTitle: 'amount',
                 message: 'Amount must be a number.',
@@ -65,6 +74,6 @@ module.exports = function financialTransactionErrorHandler({ commonInputError, r
     }
 
     return {
-        createTransactionErrorHandler,createBillErrorHandler
+        createTransactionErrorHandler, createBillErrorHandler
     }
 }

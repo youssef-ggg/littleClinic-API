@@ -93,5 +93,65 @@ module.exports = {
                 type: 'list'
             }
         ]
-    }
+    },
+    financialTransactionSingleView: (financialTransactionData) => {
+        const { description, date, amount, cashFlow, type, referenceNum, createdOn, modifiedOn } = financialTransactionData
+
+        const dateFormatCreate = new Date(createdOn)
+        const dateFormatmodified = new Date(modifiedOn)
+        const transactionData = new Date(date)
+
+        const dateOptions = {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        }
+
+        return {
+            Description: description,
+            'Date': transactionData.toLocaleDateString('en-EN', dateOptions),
+            Amount: amount,
+            'Cash Flow': cashFlow,
+            Type: type,
+            'Reference Number': referenceNum,
+            'Created Date': dateFormatCreate.toLocaleDateString('en-EN', dateOptions),
+            'Modified Date': dateFormatmodified.toLocaleDateString('en-EN', dateOptions),
+
+        }
+    },
+    transactionUpdateFormat: (transactionData) => [
+        {
+            label: 'Description',
+            id: 'description',
+            type: 'text'
+        },
+        {
+            label: 'Amount',
+            type: 'number',
+            id: 'amount',
+            readOnly: true
+        },
+        {
+            label: 'Date',
+            id: 'date',
+            type: 'date',
+            value: transactionData.date,
+            readOnly: true
+        },
+        {
+            label: 'Type',
+            id: 'type',
+            type: 'text',
+            value: transactionData.type,
+            readOnly: true
+        },
+        {
+            label: 'Cash Flow',
+            type: 'text',
+            id: 'cashFlow',
+            value: transactionData.cashFlow,
+            readOnly: true
+        },
+    ]
 }

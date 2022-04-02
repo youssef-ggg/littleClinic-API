@@ -16,7 +16,7 @@ module.exports = function makeGetFinancialTransactionById({findFinancialTransact
                 }
             }
 
-            const {id} = httpRequest.query;
+            const {id} = httpRequest.params;
             const financialTransaction = await findFinancialTransaction({id});
             
             return {
