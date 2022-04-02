@@ -109,8 +109,8 @@ module.exports = function financialTransactionTable({ parentDOM, modelList, mode
         { title: 'Cash Out', colSpanLen: 4 }
     ]
     const modelKeys = [
-        'Date', 'Description', 'Reference', 'Sales', 'Investment', 'Other', 'Total Cash In',
-        'Salaries', 'Equipment', 'ads', 'Total Cash Out', 'Amount'
+        'Date', 'Description', 'Reference', 'Sales', 'Investment', 'Other Revenue', 'Total Cash In',
+        'Salaries', 'Equipment', 'Other Expenses', 'Total Cash Out', 'Amount'
     ]
     const colTitles = [
         "date",
@@ -118,11 +118,11 @@ module.exports = function financialTransactionTable({ parentDOM, modelList, mode
         "referenceNum",
         "revenue",
         "investment",
-        "other",
+        "otherRevenue",
         "Cash In",
         "wages",
         "equipment",
-        "marketing",
+        "otherExpenses",
         "Cash Out",
         "amount"
     ]

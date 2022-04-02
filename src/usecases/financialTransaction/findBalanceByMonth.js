@@ -17,9 +17,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: startOfMonth,
                     investment: monthlyBalance[0].investment,
                     revenue: monthlyBalance[0].revenue,
-                    other: monthlyBalance[0].other,
+                    otherRevenue: monthlyBalance[0].otherRevenue,
                     wages: monthlyBalance[0].wages,
-                    marketing: monthlyBalance[0].marketing,
+                    otherExpenses: monthlyBalance[0].otherExpenses,
                     equipment: monthlyBalance[0].equipment,
                 })
             }
@@ -30,9 +30,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: startOfMonth,
                     investment: monthlyBalance[0].investment,
                     revenue: monthlyBalance[0].revenue,
-                    other: monthlyBalance[0].other,
+                    otherRevenue: monthlyBalance[0].otherRevenue,
                     wages: monthlyBalance[0].wages,
-                    marketing: monthlyBalance[0].marketing,
+                    otherExpenses: monthlyBalance[0].otherExpenses,
                     equipment: monthlyBalance[0].equipment,
                 })
             } else {
@@ -42,9 +42,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: startOfMonth,
                     investment: monthlyBalance[1].investment,
                     revenue: monthlyBalance[1].revenue,
-                    other: monthlyBalance[1].other,
+                    otherRevenue: monthlyBalance[1].otherRevenue,
                     wages: monthlyBalance[1].wages,
-                    marketing: monthlyBalance[1].marketing,
+                    otherExpenses: monthlyBalance[1].otherExpenses,
                     equipment: monthlyBalance[1].equipment,
                 })
             }
@@ -56,9 +56,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: openingBalance.getDate(),
                     investment: openingBalance.getInvestment(),
                     revenue: openingBalance.getRevenue(),
-                    other: openingBalance.getOther(),
+                    otherRevenue: openingBalance.getOtherRevenue(),
                     wages: openingBalance.getWages(),
-                    marketing: openingBalance.getMarketing(),
+                    otherExpenses: openingBalance.getOtherExpenses(),
                     equipment: openingBalance.getEquipment(),
                     createdOn: openingBalance.getCreatedOn(),
                     modifiedOn: openingBalance.getModifiedOn()
@@ -79,9 +79,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: startOfMonth,
                     investment: monthlyBalance[0].investment,
                     revenue: monthlyBalance[0].revenue,
-                    other: monthlyBalance[0].other,
+                    otherRevenue: monthlyBalance[0].otherRevenue,
                     wages: monthlyBalance[0].wages,
-                    marketing: monthlyBalance[0].marketing,
+                    otherExpenses: monthlyBalance[0].otherExpenses,
                     equipment: monthlyBalance[0].equipment,
                 })
             }
@@ -99,9 +99,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: openingBalance.getDate(),
                     investment: openingBalance.getInvestment(),
                     revenue: openingBalance.getRevenue(),
-                    other: openingBalance.getOther(),
+                    otherRevenue: openingBalance.getOtherRevenue(),
                     wages: openingBalance.getWages(),
-                    marketing: openingBalance.getMarketing(),
+                    otherExpenses: openingBalance.getOtherExpenses(),
                     equipment: openingBalance.getEquipment(),
                     createdOn: openingBalance.getCreatedOn(),
                     modifiedOn: openingBalance.getModifiedOn()
@@ -129,9 +129,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: startOfMonth,//openingBalance.getDate(),
                     investment: openingBalance.getInvestment(),
                     revenue: openingBalance.getRevenue(),
-                    other: openingBalance.getOther(),
+                    otherRevenue: openingBalance.getOtherRevenue(),
                     wages: openingBalance.getWages(),
-                    marketing: openingBalance.getMarketing(),
+                    otherExpenses: openingBalance.getOtherExpenses(),
                     equipment: openingBalance.getEquipment(),
                     createdOn: openingBalance.getCreatedOn(),
                     modifiedOn: openingBalance.getModifiedOn()
@@ -142,9 +142,9 @@ module.exports = function makeFindBalanceByMonth({ balanceTransactionCollection 
                     date: endOfMonth,//closingBalance.getDate(),
                     investment: closingBalance.getInvestment(),
                     revenue: closingBalance.getRevenue(),
-                    other: closingBalance.getOther(),
+                    otherRevenue: closingBalance.getOtherRevenue(),
                     wages: closingBalance.getWages(),
-                    marketing: closingBalance.getMarketing(),
+                    otherExpenses: closingBalance.getOtherExpenses(),
                     equipment: closingBalance.getEquipment(),
                     createdOn: closingBalance.getCreatedOn(),
                     modifiedOn: closingBalance.getModifiedOn()

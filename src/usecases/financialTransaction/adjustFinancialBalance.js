@@ -29,9 +29,9 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
                     date: updateBalance.getDate(),
                     investment: updateBalance.getInvestment(),
                     revenue: updateBalance.getRevenue(),
-                    other: updateBalance.getOther(),
+                    otherRevenue: updateBalance.getOtherRevenue(),
                     wages: updateBalance.getWages(),
-                    marketing: updateBalance.getMarketing(),
+                    otherExpenses: updateBalance.getOtherExpenses(),
                     equipment: updateBalance.getEquipment(),
                     createdOn: updateBalance.getCreatedOn(),
                     modifiedOn: Date.now()
@@ -47,10 +47,10 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
                     date: new Date(yearOfTransaction, monthOfTransaction + 1, 0).getTime(),
                     investment: lastBalances[0].investment,
                     revenue: lastBalances[0].revenue,
-                    other: lastBalances[0].other,
+                    otherRevenue: lastBalances[0].otherRevenue,
                     wages: lastBalances[0].wages,
                     equipment: lastBalances[0].equipment,
-                    marketing: lastBalances[0].marketing
+                    otherExpenses: lastBalances[0].otherExpenses
                 })
             }
         } else {
@@ -68,9 +68,9 @@ module.exports = function makeAdjustFinanialBalance({ balanceTransactionCollecti
             date: closingBalance.getDate(),
             investment: closingBalance.getInvestment(),
             revenue: closingBalance.getRevenue(),
-            other: closingBalance.getOther(),
+            otherRevenue: closingBalance.getOtherRevenue(),
             wages: closingBalance.getWages(),
-            marketing: closingBalance.getMarketing(),
+            otherExpenses: closingBalance.getOtherExpenses(),
             equipment: closingBalance.getEquipment(),
             createdOn: closingBalance.getCreatedOn(),
             modifiedOn: closingBalance.getModifiedOn()

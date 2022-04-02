@@ -34,7 +34,8 @@ const { appointmentFormFormat, appointmentTableFormat, apntmntTableLeftNav
 const { usersTableFormat, userTableNavTabs, userUnitViewFormat, usersUpdateFormFormat,
     usersUpdatePasswordForm, usersFormFormat, userUnitLeftNav } = require('../../config/users');
 const { monthlyFinancialTransaction, financialTransactionForm,
-    financialTransactionSingleView, transactionUpdateFormat } = require('../../config/financialTransaction');
+    financialTransactionSingleView, transactionUpdateFormat,
+    transactionUndoFormat } = require('../../config/financialTransaction');
 const { inventoryTableFormat, inventoryFormFormat, inventorySingleViewFormat,
     inventroryUpdateFormat } = require('../../config/inventoryItem')
 const { settingsTabs } = require('../../config/settings')
@@ -1311,12 +1312,7 @@ const createTransactionView = () => {
                 requestRoute: '/financialTransaction/addTransaction',
                 axiosAuth
             });
-            toggleActiveSideButton('bookkeeping');
-            const nowDate = new Date();
-            const month = nowDate.getMonth() + 1;
-            const year = nowDate.getFullYear();
-
-            bookKeepingMonthlyTableView({ month, year });
+            singleFinancialTransactionView(responseData.createdFinancialTransaction)
 
         }
     });
@@ -1367,7 +1363,9 @@ const singleFinancialTransactionView = (financialTransactionData) => {
         deleteBtn.appendChild(icon)
         deleteBtn.appendChild(document.createTextNode('Undo'))
         //-------------------
-
+        deleteBtn.addEventListener('click', function (event) {
+            undoTransactionView(financialTransactionData)
+        })
     } else {
         deleteBtn.remove()
     }
@@ -1414,9 +1412,7 @@ const financialTransactionUpdateView = (financialTransactionData) => {
                     requestRoute: `financialTransaction/updateTransaction/${financialTransactionData.id}`,
                     axiosAuth
                 })
-                
                 singleFinancialTransactionView(responseData)
-
             })
         }
     })
@@ -1424,7 +1420,53 @@ const financialTransactionUpdateView = (financialTransactionData) => {
         event.preventDefault()
         singleFinancialTransactionView(financialTransactionData)
     })
+}
 
+const undoTransactionView = (financialTransactionData) => {
+    const cardRow = document.createElement('div')
+
+    centerContent.innerHTML = ''
+    centerContent.appendChild(cardRow)
+    cardRow.classList += 'row'
+
+    renderForm({
+        parentDOM: cardRow,
+        eleName: 'Financial Transaction',
+        elementKeys: transactionUndoFormat(financialTransactionData)
+    })
+
+    const saveBtn = document.querySelector('#save')
+    const cancelBtn = document.querySelector('#cancel')
+
+    saveBtn.addEventListener('click', function (event) {
+        event.preventDefault()
+
+        const transactionCreatedData =
+            dashboardFormInputReader(transactionUndoFormat(financialTransactionData))
+        const { createTransactionErrorHandler } = errorHandlerService
+
+        if (!createTransactionErrorHandler(transactionCreatedData)) {
+            modal(dashboardContent, updateModalSuccess)
+            const confirmCreate = document.querySelector('#apply')
+
+            confirmCreate.addEventListener('click', async function (event) {
+                const overlay = document.querySelector('.modal-overlay');
+                overlay.parentNode.removeChild(overlay)
+                const responseData = await createRequest({
+                    postData: transactionCreatedData,
+                    moduleTitle: 'Financial Transaction',
+                    requestRoute: '/financialTransaction/addTransaction',
+                    axiosAuth
+                })
+
+                singleFinancialTransactionView(responseData.createdFinancialTransaction)
+            })
+        }
+    })
+    cancelBtn.addEventListener('click', function (event) {
+        event.preventDefault()
+        singleFinancialTransactionView(financialTransactionData)
+    })
 }
 
 if (userAccess['INVENTORY'].read) {

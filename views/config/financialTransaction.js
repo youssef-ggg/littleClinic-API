@@ -32,8 +32,8 @@ module.exports = {
 
         for (const balance of monthlyBalance) {
 
-            const cashIn = ['investment', 'revenue', 'other']
-            const cashOut = ['wages', 'marketing', 'equipment']
+            const cashIn = ['investment', 'revenue', 'other revenue']
+            const cashOut = ['wages', 'other expenses', 'equipment']
             const { id, description, date, referenceNum, createdOn, modifiedOn, ...types } = balance
             const dateFormat = new Date(balance.date)
             balance.date = dateFormat.toLocaleDateString('en-EN', dateOptions)
@@ -87,8 +87,8 @@ module.exports = {
                 label: 'Type',
                 id: 'type',
                 options: [
-                    'investment', 'revenue', 'other',
-                    'wages', 'equipment', 'marketing'
+                    'investment', 'revenue', 'otherRevenue',
+                    'wages', 'equipment', 'otherExpenses'
                 ],
                 type: 'list'
             }
@@ -153,5 +153,62 @@ module.exports = {
             value: transactionData.cashFlow,
             readOnly: true
         },
-    ]
+    ],
+    transactionUndoFormat: (transactionData) => {
+
+        const date = new Date()
+        const month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : (date.getMonth() + 1)
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+        // const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+        // const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+
+        let cashFlow, type
+        if (transactionData.cashFlow == 'Cash In') {
+            cashFlow = 'Cash Out'
+            type = 'otherExpenses'
+
+
+        } else if (transactionData.cashFlow == 'Cash Out') {
+            cashFlow = 'Cash In'
+            type = 'otherRevenue'
+        }
+
+        return [
+            {
+                label: 'Description',
+                id: 'description',
+                type: 'text',
+                value: `Undo ${transactionData.description}`,
+
+            },
+            {
+                label: 'Amount',
+                type: 'number',
+                id: 'amount',
+                value: transactionData.amount,
+                readOnly: true
+            },
+            {
+                label: 'Date',
+                id: 'date',
+                type: 'date',
+                value: `${date.getFullYear()}-${month}-${day}`,
+                readOnly: true
+            },
+            {
+                label: 'Type',
+                id: 'type',
+                type: 'text',
+                value: type,
+                readOnly: true
+            },
+            {
+                label: 'Cash Flow',
+                type: 'text',
+                id: 'cashFlow',
+                value: cashFlow,
+                readOnly: true
+            },
+        ]
+    }
 }

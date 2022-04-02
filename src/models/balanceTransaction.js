@@ -7,10 +7,10 @@ module.exports = function buildMakeBalanceTransaction() {
         //change to something better
         investment = 0,
         revenue = 0,
-        other = 0,
+        otherRevenue = 0,
         wages = 0,
         equipment = 0,
-        marketing = 0,
+        otherExpenses = 0,
         //-----------------------
         createdOn = Date.now(),
         modifiedOn = Date.now()
@@ -25,7 +25,7 @@ module.exports = function buildMakeBalanceTransaction() {
         if (typeof (revenue) != 'number') {
             throw new Error('Revenue must be a number!')
         }
-        if (typeof (other) != 'number') {
+        if (typeof (otherRevenue) != 'number') {
             throw new Error('Other must be a number!')
         }
         if (typeof (wages) != 'number') {
@@ -34,7 +34,7 @@ module.exports = function buildMakeBalanceTransaction() {
         if (typeof (equipment) != 'number') {
             throw new Error('Equipment must be a number!')
         }
-        if (typeof (marketing) != 'number') {
+        if (typeof (otherExpenses) != 'number') {
             throw new Error('Marketing must be a number!')
         }
         if (!date) {
@@ -47,9 +47,9 @@ module.exports = function buildMakeBalanceTransaction() {
             getDate: () => date,
             getInvestment: () => investment,
             getRevenue: () => revenue,
-            getOther: () => other,
+            getOtherRevenue: () => otherRevenue,
             getWages: () => wages,
-            getMarketing: () => marketing,
+            getOtherExpenses: () => otherExpenses,
             getEquipment: () => equipment,
             getCreatedOn: () => createdOn,
             getModifiedOn: () => modifiedOn

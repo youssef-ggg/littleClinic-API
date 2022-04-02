@@ -1,10 +1,10 @@
 const typeEnum = [
     'investment',
     'revenue',
-    'other',
+    'otherRevenue',
     'wages',
     'equipment',
-    'marketing',
+    'otherExpenses',
 ]
 
 
