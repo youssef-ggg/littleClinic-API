@@ -151,8 +151,10 @@ const usersTableView = async () => {
             createPatientView();
         });
 
-        addUserBtn.addEventListener('click', function (event) {
-            createUser();
+        addUserBtn.addEventListener('click', async function (event) {
+            const { data } = await axiosAuth.get('/access/roles');
+            const usersRoles = data;
+            createUser(usersRoles);
         });
     } else {
         const openTableActionsBtn = document.querySelector("#openTableActions");
@@ -177,8 +179,10 @@ const userSingleView = (userData) => {
 
     const edit = document.querySelector('#edit');
     if (userAccess['USERS'].write) {
-        edit.addEventListener('click', function (event) {
-            updateUserView(userData);
+        edit.addEventListener('click', async function (event) {
+            const { data } = await axiosAuth.get('/access/roles');
+            const usersRoles = data;
+            updateUserView(userData, usersRoles);
         });
     } else {
         edit.remove();
@@ -216,10 +220,10 @@ const userSingleView = (userData) => {
     }
 }
 
-const createUser = () => {
+const createUser = usersRoles => {
 
     centerContent.innerHTML = '';
-    renderForm({ parentDOM: centerContent, eleName: 'User', elementKeys: usersFormFormat });
+    renderForm({ parentDOM: centerContent, eleName: 'User', elementKeys: usersFormFormat(usersRoles) });
 
     const saveBtn = document.querySelector('#save');
     const cancelBtn = document.querySelector('#cancel');
@@ -227,7 +231,7 @@ const createUser = () => {
     saveBtn.addEventListener('click', async function (event) {
         event.preventDefault();
 
-        const userData = dashboardFormInputReader(usersFormFormat);
+        const userData = dashboardFormInputReader(usersFormFormat(usersRoles));
         const exists = await getByQueryRequest({
             getData: userData, requestRoute: '/users/user',
             query: 'username', axiosAuth
@@ -250,7 +254,7 @@ const createUser = () => {
     });
 }
 
-const updateUserView = userData => {
+const updateUserView = (userData, usersRoles) => {
 
     const cardRow = document.createElement('div');
 
@@ -261,7 +265,7 @@ const updateUserView = userData => {
     renderUpdateForm({
         parentDOM: cardRow,
         eleName: 'Staff',
-        elementsMetaData: usersUpdateFormFormat,
+        elementsMetaData: usersUpdateFormFormat({ usersRoles }),
         elementsValues: userData
     });
 
@@ -273,7 +277,7 @@ const updateUserView = userData => {
 
         const { updateEqualityCheck } = dashboardUtitltyFunctions();
 
-        const userUpdatedData = dashboardFormInputReader(usersUpdateFormFormat);
+        const userUpdatedData = dashboardFormInputReader(usersUpdateFormFormat({ usersRoles }));
         const { updateUserDataErrorHandle } = errorHandlerService;
 
         if (updateEqualityCheck(userUpdatedData, userData)) {

@@ -30,7 +30,6 @@ module.exports = function renderUpdateForm({parentDOM,eleName,elementsMetaData,e
     form.appendChild(inputBox);
 
     elementsMetaData.forEach(element => {
-
         const formItem = document.createElement('div');
         const label = document.createElement('label');
         const input = document.createElement('input');
@@ -151,6 +150,25 @@ module.exports = function renderUpdateForm({parentDOM,eleName,elementsMetaData,e
                         formItem.removeChild(listLine);
                     });
                 });
+            }
+        }else if (element.type === 'list' && element.options && element.options.length > 0) {
+            const { options } = element
+
+            const list = document.createElement('select')
+
+            formItem.appendChild(list)
+            list.id = element.id
+            list.className = 'form-input'
+            list.value = elementsValues[element.id]
+
+            for (const option in options) {
+                const htmlOption = document.createElement('option')
+                htmlOption.value = option
+                htmlOption.label = options[option]
+                if (elementsValues[element.id] == options[option]) {
+                    htmlOption.selected = 'selected'
+                }
+                list.appendChild(htmlOption)
             }
         }
         else {

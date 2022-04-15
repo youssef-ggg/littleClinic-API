@@ -16,7 +16,7 @@ module.exports = function makeUserRoutes({routes,makeCallBack,userController})
     routes.post('/users/login',makeCallBack(loginUser));
     routes.get('/users/listAll',makeCallBack(getUsersList));
     routes.get('/users/:id',makeCallBack(getUser));
-    routes.get('users/user/:username',makeCallBack(getUserByUsername));
+    routes.get('/users/user/:username',makeCallBack(getUserByUsername));
     routes.post('/users/register',makeCallBack(registerUser));
     routes.post('/users/add',makeCallBack(createUser));
     routes.patch('/users/edit/:id',makeCallBack(updateUser));

@@ -10,7 +10,6 @@ To manage the Easy clinic app.
 * Access rights mangement for staff memebers according to their status in the clinic.
 
 ## TODO list.
-* Adjust book keeping module for revenue calculation.
 * Adding custom modules as requested.
 
 ## Need fixes.
