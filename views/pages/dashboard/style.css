@@ -88,6 +88,18 @@ body {
     margin-left: auto;
 }
 
+.user-avatar {
+    border-radius: 50%;
+    border: 2px solid var(--main-color) ;
+    background-color: var(--main-bg-color);
+    color: var(--main-color);
+    margin: auto 5px;
+}
+
+.user-avatar-text {
+    margin: 25%;
+}
+
 .logo {
 height: 40px;
 padding: 10px;

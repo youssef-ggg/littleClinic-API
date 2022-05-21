@@ -82,16 +82,28 @@ toggleSideBar.addEventListener('click', function (event) {
 });
 
 //toggle right menu's 
-const userIconBtn = document.querySelector('#usrImg');
+const userAvatar = document.querySelector('.user-avatar-text')
+const nameOfCurrentUser = currentuser.name
 
-userIconBtn.addEventListener('onclick', function (event) {
-    event.preventDefault();
-    if (userIconBtn.classList.contains('dropdown-expand')) {
-        userIconBtn.classList.remove('dropdown-expand')
-    } else {
-        userIconBtn.classList.add('dropdown-expand')
-    }
-});
+if (nameOfCurrentUser != "") {
+    const firstNameInital = nameOfCurrentUser.charAt(0)
+    const lastNameInital = nameOfCurrentUser.includes(" ") ?
+        nameOfCurrentUser.substring(nameOfCurrentUser.lastIndexOf(" ") + 1).charAt(0) : nameOfCurrentUser.slice(-1)
+    userAvatar.innerHTML = (firstNameInital + lastNameInital).toUpperCase()
+    console.log(userAvatar.innerHTML)
+} else {
+    userAvatar.innerHTML = 'SU'
+}
+// const userIconBtn = document.querySelector('#usrImg');
+
+// userIconBtn.addEventListener('onclick', function (event) {
+//     event.preventDefault();
+//     if (userIconBtn.classList.contains('dropdown-expand')) {
+//         userIconBtn.classList.remove('dropdown-expand')
+//     } else {
+//         userIconBtn.classList.add('dropdown-expand')
+//     }
+// });
 //toggle active button
 const toggleActiveSideButton = (activeBtnID) => {
     const sideBarBtns = document.querySelectorAll('.sidebar-nav-link');
