@@ -6,6 +6,7 @@ module.exports = function makeUserRoutes({routes,makeCallBack,userController})
         getUsersList,
         getUser,
         registerUser,
+        registerFirstUser,
         createUser,
         updateUser,
         updateUserPass,
@@ -18,6 +19,7 @@ module.exports = function makeUserRoutes({routes,makeCallBack,userController})
     routes.get('/users/:id',makeCallBack(getUser));
     routes.get('/users/user/:username',makeCallBack(getUserByUsername));
     routes.post('/users/register',makeCallBack(registerUser));
+    routes.post('/users/register/first',makeCallBack(registerFirstUser));
     routes.post('/users/add',makeCallBack(createUser));
     routes.patch('/users/edit/:id',makeCallBack(updateUser));
     routes.patch('/users/editPassword/:id',makeCallBack(updateUserPass));

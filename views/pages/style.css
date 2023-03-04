@@ -1,5 +1,8 @@
 @import "../node_modules/font-roboto/dist/styles/roboto.min.css";
 
+@import "../assets/css/form.css";
+@import "../assets/css/modal.css";
+
 :root{
     --primary-color: #4834d4;
     --success-color: #6ab04c;
@@ -64,13 +67,13 @@ body{
     margin-bottom: 10px;
 }
 
-.login-box input[type="text"],input[type="password"]{
+.login-box .login-input{
     border:none;
-    border-bottom: 1px solid var(--main-color);
     background: transparent;
     outline: none;
     height: 40px;
     color: var(--main-color);
+    background: var(--second-bg-color);
     font-size: 16px;
 }
 
@@ -122,4 +125,8 @@ body{
 
 .login-box a:hover{
     color: orange;
+}
+
+.register-password{
+    height: auto;
 }

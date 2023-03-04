@@ -138,5 +138,48 @@ module.exports = Object.freeze({
             id: 'changeUsrpass',
             icon: 'fas fa-user-lock'
         }
-    ]
+    ],
+    usersRegisterModal: () => {
+        return {
+            title: 'App Initailization',
+            content: `Welcome to Easy Clinic`,
+            inputs: [
+                {
+                    label: 'Username',
+                    id: 'regusername',
+                    type: 'text',
+                },
+                {
+                    label: 'Name',
+                    id: 'name',
+                    type: 'text',
+                },
+                {
+                    label: 'Occupation',
+                    id: 'occupation',
+                    type: 'text'
+                },
+                {
+                    label: 'Password',
+                    id: 'regpassword',
+                    type: 'password'
+                },
+                {
+                    label: 'Confirm Password',
+                    id: 'confirmPassword',
+                    type: 'password'
+                }
+            ],
+            buttons: [
+                {
+                    id: 'submit',
+                    name: 'Sign Up',
+                },
+                {
+                    id: 'cancel',
+                    name: 'Cancel',
+                }
+            ]
+        }
+    },
 });

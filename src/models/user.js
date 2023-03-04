@@ -8,7 +8,7 @@ function BuildMakeUser()
         occupation = 'general-staff',
         createdOn = Date.now(),
         modifiedOn = Date.now(),
-        accessRights = 'visitor',
+        accessRights = 'VISITOR',
 
     }={}){
         

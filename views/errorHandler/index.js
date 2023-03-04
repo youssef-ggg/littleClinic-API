@@ -15,9 +15,9 @@ const {
     createPatientErrorHandler, updatePatientErrorHandler
 } = checkPatientInput({ commonInputError, renderFormError });
 
-const { passMisMatchHandle,
+const { passMisMatchHandle, firstUserFromPassErrorHandler,
     userFormErrorHandler, userFormPassErrorHandle, createUserErrorHandler,
-    updateUserDataErrorHandle, updateUserPasswordErrorHandle
+    createFirstUserErrorHandler, updateUserDataErrorHandle, updateUserPasswordErrorHandle
 } = makeErrorTnputHandler({ validator, renderFormError });
 
 const {
@@ -47,6 +47,6 @@ module.exports = {
     updateDiagnosisErrorHandler, createAppointmentErrorHandler, updateAppointmentErrorHandler,
     createTransactionErrorHandler, createInventoryItemErrorHandler, updateInventoryItemErrorHandler,
     createAccessRightsErrorHandler, updateAccessRightsErrorHandler, createBillErrorHandler,
-    createUserRoleErrorHandler
+    createUserRoleErrorHandler, createFirstUserErrorHandler, firstUserFromPassErrorHandler
 }
 

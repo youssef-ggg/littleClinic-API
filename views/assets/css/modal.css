@@ -19,7 +19,6 @@
     transform: scale(1.2);
     border-radius: 3px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
-    
 }
 
 .modal-title{
@@ -127,4 +126,41 @@
 
 .cust-cm-item:hover{
     background-color: #f8f8f8;
+}
+
+.modal-input-box{
+    padding: 5px;
+    display: flex;
+    flex-flow: row wrap;
+    color: var(--main-bg-color);
+}
+
+.form-label-modal {
+    font-weight: 200;
+    padding: 5px;
+    color: var(--main-color);
+}
+
+.form-input-modal{  
+    font-family: "Roboto";
+    padding: 2px;
+    background: var(--second-bg-color);
+    border: none;
+    /* padding:10px 20px 10px 20px; */
+    width: 85%;
+    outline: none;  
+    color:var(--main-color);
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.modal-form-title{
+    font-family: "Roboto";
+    font-weight: 600;
+    font-size: 1.4em;
+    color: var(--danger-color);
+}
+
+.modal-form{
+    width: 70%;
 }

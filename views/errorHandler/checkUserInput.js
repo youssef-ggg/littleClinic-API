@@ -30,13 +30,17 @@ module.exports = function makeErrorTnputHandler({ validator, renderFormError }) 
 
 
         if (password == '') {
-            confPassInptD.setAttribute('data-error', 'must have a password to match!');
+            renderFormError({
+                inputTitle: 'password',
+                message: 'Must hava a password', inputType: 'text'
+            });
             return true;
         }
         else if (password.length < 8) {
-            passInpt.setAttribute('data-error', 'password at least 8 characters!');
-            confPassInptD.setAttribute('data-error', 'Invalid password to match!');
-
+            renderFormError({
+                inputTitle: 'password',
+                message: 'password at least 8 characters!', inputType: 'text'
+            });
             return true;
         }
         else if (password !== confirmPassword) {
@@ -46,7 +50,25 @@ module.exports = function makeErrorTnputHandler({ validator, renderFormError }) 
         return false;
     }
 
+    function createFirstUserErrorHandler(userData) {
+        let hasError = false;
+        const usernameRegexp = /^[a-zA-z._-][a-zA-z0-9._-]*$/;
 
+        if (!userData.regusername.match(usernameRegexp)) {
+            hasError = true;
+            renderFormError({
+                inputTitle: 'regusername',
+                message: 'Invalid charachters used.', inputType: 'text'
+            });
+        }
+        if (userFormFirstErrorHandler(userData)) {
+            hasError = true;
+        }
+        if (firstUserFromPassErrorHandler(userData)) {
+            hasError = true;
+        }
+        return hasError;
+    }
     function createUserErrorHandler(userData, userExists) {
         let hasError = false;
         const usernameRegexp = /^[a-zA-z._-][a-zA-z0-9._-]*$/;
@@ -59,7 +81,6 @@ module.exports = function makeErrorTnputHandler({ validator, renderFormError }) 
             hasError = true;
         }
 
-
         if (!userData.username.match(usernameRegexp)) {
             hasError = true;
             renderFormError({
@@ -71,6 +92,40 @@ module.exports = function makeErrorTnputHandler({ validator, renderFormError }) 
             hasError = true;
         }
         if (userFormPassErrorHandle(userData)) {
+            hasError = true;
+        }
+        return hasError;
+    }
+
+    function userFormFirstErrorHandler(userData){
+        const { confirmPassword, accessRights, ...userTextData } = userData;
+        let hasError = false;
+        if (validator.blacklist(userTextData.regusername, ' ').length < 3) {
+
+            renderFormError({
+                inputTitle: 'regusername',
+                message: 'Username must be at least three characters.', inputType: 'text'
+            });
+            hasError = true;
+
+        }
+        if (!validator.isAlpha(validator.blacklist(userTextData.name, ' '))) {
+
+            renderFormError({
+                inputTitle: 'name',
+                message: 'Name must only contian letters.', inputType: 'text'
+            });
+            hasError = true;
+        }
+        else if (validator.blacklist(userTextData.name, ' ').length < 3) {
+
+            renderFormError({
+                inputTitle: 'name',
+                message: 'Name must be at least three charachters long.', inputType: 'text'
+            });
+            hasError = true;
+        }
+        if (invalidEmptyInputHandler(userTextData)) {
             hasError = true;
         }
         return hasError;
@@ -106,6 +161,30 @@ module.exports = function makeErrorTnputHandler({ validator, renderFormError }) 
             hasError = true;
         }
         if (invalidEmptyInputHandler(userTextData)) {
+            hasError = true;
+        }
+        return hasError;
+    }
+
+    function firstUserFromPassErrorHandler(userData){
+        const { regpassword, confirmPassword } = userData;
+        let hasError = false;
+
+        if (regpassword.length < 8 && regpassword.length > 0) {
+
+            renderFormError({
+                inputTitle: 'regpassword',
+                message: 'Password must be at least 8 charachters long.', inputType: 'text'
+            });
+
+            hasError = true
+        }
+        if (regpassword !== confirmPassword) {
+
+            renderFormError({
+                inputTitle: 'confirmPassword',
+                message: 'Password dosen\'t match.', inputType: 'text'
+            });
             hasError = true;
         }
         return hasError;
@@ -236,6 +315,8 @@ module.exports = function makeErrorTnputHandler({ validator, renderFormError }) 
         userFormPassErrorHandle,
         updateUserDataErrorHandle,
         updateUserPasswordErrorHandle,
-        createUserErrorHandler
+        createUserErrorHandler,
+        createFirstUserErrorHandler,
+        firstUserFromPassErrorHandler
     });
 }

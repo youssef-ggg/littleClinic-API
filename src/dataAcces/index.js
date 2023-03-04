@@ -1,6 +1,7 @@
 const { MongoClient, ObjectID } = require('mongodb');
 const dotenv = require('dotenv');
 
+const makeCommonDb = require('./common');
 const makeUsersCollection = require('./users');
 const makePatientsCollection = require('./patients');
 const makeDiagnosisCollection = require('./diagnosis');
@@ -20,19 +21,27 @@ const mongoOptions = {
     useUnifiedTopology: true
 };
 const client = new MongoClient(dbUrl, mongoOptions);
+connectToDb();
 
-async function makeDb() {
-    if (!client.isConnected()) {
-        try {
-            await client.connect();
-        }
-        catch (error) {
-            return error;
-        }
+async function connectToDb(){
+    try {
+        await client.connect();
+        console.log('connected to database ....')
     }
-    return client.db('LittleClinc');
+    catch (error) {
+        console.log(error)
+        return error;
+    }
+}
+function makeDb() {
+    // find alternative for deprecated code
+    // if (!client.isConnected()) {
+    // }
+    return client.db('easyClinic');
 }
 
+
+const commonDb = makeCommonDb({ makeDb, ObjectID });
 const usersCollection = makeUsersCollection({ makeDb, ObjectID });
 const patientsCollection = makePatientsCollection({ makeDb, ObjectID });
 const diagnosisCollection = makeDiagnosisCollection({ makeDb, ObjectID });
@@ -43,7 +52,7 @@ const inventoryCollection = makeInventoryCollection({ makeDb, ObjectID });
 const accessRightsCollection = makeAccessRightsCollection({ makeDb, ObjectID });
 
 module.exports = {
-    usersCollection, patientsCollection, diagnosisCollection, appointmentCollection,
+    commonDb, usersCollection, patientsCollection, diagnosisCollection, appointmentCollection,
     financialTransactionCollection, balanceTransactionCollection, inventoryCollection,
     accessRightsCollection
 }

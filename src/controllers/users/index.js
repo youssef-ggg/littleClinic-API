@@ -1,6 +1,6 @@
 const argon2 = require('argon2');
 
-const { addUser, editUser, usersList, getUserById, userByUsername,
+const { addFirstUser, addUser, editUser, usersList, getUserById, userByUsername,
     editUserPassword, removeUser } = require('../../usecases/users');
 
 const {
@@ -16,9 +16,11 @@ const makeUpdateUser = require('./updateUser');
 const makeUpdateUserPass = require('./updateUserPass');
 const makeDeleteUser = require('./deleteUser');
 const makeGetUserByUsername = require('./getUserByUsername');
+const makeCreateFirstUser = require('./createFirstUser');
 
 const { jwtSignToken, jwtVerifyToken } = require('../../jwtAuthorization');
 
+const registerFirstUser = makeCreateFirstUser({ addFirstUser })
 const loginUser = makeLoginUser({ userByUsername, argon2, jwtSignToken, findUserAccessRights });
 const registerUser = makeRegisterUser({ addUser, jwtSignToken });
 const getUsersList = makeUsersList({ usersList, jwtVerifyToken });
@@ -31,6 +33,7 @@ const getUserByUsername = makeGetUserByUsername({ userByUsername, jwtVerifyToken
 
 const userController = Object.freeze({
     loginUser,
+    registerFirstUser,
     registerUser,
     getUser,
     getUsersList,
